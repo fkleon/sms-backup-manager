@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="smses">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="sms"/>
+      </xs:sequence>
+      <xs:attribute name="count" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="sms">
+    <xs:complexType>
+      <xs:attribute name="address" use="required" type="xs:string"/>
+      <xs:attribute name="body" use="required" type="xs:string"/>
+      <xs:attribute name="contact_name" use="required" type="xs:string"/>
+      <xs:attribute name="date" use="required" type="xs:integer"/>
+      <xs:attribute name="date_sent" use="required" type="xs:string"/>
+      <xs:attribute name="locked" use="required" type="xs:integer"/>
+      <xs:attribute name="protocol" use="required" type="xs:integer"/>
+      <xs:attribute name="read" use="required" type="xs:integer"/>
+      <xs:attribute name="readable_date" use="required" type="xs:string"/>
+      <xs:attribute name="sc_toa" use="required" type="xs:NCName"/>
+      <xs:attribute name="service_center" use="required"/>
+      <xs:attribute name="status" use="required" type="xs:integer"/>
+      <xs:attribute name="subject" use="required" type="xs:string"/>
+      <xs:attribute name="toa" use="required" type="xs:NCName"/>
+      <xs:attribute name="type" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

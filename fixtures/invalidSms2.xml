@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<smses count="1">
+  <sms address="Google" date="today" type="1" subject="null" body="Der Google-Bestätigungscode lautet 111111." toa="null" sc_toa="null" service_center="+2513535000046" read="1" status="-1" locked="0" date_sent="null" readable_date="null" contact_name="(Unknown)" />
+</smses>
