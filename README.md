@@ -30,5 +30,5 @@ Dependencies:
 
 [sms-backup-restore]: http://android.riteshsahu.com/apps/sms-backup-restore
 [wiki-howto]: https://github.com/fkleon/sms-backup-manager/wiki/HowTo
-[libphonenumer]: http://code.google.com/p/libphonenumber
+[libphonenumber]: http://code.google.com/p/libphonenumber
 [commons-lang]: http://commons.apache.org/lang/
