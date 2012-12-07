@@ -53,7 +53,7 @@ public class CustomLogHandler extends Handler {
 
 		// format message
 		SimpleFormatter sf = new SimpleFormatter();
-		SimpleDateFormat sdf = new SimpleDateFormat("[yyy-MM-dd HH:mm:ss] ");
+		SimpleDateFormat sdf = new SimpleDateFormat("[yyyy-MM-dd HH:mm:ss] ");
 		Date now = new Date();
 
 		// determine color for element

@@ -2,14 +2,9 @@ package de.leonhardt.sbm.gui.renderer;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
@@ -20,11 +15,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
-import javax.swing.ScrollPaneConstants;
+
+import org.apache.commons.lang3.text.WordUtils;
 
 import de.leonhardt.sbm.gui.resource.FlagLoader;
 import de.leonhardt.sbm.gui.resource.IconLoader;
-import de.leonhardt.sbm.xml.model.Contact;
 import de.leonhardt.sbm.xml.model.Sms;
 
 public class MessageListCellRenderer extends DefaultListCellRenderer {
@@ -65,7 +60,8 @@ public class MessageListCellRenderer extends DefaultListCellRenderer {
 		    // set colors
 			cComp.setForeground (isSelected ? jlist.getSelectionForeground() : jlist.getForeground());
 			cComp.setBackground (isSelected ? jlist.getSelectionBackground() : jlist.getBackground());
-		    
+			
+
 		    return cComp;
 		} else {
 			// return normal component
@@ -112,6 +108,9 @@ public class MessageListCellRenderer extends DefaultListCellRenderer {
 		//int oldFontSize = cNameLabel.getFont().getSize();
 		//cNameLabel.setFont(oldFont.deriveFont(oldFontSize+4f));
 		
+		// prepare the text
+		String wrappedBody = WordUtils.wrap(messageBody, 80, null, true);
+		
 		// 3. label for body
 		//ImageIcon flag = fl.getFlag(countryCode);
 		//JLabel cAddressLabel = new JLabel("<" + contactAddress+ ">", flag, JLabel.LEFT);
@@ -120,18 +119,17 @@ public class MessageListCellRenderer extends DefaultListCellRenderer {
 		mBodyTextArea.setCursor(null);
 		mBodyTextArea.setOpaque(false);
 		mBodyTextArea.setFocusable(false);
-		mBodyTextArea.setLineWrap(true); //TODO wrapping buggy here, because preferred size does not adjust
-		mBodyTextArea.setWrapStyleWord(true);
-		mBodyTextArea.setText(messageBody);
+		//mBodyTextArea.setLineWrap(true); //TODO wrapping buggy here, because preferred size does not adjust
+		//mBodyTextArea.setWrapStyleWord(true);
+		mBodyTextArea.setText(wrappedBody);
 		//System.out.println(messageBody);
-		System.out.println("heigth:"+ mBodyTextArea.getPreferredSize().getHeight());
+		//System.out.println("heigth:"+ mBodyTextArea.getPreferredSize().getHeight());
 		//JLabel mBodyLabel = new JLabel(messageBody, LEFT);
 		
 		
 		mPanel.add(mHeaderPanel);
 		//mPanel.add(mSubjectLabel);
 		mPanel.add(mBodyTextArea);
-
 		return mPanel;
 	}
 

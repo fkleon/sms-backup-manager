@@ -2,15 +2,13 @@ package de.leonhardt.sbm.gui;
 
 import java.awt.EventQueue;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.ListModel;
 
 import java.awt.BorderLayout;
@@ -25,21 +23,19 @@ import de.leonhardt.sbm.BackupManager;
 import de.leonhardt.sbm.MessageIO;
 import de.leonhardt.sbm.exception.FaultyInputXMLException;
 import de.leonhardt.sbm.gui.handler.CustomLogHandler;
+import de.leonhardt.sbm.gui.model.Settings;
 import de.leonhardt.sbm.gui.renderer.ContactListCellRenderer;
 import de.leonhardt.sbm.gui.renderer.CustomListModel;
 import de.leonhardt.sbm.gui.renderer.MessageListCellRenderer;
-import de.leonhardt.sbm.util.Utils;
-import de.leonhardt.sbm.util.Utils.TimeTracker;
 import de.leonhardt.sbm.xml.model.Contact;
 import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -51,17 +47,19 @@ import java.awt.Color;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.ScrollPaneConstants;
 
 public class BackupManagerGUI {
 
 	private Logger log = Logger.getLogger("BackupManagerGUI");
-	private static String VERSION_INFO = "v0.6 (2012-12-06)";
+	private static String VERSION_INFO = "v0.7 (2012-12-08)";
 	
 	private BackupManager bm;
 	private MessageIO mio;
-	
+	private Settings set;
+		
 	private JFrame frmBackupManager;
+	private JDialog dlgSettings;
+	private JDialog dlgDuplicates;
 	private JList listConversations;
 	private JList listMessages;
 	private JFileChooser fileChooserLoad;
@@ -93,7 +91,7 @@ public class BackupManagerGUI {
 		try {
 			initializeLogic();
 		} catch (JAXBException e) {
-			alertError("Error","Initialization failed: " + e.getMessage()); //TODO can ou actually display before GUI init?
+			GuiUtils.alertError(frmBackupManager,"Error","Initialization failed: " + e.getMessage()); //TODO can ou actually display before GUI init?
 			return;
 		}
 		
@@ -102,6 +100,7 @@ public class BackupManagerGUI {
 		
 		// init logging
 		initializeLogging();
+		
 	}
 	
 	private void initializeLogging() {
@@ -120,9 +119,14 @@ public class BackupManagerGUI {
 	}
 
 	private void initializeLogic() throws JAXBException {
-		this.bm = new BackupManager();
+		// load prefs
+		set = new Settings();
+		
+		// init business logic
+		this.bm = new BackupManager(set.getCountryCode(), set.getLanguageCode(), set.getRegionCode());
 		this.mio = new MessageIO(true);
 	}
+
 	
 	/**
 	 * Initialize the contents of the frame.
@@ -139,8 +143,13 @@ public class BackupManagerGUI {
 		// MAIN FRAME
 		frmBackupManager = new JFrame();
 		frmBackupManager.setTitle("BackupManager");
-		frmBackupManager.setBounds(100, 100, 600, 600);
+		frmBackupManager.setBounds(100, 100, 900, 600);
 		frmBackupManager.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		// SETTINGS DIALOG
+		dlgSettings = new SettingsDialog(frmBackupManager, true, set);
+		// DUPLICATE DIALOG
+		dlgDuplicates = new DuplicateDialog();
 		
 		// MENU BAR and MENUS
 		JMenuBar menuBar = new JMenuBar();
@@ -166,6 +175,24 @@ public class BackupManagerGUI {
 		
 		JMenuItem mntmShowDuplicates = new JMenuItem("Show Duplicates");
 		mnMessages.add(mntmShowDuplicates);
+		
+		JSeparator separator_1 = new JSeparator();
+		mnMessages.add(separator_1);
+		
+		JMenuItem mntmSettings = new JMenuItem("Settings");
+		mntmSettings.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// open dialog
+				dlgSettings.setVisible(true);
+				
+				// TODO check returnValue to determine if we need to re-initialize
+				// TODO actually, this should be solved by listener in Settings or something
+				bm.initLocale(set.getCountryCode(), set.getLanguageCode(), set.getRegionCode());
+			}
+		});
+		mnMessages.add(mntmSettings);
 		
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
@@ -204,19 +231,7 @@ public class BackupManagerGUI {
 		listConversations.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listConversations.addListSelectionListener(new ContactListSelectionListener());
 		listConversations.setModel(getDefaultListModel("Import your backup."));
-		JScrollPane scrollPaneContacts = new JScrollPane(listConversations) {
-			/*
-			@Override
-			public Dimension getPreferredSize() {
-				return this.getComponent(0).getPreferredSize();
-			}
-			
-			@Override
-			public Dimension getMinimumSize() {
-				return this.getPreferredSize();
-			}
-			*/
-		};
+		JScrollPane scrollPaneContacts = new JScrollPane(listConversations);
 		
 		/*
 		 * Message output to the right of the split pane,
@@ -262,21 +277,6 @@ public class BackupManagerGUI {
 			dlm.addElement(entry);
 		}
 		return dlm;
-	}
-	
-	private void alertError(String title, Object msg) {
-		String msgTitle = title == null ? "" : title;
-		JOptionPane.showMessageDialog(frmBackupManager, msg, msgTitle, JOptionPane.ERROR_MESSAGE);
-	}
-	
-	private void alertInfo(String title, Object msg) {
-		String msgTitle = title == null ? "" : title;
-		JOptionPane.showMessageDialog(frmBackupManager, msg, msgTitle, JOptionPane.INFORMATION_MESSAGE);
-	}
-	
-	private int alertSelection(String title, Object msg) {
-		String msgTitle = title == null ? "" : title;
-		return JOptionPane.showConfirmDialog(frmBackupManager, msg, msgTitle, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 	}
 
 	protected JList getListConversations() {
@@ -331,13 +331,13 @@ public class BackupManagerGUI {
 					smsList.add(smses);
 				} catch (JAXBException e) {
 					log.severe("JAXB Error loading file:" + e.toString());
-					alertError("Error loading file", "Could not load file '" + f.toString() + "'." + GuiUtils.BR + "Did you select a valid XML file?");
+					GuiUtils.alertError(frmBackupManager,"Error loading file", "Could not load file '" + f.toString() + "'." + GuiUtils.BR + "Did you select a valid XML file?");
 				} catch (IllegalArgumentException e) {
 					log.severe("Error loading file:" + e.toString());
-					alertError("Error loading file", "Could not load file '" + f.toString() +"'.");
+					GuiUtils.alertError(frmBackupManager,"Error loading file", "Could not load file '" + f.toString() +"'.");
 				} catch (FaultyInputXMLException e) {
 					log.severe("Error loading file:" + e.toString());
-					alertError("Error loading file", "Could not load file '" + f.toString() +"'." + GuiUtils.BR + "No messages found in XML.");
+					GuiUtils.alertError(frmBackupManager,"Error loading file", "Could not load file '" + f.toString() +"'." + GuiUtils.BR + "No messages found in XML.");
 				}
 			}
 			
@@ -377,8 +377,18 @@ public class BackupManagerGUI {
 			this.selectedOnly = selectedOnly;
 		}
 		
+		private String getFileName() {
+			 String df = new SimpleDateFormat("yyyy-MM-dd-HHmm").format(new Date());
+			 return String.format("export-%s.xml", df);
+		}
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			// select default file name
+			if (fileChooserSave.getSelectedFile() == null) {
+				fileChooserSave.setSelectedFile(new File(getFileName()));
+			}
+			
 			// open file chooser dialog
 			int ret = fileChooserSave.showSaveDialog(frmBackupManager);
 			
@@ -392,7 +402,7 @@ public class BackupManagerGUI {
 			
 			// check if file already exists
 			if (f.exists()) {
-				int selRet = alertSelection("Confirm Export", "'" + f.getPath() + "' already exists." + GuiUtils.BR + "Do you want to replace it?");
+				int selRet = GuiUtils.alertSelection(frmBackupManager, "Confirm Export", "'" + f.getPath() + "' already exists." + GuiUtils.BR + "Do you want to replace it?");
 				
 				// ret -1 = closed by X, 0 = YES, 1 = NO, 2 = CANCEL
 				if (selRet >= 1) {
@@ -414,7 +424,7 @@ public class BackupManagerGUI {
 				
 				if (index < 0 || index > listConversations.getModel().getSize()) {
 					// no selection
-					alertInfo("Export", "No conversation selected.");
+					GuiUtils.alertInfo(frmBackupManager,"Export", "No conversation selected.");
 					return;
 				}
 				
@@ -425,7 +435,7 @@ public class BackupManagerGUI {
 					Contact c = (Contact) o;
 					smses = new Smses(new ArrayList<Sms>(bm.getMessages(c)));
 				} else {
-					alertInfo("Export", "No conversation selected.");
+					GuiUtils.alertInfo(frmBackupManager,"Export", "No conversation selected.");
 					return;
 				}
 			}
@@ -436,13 +446,13 @@ public class BackupManagerGUI {
 				//alertInfo("Export sucessfull", "Export successfull.");
 			} catch (IllegalArgumentException e1) {
 				log.severe("Error writing file:" + e1.toString());
-				alertError("Error while exporting messages", "Could not write to file '" + f.toString() +"'.");
+				GuiUtils.alertError(frmBackupManager,"Error while exporting messages", "Could not write to file '" + f.toString() +"'.");
 			} catch (JAXBException e1) {
 				log.severe("Error writing file (selectedOnly: '" + selectedOnly + "'): " + e1.toString());
 				if (selectedOnly) {
-					alertError("Error while exporting messages", "There is a problem exporting your messages." + GuiUtils.BR + "Does your selection contain at least one message?");
+					GuiUtils.alertError(frmBackupManager,"Error while exporting messages", "There is a problem exporting your messages." + GuiUtils.BR + "Does your selection contain at least one message?");
 				} else {
-					alertError("Error while exporting messages", "There is a problem exporting your messages." + GuiUtils.BR + "Did you import at least one message?");
+					GuiUtils.alertError(frmBackupManager,"Error while exporting messages", "There is a problem exporting your messages." + GuiUtils.BR + "Did you import at least one message?");
 				}
 			}
 		}
@@ -458,8 +468,10 @@ public class BackupManagerGUI {
 	public class AboutActionListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			alertInfo("BackupManager "+VERSION_INFO, "by Frederik Leonhardt"
-										+ GuiUtils.BR+"<frederik.leonhardt@gmail.com>"
+			GuiUtils.alertInfo(frmBackupManager,"BackupManager",
+										VERSION_INFO
+										+ GuiUtils.BR + GuiUtils.BR + "by Frederik Leonhardt"
+										+ GuiUtils.BR + "<frederik.leonhardt@gmail.com>"
 										+ GuiUtils.BR + GuiUtils.BR + "Flag icons by FamFamFam.com"
 										+ GuiUtils.BR + "Message icons by GLYPHICONS.com");
 		}
@@ -499,7 +511,7 @@ public class BackupManagerGUI {
 				Contact c = (Contact) o;
 				Collection<Sms> messages = bm.getMessages(c);
 				
-				log.info(messages.size() + " messages in conversation with '" + c.getContactName() + "<" + c.getAddressIntl() + ">'.");
+				log.info(messages.size() + " messages in conversation with '" + c.getContactName() + " <" + c.getAddressIntl() + ">'.");
 				
 				// populate message list
 				CustomListModel dlm = new CustomListModel();
@@ -509,4 +521,14 @@ public class BackupManagerGUI {
 			}
 		}
 	}
+	
+	public class MessageListSelectionListener implements ListSelectionListener {
+
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			
+		}
+		
+	}
+	
 }

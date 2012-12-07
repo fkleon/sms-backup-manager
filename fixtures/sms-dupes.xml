@@ -7,4 +7,5 @@
   <sms protocol="0" address="+4917611111111" date="1319226627115" type="2" subject="null" body="No duplicate." toa="null" sc_toa="null" service_center="null" read="1" status="-1" locked="0" date_sent="null" readable_date="Oct 21, 2011 9:50:27 PM" contact_name="Contact 1" />
   <sms protocol="0" address="+4916022222222" date="1319226644995" type="2" subject="null" body="Duplicate text." toa="null" sc_toa="null" service_center="null" read="1" status="-1" locked="0" date_sent="null" readable_date="Oct 21, 2011 9:50:44 PM" contact_name="Contact 2" />
   <sms protocol="0" address="+4916022222222" date="1319226644995" type="2" subject="null" body="Duplicate text." toa="null" sc_toa="null" service_center="null" read="1" status="-1" locked="0" date_sent="null" readable_date="n/a" contact_name="Contact 2" />
+  <sms protocol="0" address="773-338-7786" date="1319226648005" type="2" subject="null" body="Americana." toa="null" sc_toa="null" service_center="null" read="1" status="-1" locked="0" date_sent="null" readable_date="n/a" contact_name="Contact 4" />
 </smses>

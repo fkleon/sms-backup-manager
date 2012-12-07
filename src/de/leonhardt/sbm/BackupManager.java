@@ -66,7 +66,7 @@ public class BackupManager {
 	 * @param languageCode
 	 * @param regionCode
 	 */
-	private void initLocale(String countryCode, String languageCode, String regionCode) {
+	public void initLocale(String countryCode, String languageCode, String regionCode) {
 		this.countryCode = countryCode;
 		this.languageCode = languageCode;
 		this.regionCode = regionCode;

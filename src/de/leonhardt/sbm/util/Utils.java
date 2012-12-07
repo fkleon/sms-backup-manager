@@ -1,18 +1,14 @@
 package de.leonhardt.sbm.util;
 
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import de.leonhardt.sbm.util.comparator.MessageDateComparator;
-import de.leonhardt.sbm.xml.model.Contact;
-import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
 
 //TODO comments
 public class Utils {
-	
+
 	public interface IdGenerator {
 		public long getNextId();
 		public long getNumIds();

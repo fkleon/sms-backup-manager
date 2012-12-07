@@ -19,9 +19,11 @@ import com.google.i18n.phonenumbers.geocoding.PhoneNumberOfflineGeocoder;
 public class PhoneNumberParser {
 	
 	/**
-	 * Specifies country code to use for non-international numbe parsing
+	 * Specifies country code to use for non-international number parsing
+	 * Uses ISO-3166-1 two-letter country code.
+	 * Also null and "ZZ" are permitted (assumes international numbers).
 	 */
-	String countryCode = null; // ISO 3166-1 two-letter country code
+	String countryCode = null;
 	
 	/**
 	 * Language and region codes are used to validate phone numbers
@@ -99,7 +101,7 @@ public class PhoneNumberParser {
 		} catch (NumberParseException e) {
 			log.warning("Could not parse phone number '" + phoneNumber + "'. "
 						+ "[country=" + this.countryCode
-						+ ", locale=" + languageCode + "-" + regionCode +  "]"
+						+ ", locale=" + languageCode + "-" + countryCode + ((this.regionCode == null || this.regionCode.isEmpty())?"":"-"+this.regionCode) +  "]"
 						+ " Error: " + e.getMessage());
 		}
 		
