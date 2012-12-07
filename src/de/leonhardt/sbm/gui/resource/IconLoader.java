@@ -60,7 +60,7 @@ public class IconLoader extends ResourceLoader {
 	private ImageIcon getIcon2(String normalizedIconName) {
 		URL iconURL = getResourceURL(buildResPath(normalizedIconName));
 		if (iconURL == null) {
-			Logger.getAnonymousLogger().fine("Could not find icon '"+normalizedIconName+"' (URL null)");
+			Logger.getAnonymousLogger().info("Could not find icon '"+normalizedIconName+"' (URL null)");
 			return new ImageIcon();
 		} else {
 			return new ImageIcon(iconURL, normalizedIconName);

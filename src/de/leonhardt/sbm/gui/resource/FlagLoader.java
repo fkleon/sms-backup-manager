@@ -3,6 +3,7 @@ package de.leonhardt.sbm.gui.resource;
 import java.net.URL;
 import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 /**
@@ -14,6 +15,7 @@ import javax.swing.ImageIcon;
 public class FlagLoader extends ResourceLoader {
 	
 	private static String resPath = "/resources/images/flagIcons/%s.png";
+		
 	
 	/**
 	 * Returns a country flag based on the given country code.
@@ -48,7 +50,7 @@ public class FlagLoader extends ResourceLoader {
 	private ImageIcon getDefaultFlagIcon() {
 		ImageIcon flagIcon;
 		
-		if ((flagIcon = getFlag("default")) == null) {
+		if ((flagIcon = getFlagIcon("default")) == null) {
 			flagIcon = new ImageIcon();
 			flagIcon.setDescription("n/a");
 		}
@@ -68,7 +70,13 @@ public class FlagLoader extends ResourceLoader {
 			Logger.getAnonymousLogger().fine("Could not find flag for country '"+normalizedCountryCode+"' (flagURL null)");
 			return null;
 		} else {
-			return new ImageIcon(flagURL, normalizedCountryCode);
+			try {
+				return new ImageIcon(ImageIO.read(flagURL), normalizedCountryCode);
+			} catch (Exception ioe) {
+				Logger.getAnonymousLogger().fine("Could not read flag for country '"+normalizedCountryCode+"': " + ioe.toString());
+				return null;
+			}
+//			return new ImageIcon(flagURL, normalizedCountryCode);
 		}
 	}
 	
