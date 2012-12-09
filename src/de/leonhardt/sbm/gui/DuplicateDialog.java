@@ -9,6 +9,8 @@ import javax.swing.JDialog;
  *
  */
 public class DuplicateDialog extends JDialog {
+	public DuplicateDialog() {
+	}
 
 	private static final long serialVersionUID = 5609985118346166560L;
 

@@ -5,8 +5,18 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import de.leonhardt.sbm.gui.pm.SettingsService;
+
+/**
+ * Application-wide program settings.
+ * 
+ * @author Frederik Leonhardt
+ *
+ */
 public class Settings implements SettingsService {
 
+	private static Settings _instance;
+	
 	private Logger log = Logger.getLogger("Settings");
 	private Preferences prefs;
 		
@@ -16,11 +26,25 @@ public class Settings implements SettingsService {
 	
 	private boolean exportIntl;
 		
-	public Settings() {
+	private Settings() {
 		this.prefs = Preferences.userNodeForPackage(this.getClass());
 		load();
 	}
 
+	/**
+	 * Settings is singleton, there is only one instance.
+	 * @return the instance
+	 */
+	public static Settings getInstance() {
+		if (_instance == null) {
+			_instance = new Settings();
+		}
+		return _instance;
+	}
+	
+	/**
+	 * Persists the current settings
+	 */
 	public void save() {
 		// validate input
 		
@@ -42,6 +66,9 @@ public class Settings implements SettingsService {
 		}
 	}
 	
+	/**
+	 * Loads the settings from persistent storage
+	 */
 	public void load() {
 		Preferences prefs = getPrefs();
 		
@@ -62,6 +89,9 @@ public class Settings implements SettingsService {
 				+ exportIntl + "]";
 	}
 
+	/**
+	 * Removes all saved preferences and resets to default.
+	 */
 	public void clear() {
 		try {
 			getPrefs().clear();
@@ -108,22 +138,39 @@ public class Settings implements SettingsService {
 		return this.exportIntl;
 	}
 
+	/**
+	 * Returns the preference store
+	 * @return
+	 */
 	private Preferences getPrefs() {
 		return this.prefs;
 	}
 	
-	
+	/**
+	 * Ensures that the given object is not null
+	 * @param obj
+	 * @throws IllegalArgumentException
+	 */
 	private void ensureNotNull(Object obj) throws IllegalArgumentException {
 		if (obj==null)
 			throw new IllegalArgumentException("obj is null");
 	}
 	
+	/**
+	 * Ensures that the given string is of given length
+	 * @param str
+	 * @param length
+	 * @throws IllegalArgumentException
+	 */
 	private void ensureLength(String str, int length) throws IllegalArgumentException {
 		if (str.length() != length) {
 			throw new IllegalArgumentException(String.format("Expected string '%s' to be of length %d",str,length));
 		}
 	}
 
+	/**
+	 * Implementation of service pattern method
+	 */
 	@Override
 	public void store(String countryCode, String languageCode,
 			boolean exportIntl) {
@@ -133,6 +180,9 @@ public class Settings implements SettingsService {
 		save();
 	}
 	
+	/**
+	 * Implementation of service pattern method
+	 */
 	@Override
 	public Settings getSettings() {
 		return this;

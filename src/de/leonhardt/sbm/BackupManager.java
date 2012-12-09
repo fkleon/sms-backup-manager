@@ -168,8 +168,8 @@ public class BackupManager {
 			
 			// messages in a MessageStore are assumed to be sorted ascending,
 			// so we just revert the list
-			Collections.reverse(messages);
-			//Collections.sort(messages, new MessageDateComparator(true));
+			//Collections.reverse(messages);
+			Collections.sort(messages, new MessageDateComparator(true));
 			
 			return messages;
 		} else {

@@ -24,13 +24,15 @@ import javax.xml.bind.JAXBException;
 
 import de.leonhardt.sbm.BackupManager;
 import de.leonhardt.sbm.MessageIO;
-import de.leonhardt.sbm.exception.FaultyInputXMLException;
 import de.leonhardt.sbm.gui.handler.CustomLogHandler;
 import de.leonhardt.sbm.gui.model.Settings;
+import de.leonhardt.sbm.gui.pm.SettingsPM;
+import de.leonhardt.sbm.gui.pm.SettingsService;
 import de.leonhardt.sbm.gui.renderer.ContactListCellRenderer;
 import de.leonhardt.sbm.gui.renderer.CustomListModel;
 import de.leonhardt.sbm.gui.renderer.MessageListCellRenderer;
 import de.leonhardt.sbm.gui.resource.IconLoader;
+import de.leonhardt.sbm.gui.view.SettingsDialogView;
 import de.leonhardt.sbm.xml.model.Contact;
 import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
@@ -61,7 +63,6 @@ public class BackupManagerGUI {
 	
 	private BackupManager bm;
 	private MessageIO mio;
-	private Settings set;
 		
 	private JFrame frmBackupManager;
 	private JDialog dlgSettings;
@@ -127,7 +128,7 @@ public class BackupManagerGUI {
 
 	private void initializeLogic() throws JAXBException {
 		// load prefs
-		set = new Settings();
+		Settings set = Settings.getInstance();
 		
 		// init business logic
 		this.bm = new BackupManager(set.getCountryCode(), set.getLanguageCode(), set.getRegionCode());
@@ -154,7 +155,14 @@ public class BackupManagerGUI {
 		frmBackupManager.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// SETTINGS DIALOG
-		dlgSettings = new SettingsDialog(frmBackupManager, true, set);
+		SettingsPM spm = new SettingsPM();
+		SettingsDialogView sdv = new SettingsDialogView(frmBackupManager);
+		sdv.setPresentationModel(spm);
+        spm.setSettings(Settings.getInstance());
+        spm.getContext().addService(SettingsService.class, Settings.getInstance());
+        
+		dlgSettings = sdv;
+		//dlgSettings = new SettingsDialog(frmBackupManager, true, set);
 		// DUPLICATE DIALOG
 		dlgDuplicates = new DuplicateDialog();
 		
@@ -188,6 +196,8 @@ public class BackupManagerGUI {
 		
 		JMenuItem mntmSettings = new JMenuItem("Settings");
 		mntmSettings.addActionListener(new ActionListener() {
+			
+			private Settings set = Settings.getInstance();
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
