@@ -14,10 +14,16 @@ import javax.swing.JPanel;
 import de.leonhardt.sbm.gui.resource.FlagLoader;
 import de.leonhardt.sbm.xml.model.Contact;
 
+/**
+ * A renderer for ListModels containing Contacts.
+ * @author Frederik Leonhardt
+ *
+ */
 public class ContactListCellRenderer extends DefaultListCellRenderer {
 
 	private static final long serialVersionUID = 3041400497913312821L;
 
+	// to load flag icons
 	private final FlagLoader fl;
 
 	public ContactListCellRenderer() {
@@ -43,6 +49,7 @@ public class ContactListCellRenderer extends DefaultListCellRenderer {
 	public Component getListCellRendererComponent(JList jlist, Object value,
 			int cellIndex, boolean isSelected, boolean cellHasFocus) {
 		
+		// since there is no generic support in Java 6 ListModels yet, check if we actually get a contact
 		if (value instanceof Contact) {
 			Contact c = (Contact) value;
 			Component cComp = getContactListEntryComponent(c.getContactName(), c.getCountryCode(), c.getAddressIntl());
@@ -66,7 +73,7 @@ public class ContactListCellRenderer extends DefaultListCellRenderer {
 		    
 		    return cComp;
 		} else {
-			// return normal component
+			// no? then return normal component
 			return super.getListCellRendererComponent(jlist, value, cellIndex, isSelected, cellHasFocus);
 		}
 	}
@@ -103,6 +110,7 @@ public class ContactListCellRenderer extends DefaultListCellRenderer {
 		ImageIcon flag = fl.getFlag(countryCode);
 		JLabel cAddressLabel = new JLabel("<" + contactAddress+ ">", flag, JLabel.LEFT);
 
+		// add both elements to panel
 		cPanel.add(cNameLabel);
 		cPanel.add(cAddressLabel);
 

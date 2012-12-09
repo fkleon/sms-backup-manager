@@ -3,13 +3,16 @@ package de.leonhardt.sbm.gui;
 import java.awt.EventQueue;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.ListModel;
+import javax.swing.SwingWorker;
 
 import java.awt.BorderLayout;
 import javax.swing.JList;
@@ -27,6 +30,7 @@ import de.leonhardt.sbm.gui.model.Settings;
 import de.leonhardt.sbm.gui.renderer.ContactListCellRenderer;
 import de.leonhardt.sbm.gui.renderer.CustomListModel;
 import de.leonhardt.sbm.gui.renderer.MessageListCellRenderer;
+import de.leonhardt.sbm.gui.resource.IconLoader;
 import de.leonhardt.sbm.xml.model.Contact;
 import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
@@ -44,6 +48,8 @@ import java.awt.Dimension;
 import java.io.File;
 import java.awt.GridLayout;
 import java.awt.Color;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -66,6 +72,7 @@ public class BackupManagerGUI {
 	private JFileChooser fileChooserSave;
 	private JTextPane logPane;
 	private JTextPane messagePane;
+	private StatusBar statusBar;
 	
 	/**
 	 * Launch the application.
@@ -208,8 +215,12 @@ public class BackupManagerGUI {
 		 * |__|__|
 		 * |_____|
 		 *  
-		 */		
-		frmBackupManager.getContentPane().setLayout(new GridLayout(0,1));
+		 */
+		//frmBackupManager.getContentPane().setLayout(new GridLayout(0,1));
+		frmBackupManager.getContentPane().setLayout(new BorderLayout());
+		
+		// alternative
+		JPanel mainPanel = new JPanel(new GridLayout(0,1));
 		
 		/*
 		 * Split pane centered
@@ -219,7 +230,8 @@ public class BackupManagerGUI {
 		 */
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		splitPane.setResizeWeight(0.3);
-		frmBackupManager.getContentPane().add(splitPane, BorderLayout.CENTER);
+		//frmBackupManager.getContentPane().add(splitPane, BorderLayout.CENTER);
+		mainPanel.add(splitPane);
 		
 		/*
 		 * Conversation list to the left of split pane,
@@ -268,7 +280,17 @@ public class BackupManagerGUI {
 		logPane.setText("Logging output..");
 		
 		JScrollPane scrollPaneLog = new JScrollPane(logPane);
-		frmBackupManager.getContentPane().add(scrollPaneLog, BorderLayout.SOUTH);	
+		//frmBackupManager.getContentPane().add(scrollPaneLog, BorderLayout.SOUTH);	
+		mainPanel.add(scrollPaneLog);
+		
+		/*
+		 * Status bar
+		 */
+		statusBar = new StatusBar();
+		
+		// add main panel and status bar to main frame
+		frmBackupManager.add(mainPanel, BorderLayout.CENTER);
+		frmBackupManager.add(statusBar, BorderLayout.SOUTH);
 	}
 	
 	protected ListModel getDefaultListModel(String entry) {
@@ -325,6 +347,18 @@ public class BackupManagerGUI {
 			File[] selection = fileChooserLoad.getSelectedFiles();
 			List<Smses> smsList = new ArrayList<Smses>();
 			
+			ImageIcon load_anim = new IconLoader().getLoadingAnimation();
+			
+			statusBar.setIcon(load_anim);
+			statusBar.setText("Importing messages..");
+			//JDialog loading = new LoadingDialog(frmBackupManager, load_anim, "Importing messages..");
+			//SwingWorkerCompletionWaiter swcw = new SwingWorkerCompletionWaiter(loading);
+			SwingWorker importWorker = new ImportMessagesWorker(bm, mio, selection);
+			importWorker.addPropertyChangeListener((PropertyChangeListener)statusBar);
+			importWorker.execute();
+			//loading.setVisible(true);
+
+			/*
 			for (File f: selection) {
 				try {
 					Smses smses = mio.readFromXML(f);
@@ -345,7 +379,7 @@ public class BackupManagerGUI {
 			for (Smses smses: smsList) {
 				bm.importMessages(smses);
 			}
-			
+			*/
 			// populate contact list
 			CustomListModel dlm = new CustomListModel();
 			listConversations.setModel(dlm);

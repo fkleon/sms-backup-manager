@@ -12,20 +12,24 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import de.leonhardt.sbm.gui.resource.FlagLoader;
+import de.leonhardt.sbm.gui.GuiUtils;
 import de.leonhardt.sbm.gui.resource.IconLoader;
 import de.leonhardt.sbm.xml.model.Sms;
 
+/**
+ * A renderer for ListModels containing Sms messages.
+ * @author Frederik Leonhardt
+ *
+ */
 public class MessageListCellRenderer extends DefaultListCellRenderer {
 
 	private static final long serialVersionUID = 3041400497913312821L;
 	
+	// to load UI icons
 	private final IconLoader il;
 
 	public MessageListCellRenderer() {
@@ -51,6 +55,7 @@ public class MessageListCellRenderer extends DefaultListCellRenderer {
 	public Component getListCellRendererComponent(JList jlist, Object value,
 			int cellIndex, boolean isSelected, boolean cellHasFocus) {
 		
+		// since there is no generic support in Java 6 ListModels yet, check if we actually get a sms
 		if (value instanceof Sms) {
 			Sms sms = (Sms) value;
 			
@@ -90,6 +95,9 @@ public class MessageListCellRenderer extends DefaultListCellRenderer {
 		mPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 		
 		// we need several sub-elements
+		// 1. header containing icons, date and subject
+		JPanel mHeaderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
 		ImageIcon mTypeIcon = il.getMessageTypeIcon(messageType);
 		ImageIcon mStatusIcon = il.getMessageStatusIcon(messageStatus);
 		
@@ -97,39 +105,25 @@ public class MessageListCellRenderer extends DefaultListCellRenderer {
 		JLabel mDateLabel = new JLabel(df.format(messageDate), mTypeIcon, LEFT);
 		JLabel mStatusLabel = new JLabel(mStatusIcon);
 		
-		JPanel mHeaderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		mHeaderPanel.add(mDateLabel);
 		mHeaderPanel.add(mStatusLabel);
 		
-		// 2. subject
+		// subject
 		//JLabel mSubjectLabel = new JLabel(messageSubject, RIGHT);
 		
 		//Font oldFont = cNameLabel.getFont();
 		//int oldFontSize = cNameLabel.getFont().getSize();
 		//cNameLabel.setFont(oldFont.deriveFont(oldFontSize+4f));
 		
+		// 2. label for body
 		// prepare the text
 		String wrappedBody = WordUtils.wrap(messageBody, 80, null, true);
+		JTextArea mBodyTextArea = GuiUtils.buildLabelStyleTextArea(wrappedBody);
 		
-		// 3. label for body
-		//ImageIcon flag = fl.getFlag(countryCode);
-		//JLabel cAddressLabel = new JLabel("<" + contactAddress+ ">", flag, JLabel.LEFT);
-		JTextArea mBodyTextArea = new JTextArea(0,1);
-		mBodyTextArea.setEditable(false);
-		mBodyTextArea.setCursor(null);
-		mBodyTextArea.setOpaque(false);
-		mBodyTextArea.setFocusable(false);
-		//mBodyTextArea.setLineWrap(true); //TODO wrapping buggy here, because preferred size does not adjust
-		//mBodyTextArea.setWrapStyleWord(true);
-		mBodyTextArea.setText(wrappedBody);
-		//System.out.println(messageBody);
-		//System.out.println("heigth:"+ mBodyTextArea.getPreferredSize().getHeight());
-		//JLabel mBodyLabel = new JLabel(messageBody, LEFT);
-		
-		
+		// assemble..
 		mPanel.add(mHeaderPanel);
-		//mPanel.add(mSubjectLabel);
 		mPanel.add(mBodyTextArea);
+		
 		return mPanel;
 	}
 

@@ -3,6 +3,7 @@ package de.leonhardt.sbm.gui;
 import java.awt.Component;
 
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 
 public class GuiUtils {
@@ -19,6 +20,15 @@ public class GuiUtils {
 		if (jtp.getSelectedText() == null) {
 			jtp.setCaretPosition(jtp.getDocument().getLength());
 		}
+	}
+	
+	public static JTextArea buildLabelStyleTextArea(String text) {
+		JTextArea jTA = new JTextArea(text);
+		jTA.setEditable(false);
+		jTA.setCursor(null);
+		jTA.setOpaque(false);
+		jTA.setFocusable(false);
+		return jTA;
 	}
 	
 	

@@ -5,28 +5,23 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-public class Settings {
+public class Settings implements SettingsService {
 
 	private Logger log = Logger.getLogger("Settings");
 	private Preferences prefs;
-	
-	private boolean isDirty;
-	
+		
 	private String languageCode;
 	private String countryCode;
 	private String regionCode;
 	
 	private boolean exportIntl;
-	
+		
 	public Settings() {
 		this.prefs = Preferences.userNodeForPackage(this.getClass());
 		load();
 	}
 
 	public void save() {
-		if (!isDirty()) {
-			return;
-		}
 		// validate input
 		
 		// store input
@@ -79,7 +74,6 @@ public class Settings {
 		ensureNotNull(languageCode);
 		ensureLength(languageCode, 2);
 		this.languageCode = languageCode.toLowerCase();
-		setDirty();
 	}
 	
 	public String getLanguageCode() {
@@ -90,7 +84,6 @@ public class Settings {
 		ensureNotNull(countryCode);
 		ensureLength(countryCode, 2);
 		this.countryCode = countryCode.toUpperCase();
-		setDirty();
 	}
 	
 	public String getCountryCode() {
@@ -101,7 +94,6 @@ public class Settings {
 		ensureNotNull(regionCode);
 		ensureLength(regionCode, 2);
 		this.regionCode = regionCode.toUpperCase();
-		setDirty();
 	}
 	
 	public String getRegionCode() {
@@ -110,7 +102,6 @@ public class Settings {
 	
 	public void setExportInternationalNumbers(boolean exportIntl) {
 		this.exportIntl = exportIntl;
-		setDirty();
 	}
 	
 	public boolean getExportInternationalNumbers() {
@@ -121,13 +112,6 @@ public class Settings {
 		return this.prefs;
 	}
 	
-	public boolean isDirty() {
-		return this.isDirty;
-	}
-	
-	private void setDirty() {
-		this.isDirty = true;
-	}
 	
 	private void ensureNotNull(Object obj) throws IllegalArgumentException {
 		if (obj==null)
@@ -138,5 +122,19 @@ public class Settings {
 		if (str.length() != length) {
 			throw new IllegalArgumentException(String.format("Expected string '%s' to be of length %d",str,length));
 		}
+	}
+
+	@Override
+	public void store(String countryCode, String languageCode,
+			boolean exportIntl) {
+		setCountryCode(countryCode);
+		setLanguageCode(languageCode);
+		setExportInternationalNumbers(exportIntl);
+		save();
+	}
+	
+	@Override
+	public Settings getSettings() {
+		return this;
 	}
 }

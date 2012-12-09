@@ -10,26 +10,31 @@ import javax.swing.ImageIcon;
 //TODO refactor, rewrite
 public class IconLoader extends ResourceLoader {
 
-	private static String resPath = "/resources/images/uiIcons/%s.png";
+	private static String resPath = "/resources/images/uiIcons/%s";
 
 	private static Map<Integer, String> mTypeIconMap = new HashMap<Integer, String>();
 	static {
 		// 1 = Received, 2 = Sent, 3 = Draft, 4 = Outbox, 5 = Failed, 6 = Queued
-		mTypeIconMap.put(1, "message-in");
-		mTypeIconMap.put(2, "message-out");
-		mTypeIconMap.put(3, "message-draft");
-		mTypeIconMap.put(4, "message-outbox");
-		mTypeIconMap.put(5, "message-fail");
-		mTypeIconMap.put(6, "message-queue");
+		mTypeIconMap.put(1, "message-in.png");
+		mTypeIconMap.put(2, "message-out.png");
+		mTypeIconMap.put(3, "message-draft.png");
+		mTypeIconMap.put(4, "message-outbox.png");
+		mTypeIconMap.put(5, "message-fail.png");
+		mTypeIconMap.put(6, "message-queue.png");
 	}
 	
 	private static Map<Integer, String> mStatusIconMap = new HashMap<Integer, String>();
 	static {
 		// None = -1, Complete = 0, Pending = 32, Failed = 64.
 		//mTypeIconMap.put(-1, "status-none");
-		mTypeIconMap.put(0, "status-ok");
+		mTypeIconMap.put(0, "status-ok.png");
 		//mTypeIconMap.put(32, "status-pending");
-		mTypeIconMap.put(64, "status-fail");
+		mTypeIconMap.put(64, "status-fail.png");
+	}
+	
+	
+	public ImageIcon getLoadingAnimation() {
+		return getIcon2("load-anim.gif");
 	}
 	
 	public ImageIcon getMessageTypeIcon(Integer mType) {
