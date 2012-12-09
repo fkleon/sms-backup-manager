@@ -11,8 +11,15 @@ Dependencies:
 - libphonenumber 5.2 - [get it here][libphonenumber]
 - offline-geocoder 2.3 - [get it here][libphonenumber]
 - commons-lang 3.1 - [get it here][commons-lang]
+- beanfabrics-core and beanfabrics-swing 0.9.4 - [get it here][beanfabrics]
 
 ### Version History
+
+#### v0.8 (upcoming)
+- [GUI] Added status bar
+- [GUI] Threaded execution (non-blocking import, etc.)
+- [GUI] Adapted GUI to presentation model (PM) pattern using [beanfabrics][beanfabrics]
+- [GEN] Fixed occasional message sorting problems
 
 #### v0.7 (Dec 8, 2012)
 - [GUI] Possibility to change locale
@@ -31,4 +38,5 @@ Dependencies:
 [sms-backup-restore]: http://android.riteshsahu.com/apps/sms-backup-restore
 [wiki-howto]: https://github.com/fkleon/sms-backup-manager/wiki/HowTo
 [libphonenumber]: http://code.google.com/p/libphonenumber
-[commons-lang]: http://commons.apache.org/lang/
+[commons-lang]: http://commons.apache.org/lang
+[beanfabrics]: http://code.google.com/p/beanfabrics
