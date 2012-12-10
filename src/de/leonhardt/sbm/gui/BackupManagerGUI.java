@@ -26,12 +26,14 @@ import de.leonhardt.sbm.BackupManager;
 import de.leonhardt.sbm.MessageIO;
 import de.leonhardt.sbm.gui.handler.CustomLogHandler;
 import de.leonhardt.sbm.gui.model.Settings;
+import de.leonhardt.sbm.gui.pm.FlagService;
 import de.leonhardt.sbm.gui.pm.SettingsPM;
 import de.leonhardt.sbm.gui.pm.SettingsService;
 import de.leonhardt.sbm.gui.pm.StatusBarPM;
 import de.leonhardt.sbm.gui.renderer.ContactListCellRenderer;
 import de.leonhardt.sbm.gui.renderer.CustomListModel;
 import de.leonhardt.sbm.gui.renderer.MessageListCellRenderer;
+import de.leonhardt.sbm.gui.resource.FlagLoader;
 import de.leonhardt.sbm.gui.resource.IconLoader;
 import de.leonhardt.sbm.gui.view.SettingsDialogView;
 import de.leonhardt.sbm.gui.view.StatusBarView;
@@ -163,6 +165,7 @@ public class BackupManagerGUI {
 		sdv.setPresentationModel(spm);
         spm.setSettings(Settings.getInstance());
         spm.getContext().addService(SettingsService.class, Settings.getInstance());
+        spm.getContext().addService(FlagService.class, new FlagLoader());
         
 		dlgSettings = sdv;
 		//dlgSettings = new SettingsDialog(frmBackupManager, true, set);

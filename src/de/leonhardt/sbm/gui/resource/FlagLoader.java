@@ -6,13 +6,15 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import de.leonhardt.sbm.gui.pm.FlagService;
+
 /**
  * This class is responsible for loading the flag icons
  * 
  * @author Frederik Leonhardt
  *
  */
-public class FlagLoader extends ResourceLoader {
+public class FlagLoader extends ResourceLoader implements FlagService {
 	
 	private static String resPath = "/resources/images/flagIcons/%s.png";
 		
