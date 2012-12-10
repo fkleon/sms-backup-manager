@@ -99,7 +99,7 @@ public class PhoneNumberParser {
 		
 			internationalFormat = phoneUtil.format(number, PhoneNumberFormat.INTERNATIONAL);
 		} catch (NumberParseException e) {
-			log.warning("Could not parse phone number '" + phoneNumber + "'. "
+			log.fine("Could not parse phone number '" + phoneNumber + "'. "
 						+ "[country=" + this.countryCode
 						+ ", locale=" + languageCode + "-" + countryCode + ((this.regionCode == null || this.regionCode.isEmpty())?"":"-"+this.regionCode) +  "]"
 						+ " Error: " + e.getMessage());
@@ -121,7 +121,7 @@ public class PhoneNumberParser {
 			PhoneNumber number = parseToPhoneNumber(phoneNumber);
 			countryCode = phoneUtil.getRegionCodeForNumber(number);
 		} catch (NumberParseException e) {
-			log.warning("Could not parse phone number '" + phoneNumber + "'. "
+			log.fine("Could not parse phone number '" + phoneNumber + "'. "
 						+ "[country=" + this.countryCode
 						+ ", locale=" + languageCode + "-" + regionCode +  "]"
 						+ " Error: " + e.getMessage());
@@ -142,7 +142,7 @@ public class PhoneNumberParser {
 			PhoneNumber number = parseToPhoneNumber(phoneNumber);
 			geoInfo = phoneGeocoder.getDescriptionForNumber(number, new Locale(languageCode, regionCode));
 		} catch (NumberParseException e) {
-			log.warning("Could not parse phone number '" + phoneNumber + "'. "
+			log.fine("Could not parse phone number '" + phoneNumber + "'. "
 					+ "[country=" + this.countryCode
 					+ ", locale=" + languageCode + "-" + regionCode +  "]"
 					+ " Error: " + e.getMessage());

@@ -43,6 +43,10 @@ public class CustomListModel extends AbstractListModel {
 	 * @param objects
 	 */
 	public void addElements(Collection<? extends Object> objects) {
+		if (objects.size() < 1) {
+			return;
+		}
+		
 		int curSize = delegate.size();
 		delegate.addAll(curSize, objects);
 		fireIntervalAdded(this, curSize, getSize()-1);

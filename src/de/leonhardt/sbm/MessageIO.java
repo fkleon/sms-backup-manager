@@ -127,7 +127,7 @@ public class MessageIO {
 			log.warning("Expected " + expectedCount + " messages, but found only " + actualCount + " messages.");
 		}
 		
-		log.info("Sucessfully imported " + actualCount + " messages from '" + file.getPath() + "'.");
+		log.info("Sucessfully read " + actualCount + " messages from '" + file.getPath() + "'.");
 		
 		return smses;
 	}

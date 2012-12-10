@@ -81,7 +81,7 @@ public class BackupManager {
 		this.idGen = Utils.getDefaultIdGenerator();
 		this.ms = new MessageStore(idGen);
 		//this.cs = new ContactStore(idGen);
-		this.conversations = new HashMap<Contact, MessageStore>();
+		this.conversations = Collections.synchronizedMap(new HashMap<Contact, MessageStore>());
 		
 		this.log = Logger.getLogger("BackupManager");
 	}

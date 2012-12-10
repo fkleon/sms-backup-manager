@@ -1,90 +1,74 @@
 package de.leonhardt.sbm.gui;
 
-import java.io.File;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.xml.bind.JAXBException;
 
 import de.leonhardt.sbm.BackupManager;
-import de.leonhardt.sbm.MessageIO;
-import de.leonhardt.sbm.exception.FaultyInputXMLException;
+import de.leonhardt.sbm.gui.renderer.CustomListModel;
 import de.leonhardt.sbm.xml.model.Smses;
 
-public class ImportMessagesWorker extends SwingWorker<List<Smses>, Smses> {
+/**
+ * Background Worker to import previously read messages into the MessageStore and populate the list afterwards.
+ * This worker is supposed to start after the ImportXML worker, therefore it implements PropertyChangeListener.
+ * @author Frederik Leonhardt
+ *
+ */
+public class ImportMessagesWorker extends SwingWorker<Void, Void> implements PropertyChangeListener {
 
 	private Logger log;
 	private BackupManager bm;
-	private File[] files;
-	private MessageIO mio;
+	private List<Smses> messagesToImport;
+	private CustomListModel clm;
 	
-	public ImportMessagesWorker(BackupManager bm, MessageIO mio, File[] files) {
-		super();
-		this.log = Logger.getLogger("ImportMessagesWorker");
-		this.mio = mio;
-		this.files = files;
+	public ImportMessagesWorker(BackupManager bm, CustomListModel clm) {
 		this.bm = bm;
+		this.messagesToImport = new ArrayList<Smses>();
+		this.clm = clm;
+		this.log = Logger.getLogger("ImportMessagesWorker");
 	}
 	
 	@Override
-    public List<Smses> doInBackground() {
-		List<Smses> smsList = new ArrayList<Smses>();
+	protected Void doInBackground() throws Exception {
+		for (int i = 0; i<messagesToImport.size(); i++) {
+			Smses smses = messagesToImport.get(i);
+			bm.importMessages(smses);
+			Double progress = ((i+1.)/messagesToImport.size()*100);
+			System.out.println(progress);
+			setProgress(progress.intValue());
+			log.info("[Import] Imported " + smses.getCount() + " messages.");
 
-		for (int i = 0; i<files.length; i++) {
-			File curFile = files[i];
-			try{
-				Smses smses = mio.readFromXML(curFile);
-				smsList.add(smses);
-				publish(smses);
-				Double progress = ((i+1.)/files.length)*100;
-				//log.info("progress " + progress);
-				setProgress(progress.intValue());
-			} catch (JAXBException e) {
-				log.severe("JAXB Error loading file:" + e.toString());
-				raiseLater("Error loading file", "Could not load file '" + curFile.toString() + "'." + GuiUtils.BR + "Did you select a valid XML file?");
-			} catch (IllegalArgumentException e) {
-				log.severe("Error loading file:" + e.toString());
-				raiseLater("Error loading file", "Could not load file '" + curFile.toString() +"'.");
-			} catch (FaultyInputXMLException e) {
-				log.severe("Error loading file:" + e.toString());
-				raiseLater("Error loading file", "Could not load file '" + curFile.toString() +"'." + GuiUtils.BR + "No messages found in XML.");
+		}
+		return null;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		 if ("state".equals(event.getPropertyName())
+                 && SwingWorker.StateValue.DONE == event.getNewValue()) {
+			 SwingWorker<List<Smses>, Smses> worker = (SwingWorker<List<Smses>, Smses>) event.getSource();
+			 try {
+				this.messagesToImport = worker.get();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
 			}
-		}
-        //bm.importMessages(messagesToImport);
-        return smsList;
-    }
-
-	@Override
-	protected void process(List<Smses> smses) {
-		for (Smses messagesToImport: smses) {
-			log.info("[Read] Processed " + messagesToImport.getCount() +  " messages.");
-			//bm.importMessages(messagesToImport);
-		}
-	}
-
-	private void raiseLater(final String title, final String msg) {
-		SwingUtilities.invokeLater(new Runnable(){
-		    @Override
-		    public void run(){
-		        GuiUtils.alertError(new JDesktopPane().getSelectedFrame(), title, msg);
-		    }
-		});
+			 this.execute();
+		 }
 	}
 	
-    @Override
-    protected void done() {
-        try { 
-            List<Smses> smses = get();
-            for (Smses messagesToImport: smses) {
-    			log.info("[Import] Processed " + messagesToImport.getCount() +  " messages.");
-    			bm.importMessages(messagesToImport);
-    		}
-        } catch (Exception ignore) {
-        }
-    }
+	@Override
+	public void done() {
+		log.info("[Import] Done.");
+		
+		// populate list
+		clm.addElements(bm.getContacts());
+	}
+
 }

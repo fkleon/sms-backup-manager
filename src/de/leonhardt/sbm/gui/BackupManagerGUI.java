@@ -143,7 +143,8 @@ public class BackupManagerGUI {
 		// FILE CHOOSER
 		fileChooserLoad = new JFileChooser();
 		fileChooserLoad.setMultiSelectionEnabled(true);
-		
+		fileChooserLoad.setFileFilter(new FileNameExtensionFilter("XML file", "xml"));
+
 		fileChooserSave = new JFileChooser();
 		fileChooserSave.setMultiSelectionEnabled(false);
 		fileChooserSave.setFileFilter(new FileNameExtensionFilter("XML file", "xml"));
@@ -361,11 +362,18 @@ public class BackupManagerGUI {
 			
 			statusBar.setIcon(load_anim);
 			statusBar.setText("Importing messages..");
+			
+			CustomListModel dlm = new CustomListModel();
+			listConversations.setModel(dlm);
 			//JDialog loading = new LoadingDialog(frmBackupManager, load_anim, "Importing messages..");
 			//SwingWorkerCompletionWaiter swcw = new SwingWorkerCompletionWaiter(loading);
-			SwingWorker importWorker = new ImportMessagesWorker(bm, mio, selection);
+			SwingWorker loadWorker = new ReadXMLWorker(mio, selection);
+			SwingWorker importWorker = new ImportMessagesWorker(bm, dlm);
+			loadWorker.addPropertyChangeListener((PropertyChangeListener)statusBar);
+			//loadWorker.addPropertyChangeListener(new SwingWorkerCompletionWaiter(bm, dlm));
 			importWorker.addPropertyChangeListener((PropertyChangeListener)statusBar);
-			importWorker.execute();
+			loadWorker.addPropertyChangeListener((PropertyChangeListener)importWorker);
+			loadWorker.execute();
 			//loading.setVisible(true);
 
 			/*
@@ -390,6 +398,8 @@ public class BackupManagerGUI {
 				bm.importMessages(smses);
 			}
 			*/
+			
+			/*
 			// populate contact list
 			CustomListModel dlm = new CustomListModel();
 			listConversations.setModel(dlm);
@@ -398,6 +408,7 @@ public class BackupManagerGUI {
 			for (Contact c: bm.getContacts()) {
 				dlm.addElement(c);
 			}
+			*/
 		}
 	}
 	
