@@ -15,7 +15,7 @@ import de.leonhardt.sbm.gui.model.Settings;
 import de.leonhardt.sbm.gui.resource.FlagLoader;
 
 /**
- * The Presentation Model of the Settings Dialog
+ * The Presentation Model of the Settings Dialog.
  * 
  * @author Frederik Leonhardt
  *

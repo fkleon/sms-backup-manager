@@ -28,7 +28,7 @@ import de.leonhardt.sbm.gui.pm.SettingsPM;
 import de.leonhardt.sbm.gui.resource.IconLoader;
 
 /**
- * The SettingsDialog is a {@link View} on a {@link de.leonhardt.sbm.gui.pm.SettingsPM}.
+ * The SettingsDialogView is a {@link View} on a {@link de.leonhardt.sbm.gui.pm.SettingsPM}.
  *
  * @created by the Beanfabrics Component Wizard, www.beanfabrics.org 
  */

@@ -34,6 +34,8 @@ public class ReadXMLWorker extends SwingWorker<List<Smses>, Smses> {
 	
 	@Override
     public List<Smses> doInBackground() {
+		setText("Reading XML files..");
+		
 		List<Smses> smsList = new ArrayList<Smses>();
 
 		// try to read each file
@@ -46,7 +48,7 @@ public class ReadXMLWorker extends SwingWorker<List<Smses>, Smses> {
 				// update progress
 				Double progress = ((i+1.)/files.length)*100;
 				setProgress(progress.intValue());
-				
+				setText("Reading XML files.. " + progress + "% - '" + curFile.getPath() + "'");
 				// log status
 				log.info("[Load] Read " + smses.getCount() +  " messages.");
 			// raise any exceptions later as alert dialog in the EDT thread
@@ -101,6 +103,15 @@ public class ReadXMLWorker extends SwingWorker<List<Smses>, Smses> {
     @Override
     protected void done() {
 		log.info("[Load] Done.");
+		setText("Done!");
+    }
+    
+    /**
+     * Fires a property change (text)
+     * @param text
+     */
+    private void setText(String text) {
+		firePropertyChange("text", null, text);
     }
     
 }

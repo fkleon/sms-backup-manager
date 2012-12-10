@@ -28,11 +28,13 @@ import de.leonhardt.sbm.gui.handler.CustomLogHandler;
 import de.leonhardt.sbm.gui.model.Settings;
 import de.leonhardt.sbm.gui.pm.SettingsPM;
 import de.leonhardt.sbm.gui.pm.SettingsService;
+import de.leonhardt.sbm.gui.pm.StatusBarPM;
 import de.leonhardt.sbm.gui.renderer.ContactListCellRenderer;
 import de.leonhardt.sbm.gui.renderer.CustomListModel;
 import de.leonhardt.sbm.gui.renderer.MessageListCellRenderer;
 import de.leonhardt.sbm.gui.resource.IconLoader;
 import de.leonhardt.sbm.gui.view.SettingsDialogView;
+import de.leonhardt.sbm.gui.view.StatusBarView;
 import de.leonhardt.sbm.xml.model.Contact;
 import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
@@ -73,7 +75,7 @@ public class BackupManagerGUI {
 	private JFileChooser fileChooserSave;
 	private JTextPane logPane;
 	private JTextPane messagePane;
-	private StatusBar statusBar;
+	private StatusBarPM statusBarModel;
 	
 	/**
 	 * Launch the application.
@@ -297,11 +299,17 @@ public class BackupManagerGUI {
 		/*
 		 * Status bar
 		 */
-		statusBar = new StatusBar();
+		//statusBar = new StatusBar();
+		statusBarModel = new StatusBarPM();
+		StatusBarView statusBarView = new StatusBarView();
+		statusBarView.setPresentationModel(statusBarModel);
+		
+        //spm.setSettings(Settings.getInstance());
+        //spm.getContext().addService(SettingsService.class, Settings.getInstance());
 		
 		// add main panel and status bar to main frame
 		frmBackupManager.add(mainPanel, BorderLayout.CENTER);
-		frmBackupManager.add(statusBar, BorderLayout.SOUTH);
+		frmBackupManager.add(statusBarView, BorderLayout.SOUTH);
 	}
 	
 	protected ListModel getDefaultListModel(String entry) {
@@ -360,55 +368,21 @@ public class BackupManagerGUI {
 			
 			ImageIcon load_anim = new IconLoader().getLoadingAnimation();
 			
-			statusBar.setIcon(load_anim);
-			statusBar.setText("Importing messages..");
+			statusBarModel.setLoadingIcon(load_anim);
+			//statusBarModel.setStatus("Importing messages..", load_anim, 0);
+//			statusBar.setText("Importing messages..");
 			
 			CustomListModel dlm = new CustomListModel();
 			listConversations.setModel(dlm);
-			//JDialog loading = new LoadingDialog(frmBackupManager, load_anim, "Importing messages..");
-			//SwingWorkerCompletionWaiter swcw = new SwingWorkerCompletionWaiter(loading);
+
 			SwingWorker loadWorker = new ReadXMLWorker(mio, selection);
 			SwingWorker importWorker = new ImportMessagesWorker(bm, dlm);
-			loadWorker.addPropertyChangeListener((PropertyChangeListener)statusBar);
-			//loadWorker.addPropertyChangeListener(new SwingWorkerCompletionWaiter(bm, dlm));
-			importWorker.addPropertyChangeListener((PropertyChangeListener)statusBar);
+			loadWorker.addPropertyChangeListener((PropertyChangeListener)statusBarModel);
+			importWorker.addPropertyChangeListener((PropertyChangeListener)statusBarModel);
 			loadWorker.addPropertyChangeListener((PropertyChangeListener)importWorker);
+			
+			// start work
 			loadWorker.execute();
-			//loading.setVisible(true);
-
-			/*
-			for (File f: selection) {
-				try {
-					Smses smses = mio.readFromXML(f);
-					smsList.add(smses);
-				} catch (JAXBException e) {
-					log.severe("JAXB Error loading file:" + e.toString());
-					GuiUtils.alertError(frmBackupManager,"Error loading file", "Could not load file '" + f.toString() + "'." + GuiUtils.BR + "Did you select a valid XML file?");
-				} catch (IllegalArgumentException e) {
-					log.severe("Error loading file:" + e.toString());
-					GuiUtils.alertError(frmBackupManager,"Error loading file", "Could not load file '" + f.toString() +"'.");
-				} catch (FaultyInputXMLException e) {
-					log.severe("Error loading file:" + e.toString());
-					GuiUtils.alertError(frmBackupManager,"Error loading file", "Could not load file '" + f.toString() +"'." + GuiUtils.BR + "No messages found in XML.");
-				}
-			}
-			
-			// import all messages
-			for (Smses smses: smsList) {
-				bm.importMessages(smses);
-			}
-			*/
-			
-			/*
-			// populate contact list
-			CustomListModel dlm = new CustomListModel();
-			listConversations.setModel(dlm);
-			//dlm.ensureCapacity(bm.getContacts().size()); 
-
-			for (Contact c: bm.getContacts()) {
-				dlm.addElement(c);
-			}
-			*/
 		}
 	}
 	

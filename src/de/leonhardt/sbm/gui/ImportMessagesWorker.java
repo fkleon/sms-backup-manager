@@ -35,14 +35,18 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 	
 	@Override
 	protected Void doInBackground() throws Exception {
+		setText("Importing messages..");
 		for (int i = 0; i<messagesToImport.size(); i++) {
 			Smses smses = messagesToImport.get(i);
 			bm.importMessages(smses);
+			
+			// update progress
 			Double progress = ((i+1.)/messagesToImport.size()*100);
-			System.out.println(progress);
 			setProgress(progress.intValue());
-			log.info("[Import] Imported " + smses.getCount() + " messages.");
+			setText("Importing messages.. " + progress + "%");
 
+			// log status
+			log.info("[Import] Imported " + smses.getCount() + " messages.");
 		}
 		return null;
 	}
@@ -69,6 +73,16 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 		
 		// populate list
 		clm.addElements(bm.getContacts());
+		
+		setText("Done! [Imported " + bm.getMS().size()+" messages.]");
 	}
+	
+    /**
+     * Fires a property change (text)
+     * @param text
+     */
+    private void setText(String text) {
+		firePropertyChange("text", null, text);
+    }
 
 }
