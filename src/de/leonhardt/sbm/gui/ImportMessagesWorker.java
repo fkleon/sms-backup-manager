@@ -25,6 +25,7 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 	private BackupManager bm;
 	private List<Smses> messagesToImport;
 	private CustomListModel clm;
+	private int totalCount;
 	
 	public ImportMessagesWorker(BackupManager bm, CustomListModel clm) {
 		this.bm = bm;
@@ -35,6 +36,8 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 	
 	@Override
 	protected Void doInBackground() throws Exception {
+		this.totalCount = 0;
+		
 		setText("Importing messages..");
 		for (int i = 0; i<messagesToImport.size(); i++) {
 			Smses smses = messagesToImport.get(i);
@@ -47,6 +50,7 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 
 			// log status
 			log.info("[Import] Imported " + smses.getCount() + " messages.");
+			this.totalCount += smses.getCount();
 		}
 		return null;
 	}
@@ -74,7 +78,7 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 		// populate list
 		clm.addElements(bm.getContacts());
 		
-		setText("Done! [Imported " + bm.getMS().size()+" messages.]");
+		setText("Done! [Imported " + totalCount + " messages.]");
 	}
 	
     /**
