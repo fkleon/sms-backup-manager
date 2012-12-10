@@ -26,17 +26,19 @@ import de.leonhardt.sbm.BackupManager;
 import de.leonhardt.sbm.MessageIO;
 import de.leonhardt.sbm.gui.handler.CustomLogHandler;
 import de.leonhardt.sbm.gui.model.Settings;
-import de.leonhardt.sbm.gui.pm.FlagService;
 import de.leonhardt.sbm.gui.pm.SettingsPM;
-import de.leonhardt.sbm.gui.pm.SettingsService;
 import de.leonhardt.sbm.gui.pm.StatusBarPM;
 import de.leonhardt.sbm.gui.renderer.ContactListCellRenderer;
 import de.leonhardt.sbm.gui.renderer.CustomListModel;
 import de.leonhardt.sbm.gui.renderer.MessageListCellRenderer;
 import de.leonhardt.sbm.gui.resource.FlagLoader;
 import de.leonhardt.sbm.gui.resource.IconLoader;
+import de.leonhardt.sbm.gui.service.FlagService;
+import de.leonhardt.sbm.gui.service.SettingsService;
 import de.leonhardt.sbm.gui.view.SettingsDialogView;
 import de.leonhardt.sbm.gui.view.StatusBarView;
+import de.leonhardt.sbm.gui.worker.ImportMessagesWorker;
+import de.leonhardt.sbm.gui.worker.ReadXMLWorker;
 import de.leonhardt.sbm.xml.model.Contact;
 import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
@@ -63,14 +65,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class BackupManagerGUI {
 
 	private Logger log = Logger.getLogger("BackupManagerGUI");
-	private static String VERSION_INFO = "v0.7 (2012-12-08)";
+	private static String VERSION_INFO = "v0.8 (2012-12-11)";
 	
 	private BackupManager bm;
 	private MessageIO mio;
 		
 	private JFrame frmBackupManager;
 	private JDialog dlgSettings;
-	private JDialog dlgDuplicates;
 	private JList listConversations;
 	private JList listMessages;
 	private JFileChooser fileChooserLoad;
@@ -163,14 +164,14 @@ public class BackupManagerGUI {
 		SettingsPM spm = new SettingsPM();
 		SettingsDialogView sdv = new SettingsDialogView(frmBackupManager);
 		sdv.setPresentationModel(spm);
-        spm.setSettings(Settings.getInstance());
-        spm.getContext().addService(SettingsService.class, Settings.getInstance());
         spm.getContext().addService(FlagService.class, new FlagLoader());
+        spm.getContext().addService(SettingsService.class, Settings.getInstance());
+        //spm.setSettings(Settings.getInstance());
         
 		dlgSettings = sdv;
 		//dlgSettings = new SettingsDialog(frmBackupManager, true, set);
 		// DUPLICATE DIALOG
-		dlgDuplicates = new DuplicateDialog();
+		//dlgDuplicates = new DuplicateDialog();
 		
 		// MENU BAR and MENUS
 		JMenuBar menuBar = new JMenuBar();

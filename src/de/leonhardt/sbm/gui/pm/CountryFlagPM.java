@@ -1,5 +1,7 @@
 package de.leonhardt.sbm.gui.pm;
 
+import java.util.logging.Logger;
+
 import org.beanfabrics.model.AbstractPM;
 import org.beanfabrics.model.IconPM;
 import org.beanfabrics.model.PMManager;
@@ -7,6 +9,8 @@ import org.beanfabrics.model.TextPM;
 import org.beanfabrics.support.OnChange;
 import org.beanfabrics.support.Service;
 import org.beanfabrics.support.Validation;
+
+import de.leonhardt.sbm.gui.service.FlagService;
 
 /**
  * The Presentation Model for a countryCode and the associated flag icon.
@@ -70,6 +74,8 @@ public class CountryFlagPM extends AbstractPM {
 		this.countryCode.setText(cText);
 		if (flagService != null) {
 			this.countryFlagIcon.setIcon(flagService.getFlag(countryCode.getText()));
+		} else {
+			Logger.getAnonymousLogger().fine("No FlagService configured.");
 		}
 	}
 	
@@ -84,7 +90,7 @@ public class CountryFlagPM extends AbstractPM {
 		if (countryCode != null) {
 			return cutToLength(countryCode.toUpperCase(),2);
 		} else {
-			return "DE"; // some default
+			return ""; // some default
 		}
 	}
 	

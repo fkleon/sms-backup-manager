@@ -14,6 +14,13 @@ import org.beanfabrics.model.TextPM;
 
 /**
  * The Presentation Model of the Status Bar.
+ * It is read-only to the user/view.
+ * 
+ * This model can be atached to objects as a PropertyChangeListener.
+ * It will listen to changes regarding:
+ * - "progress": to update progress bar (expect int from 0-100)
+ * - "text": to update status text (expect any object)
+ * - "state": to update status icon (expect SwingWorker.Statevalue)
  * 
  * @author Frederik Leonhardt
  *
@@ -73,7 +80,7 @@ public class StatusBarPM extends AbstractPM implements PropertyChangeListener {
 		
 		// automatically capture text information
 		if ("text".equals(evt.getPropertyName())) {
-            this.status.setText((String)evt.getNewValue());
+            this.status.setText(evt.getNewValue().toString());
         }
 	}
 }

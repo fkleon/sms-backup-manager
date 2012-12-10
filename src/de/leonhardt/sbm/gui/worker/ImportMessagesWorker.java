@@ -1,4 +1,4 @@
-package de.leonhardt.sbm.gui;
+package de.leonhardt.sbm.gui.worker;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

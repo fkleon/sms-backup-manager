@@ -11,6 +11,7 @@ import org.beanfabrics.support.Service;
 import org.beanfabrics.support.Validation;
 
 import de.leonhardt.sbm.gui.model.Settings;
+import de.leonhardt.sbm.gui.service.SettingsService;
 
 /**
  * The Presentation Model of the Settings Dialog.
@@ -55,6 +56,9 @@ public class SettingsPM extends AbstractPM {
 	@Service
 	public void setController(SettingsService controller) {
 		this.controller = controller;
+		
+		// load data and revalidate
+		this.reset();
 		this.revalidateProperties();
 	}
 	
@@ -80,10 +84,12 @@ public class SettingsPM extends AbstractPM {
 		return (countryFlag.isValid() && this.isValid() && controller != null);
 	}
 	
-	@Operation
-	public void cancel() {
+	@Operation(path="cancel")
+	public void reset() {
 		// reset settings
-		setSettings(controller.getSettings());
+		if(controller != null) {
+			setSettings(controller.getSettings());
+		}
 	}
 	
 	/**

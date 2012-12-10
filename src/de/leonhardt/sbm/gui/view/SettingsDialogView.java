@@ -74,8 +74,8 @@ public class SettingsDialogView extends JDialog implements View<SettingsPM> {
 		JPanel sLocalePanel = new JPanel();
 		
 		// text fields for locale
-		BnTextField sLocaleTextLanguage = new BnTextField(localModelProvider, new Path("this.languageCode"));//new JTextField(languageDoc, settings.getLanguageCode(), 2);
-		BnTextField sLocaleTextCountry = new BnTextField(localModelProvider, new Path("this.countryFlag.countryCode"));//JTextField(countryDoc, settings.getCountryCode(), 2);
+		BnTextField sLocaleTextLanguage = new BnTextField(localModelProvider, new Path("this.languageCode"));
+		BnTextField sLocaleTextCountry = new BnTextField(localModelProvider, new Path("this.countryFlag.countryCode"));
 		// flag icon for locale
 		BnIconLabel sFlagLabel = new BnIconLabel(localModelProvider, new Path("this.countryFlag.countryFlagIcon"));
 		

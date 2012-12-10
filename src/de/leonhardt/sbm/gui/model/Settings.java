@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import de.leonhardt.sbm.gui.pm.SettingsService;
+import de.leonhardt.sbm.gui.service.SettingsService;
 
 /**
  * Application-wide program settings.

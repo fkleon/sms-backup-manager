@@ -1,4 +1,4 @@
-package de.leonhardt.sbm.gui;
+package de.leonhardt.sbm.gui.worker;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,6 +12,7 @@ import javax.xml.bind.JAXBException;
 
 import de.leonhardt.sbm.MessageIO;
 import de.leonhardt.sbm.exception.FaultyInputXMLException;
+import de.leonhardt.sbm.gui.GuiUtils;
 import de.leonhardt.sbm.xml.model.Smses;
 
 /**

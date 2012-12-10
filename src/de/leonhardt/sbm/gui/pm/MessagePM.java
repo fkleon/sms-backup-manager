@@ -11,7 +11,8 @@ import org.beanfabrics.model.TextPM;
 import de.leonhardt.sbm.xml.model.Sms;
 
 /**
- * PresenterModel of a message.
+ * Presentation Model of a message.
+ * Read-only.
  * 
  * @author Frederik Leonhardt
  *

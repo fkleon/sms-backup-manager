@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import de.leonhardt.sbm.gui.pm.FlagService;
+import de.leonhardt.sbm.gui.service.FlagService;
 
 /**
  * This class is responsible for loading the flag icons

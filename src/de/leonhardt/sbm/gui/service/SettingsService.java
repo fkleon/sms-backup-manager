@@ -1,4 +1,4 @@
-package de.leonhardt.sbm.gui.pm;
+package de.leonhardt.sbm.gui.service;
 
 import de.leonhardt.sbm.gui.model.Settings;
 

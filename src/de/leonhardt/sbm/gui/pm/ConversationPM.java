@@ -7,11 +7,12 @@ import org.beanfabrics.model.PMManager;
 import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
 
-public class ConversationsPM extends AbstractPM {
+// TODO
+public class ConversationPM extends AbstractPM {
 
 	public ListPM<MessagePM> messages = new ListPM<MessagePM>();
 	
-	public ConversationsPM(Smses smses) {
+	public ConversationPM(Smses smses) {
 		PMManager.setup(this);
 		
 		init(smses);
