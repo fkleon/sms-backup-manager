@@ -16,10 +16,15 @@ Dependencies:
 ### Version History
 
 #### v0.8 (upcoming)
+- [GUI] Added visible duplicate count in message header
+- [GUI] Additional export settings (export duplicates, export international numbers)
 - [GUI] Added status bar
 - [GUI] Threaded execution (non-blocking import, etc.)
 - [GUI] Adapted GUI to presentation model (PM) pattern using [beanfabrics][beanfabrics]
 - [GEN] Fixed occasional message sorting problems
+- [GEN] Improved duplication handling
+- [GEN] New internal data structures to make support for multiple file formats possible
+- [GEN] More test cases and fixtures
 
 #### v0.7 (Dec 8, 2012)
 - [GUI] Possibility to change locale
