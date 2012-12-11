@@ -1,23 +1,30 @@
 package de.leonhardt.sbm.gui.renderer;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.text.DateFormat;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.border.BevelBorder;
 
 import org.apache.commons.lang3.text.WordUtils;
 
 import de.leonhardt.sbm.gui.GuiUtils;
 import de.leonhardt.sbm.gui.resource.IconLoader;
+import de.leonhardt.sbm.model.Message;
+import de.leonhardt.sbm.model.MessageConsts.Status;
+import de.leonhardt.sbm.model.MessageConsts.Type;
 import de.leonhardt.sbm.xml.model.Sms;
 
 /**
@@ -56,11 +63,10 @@ public class MessageListCellRenderer extends DefaultListCellRenderer {
 			int cellIndex, boolean isSelected, boolean cellHasFocus) {
 		
 		// since there is no generic support in Java 6 ListModels yet, check if we actually get a sms
-		if (value instanceof Sms) {
-			Sms sms = (Sms) value;
+		if (value instanceof Message) {
+			Message message = (Message) value;
 			
-			Date smsDate = new Date(sms.getDate());
-			Component cComp = getMessageListEntryComponent(sms.getType(), smsDate, sms.getSubject(), sms.getBody(), sms.getStatus());
+			Component cComp = getMessageListEntryComponent(message.getType(), message.getDate(), message.getSubject(), message.getBody(), message.getStatus(), message.getNumDuplicates());
 	
 		    // set colors
 			cComp.setForeground (isSelected ? jlist.getSelectionForeground() : jlist.getForeground());
@@ -87,7 +93,7 @@ public class MessageListCellRenderer extends DefaultListCellRenderer {
 	 * @param countryCode
 	 * @param contactAddress
 	 */
-	private Component getMessageListEntryComponent(int messageType, Date messageDate, String messageSubject, String messageBody, int messageStatus) {
+	private Component getMessageListEntryComponent(Type messageType, Date messageDate, String messageSubject, String messageBody, Status messageStatus, int dupes) {
 		// the main panel
 		JPanel mPanel = new JPanel(new GridLayout(0, 1));
 		
@@ -108,6 +114,15 @@ public class MessageListCellRenderer extends DefaultListCellRenderer {
 		mHeaderPanel.add(mDateLabel);
 		mHeaderPanel.add(mStatusLabel);
 		
+		// duplicate count
+		if (dupes > 0) {
+			JLabel mDupeLabel = new JLabel(String.format("(+%d duplicate%s)",dupes, dupes>1?"s":""), RIGHT);
+			Font oldFont = mDupeLabel.getFont();
+			int oldFontSize = mDupeLabel.getFont().getSize();
+			mDupeLabel.setFont(oldFont.deriveFont(oldFontSize-3f));
+			mHeaderPanel.add(mDupeLabel);
+		}
+		
 		// subject
 		//JLabel mSubjectLabel = new JLabel(messageSubject, RIGHT);
 		
@@ -123,6 +138,10 @@ public class MessageListCellRenderer extends DefaultListCellRenderer {
 		// assemble..
 		mPanel.add(mHeaderPanel);
 		mPanel.add(mBodyTextArea);
+		
+//		JPanel aPanel = new JPanel(new BorderLayout());
+//		aPanel.add(mPanel, BorderLayout.CENTER);
+//		aPanel.setBorder(BorderFactory.createEtchedBorder());
 		
 		return mPanel;
 	}

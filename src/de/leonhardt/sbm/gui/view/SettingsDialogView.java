@@ -60,12 +60,20 @@ public class SettingsDialogView extends JDialog implements View<SettingsPM> {
 		
 
 		/*
-		 * Export settings
+		 * Contact Export settings
 		 */
-		JPanel sCheckExport = new JPanel(new GridLayout());
+		JPanel sCheckExport = new JPanel(new GridLayout(0,1));
 		BnCheckBox sExportIntl = new BnCheckBox(localModelProvider, new Path("this.exportIntl"));
 		sExportIntl.setText("Export numbers in international format");
 		sCheckExport.add(sExportIntl);
+
+		/*
+		 * Message Export settings
+		 */
+		JPanel sCheckDupes = new JPanel(new GridLayout(0,1));
+		BnCheckBox sExportDupes = new BnCheckBox(localModelProvider, new Path("this.exportDupes"));
+		sExportDupes.setText("Export duplicate messages");
+		sCheckDupes.add(sExportDupes);
 		
 		/*
 		 * Locale input and status fields
@@ -124,6 +132,10 @@ public class SettingsDialogView extends JDialog implements View<SettingsPM> {
 		sPanel.add(new JSeparator());
 		sPanel.add(buildHeaderLabel("Contacts", "settings-contacts.png"));
 		sPanel.add(sCheckExport);
+		
+		sPanel.add(new JSeparator());
+		sPanel.add(buildHeaderLabel("Messages", "settings-messages.png"));
+		sPanel.add(sCheckDupes);
 		
 		pack(); // two pack()'s, explained above
 		sPanel.add(new JSeparator());

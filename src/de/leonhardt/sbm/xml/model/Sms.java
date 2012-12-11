@@ -4,8 +4,6 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2012.12.03 at 04:44:41 PM MEZ 
 //
-
-
 package de.leonhardt.sbm.xml.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,7 +11,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -21,6 +18,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import de.leonhardt.sbm.xml.NullLongAdapter;
 
 /**
+ * <p>Sms from SMS backup & Restore</p>
+ * 
  * <p>Java class for anonymous complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
@@ -55,18 +54,6 @@ import de.leonhardt.sbm.xml.NullLongAdapter;
 @XmlType(name = "")
 @XmlRootElement(name = "sms")
 public class Sms {
-
-	/**
-	 * Internal id of message, not part of XML
-	 */
-	@XmlTransient
-	protected long id;
-	
-	/**
-	 * The contact associated to this message
-	 */
-	@XmlTransient
-	protected Contact contact;
 	
 	/**
 	 * The phone number of the sender/recipient.
@@ -531,26 +518,10 @@ public class Sms {
         this.type = value;
     }
     
-    public long getId() {
-    	return this.id;
-    }
-    
-    public void setId(long id) {
-    	this.id = id;
-    }
-    
-//    public Contact getContact() {
-//    	return this.contact;
-//    }
-//    
-//    public void setContact(Contact contact) {
-//    	this.contact = contact;
-//    }
-    
 
 	@Override
 	public String toString() {
-		return "Sms [id=" + id + ", address=" + address + ", body=" + body + ", contactName="
+		return "Sms [address=" + address + ", body=" + body + ", contactName="
 				+ contactName + ", date=" + date + ", dateSent=" + dateSent
 				+ ", locked=" + locked + ", protocol=" + protocol + ", read="
 				+ read + ", readableDate=" + readableDate + ", scToa=" + scToa

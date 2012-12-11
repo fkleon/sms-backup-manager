@@ -1,37 +1,30 @@
 package de.leonhardt.sbm;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
-
-import de.leonhardt.sbm.gui.renderer.ContactListCellRenderer;
-import de.leonhardt.sbm.store.ContactStore;
+import de.leonhardt.sbm.convert.SmsesConvert;
+import de.leonhardt.sbm.gui.service.MessageService;
+import de.leonhardt.sbm.model.Contact;
+import de.leonhardt.sbm.model.Message;
 import de.leonhardt.sbm.store.MessageStore;
-import de.leonhardt.sbm.store.ObjectStore;
+import de.leonhardt.sbm.store.SortedMessageStore;
 import de.leonhardt.sbm.util.Utils;
 import de.leonhardt.sbm.util.Utils.IdGenerator;
 import de.leonhardt.sbm.util.comparator.ContactNameComparator;
-import de.leonhardt.sbm.util.comparator.MessageDateComparator;
-import de.leonhardt.sbm.xml.model.Contact;
 import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
 
-public class BackupManager {
+public class BackupManager implements MessageService {
 
 	private Logger log;
 	private PhoneNumberParser pnp;
-	private MessageStore ms;
-	//private ContactStore cs;
 	private Map<Contact,MessageStore> conversations;
-	private IdGenerator idGen;
+	private SmsesConvert messageConverter;
 	
 	private String countryCode;
 	private String languageCode;
@@ -78,10 +71,9 @@ public class BackupManager {
 	 * Initializes MessageStore, ContactStore and Logger
 	 */
 	private void init() {
-		this.idGen = Utils.getDefaultIdGenerator();
-		this.ms = new MessageStore(idGen);
-		//this.cs = new ContactStore(idGen);
+		//this.idGen = Utils.getDefaultIdGenerator();
 		this.conversations = Collections.synchronizedMap(new HashMap<Contact, MessageStore>());
+		this.messageConverter = SmsesConvert.getInstance();
 		
 		this.log = Logger.getLogger("BackupManager");
 	}
@@ -96,30 +88,33 @@ public class BackupManager {
 			log.warning("Can not import null object.");
 			return;
 		}
-
-		// while importing, assign IDs and build Contacts
-		for (Sms message: smses.getSms()) {
-			// add message
-			ms.addObject(message);
 		
-			// add contact
-			Contact contact = getNormalizedContact(message);
+		// while importing, assign IDs and build Contacts
+		for (Sms sms: smses.getSms()) {
+			// add contact and message
+			Contact contact = getNormalizedContact(sms);
 			
-			putMessage(contact, message);
+			try {
+				Message msg = messageConverter.toMessage(sms, contact);
+				putMessage(contact, msg);
+			} catch (Exception e) {
+				log.warning("Could not convert SMS to Message: " + e.toString());
+			}
 		}
+		
+		log.info(String.format("Imported %d messages (+%d duplicates)",getMessages().size(),getMessages().countDuplicates()));
 	}
 	
-	private void putMessage(Contact contact, Sms message) {
+	private void putMessage(Contact contact, Message message) {
 		MessageStore ms;
 		if ((ms = conversations.get(contact)) != null) {
 			ms.add(message);
 		} else {
-			ms = new MessageStore(this.idGen);
+			ms = new MessageStore();
 			ms.add(message);
 			conversations.put(contact, ms);
 		}
 	}
-	
 	
 	private Contact getNormalizedContact(Sms message) {
 		return getNormalizedContact(message.getContactName(), message.getAddress());
@@ -131,10 +126,6 @@ public class BackupManager {
 		String countryCode = pnp.getCountryCode(address);
 		Contact contact = new Contact(contactName, addressIntl, countryCode);
 		return contact;
-	}
-	
-	public MessageStore getMS() {
-		return this.ms;
 	}
 	
 	protected Map<Contact, MessageStore> getCS() {
@@ -160,26 +151,34 @@ public class BackupManager {
 	 * @param c
 	 * @return
 	 */
-	public Collection<Sms> getMessages(Contact c) {
-		List<Sms> messages = new ArrayList<Sms>();
+	public MessageStore getMessages(Contact c) {
+		SortedMessageStore sms = new SortedMessageStore();
 		
 		if (this.conversations.containsKey(c)) {
-			messages.addAll(this.conversations.get(c));
-			
-			// messages in a MessageStore are assumed to be sorted ascending,
-			// so we just revert the list
-			//Collections.reverse(messages);
-			Collections.sort(messages, new MessageDateComparator(true));
-			
-			return messages;
-		} else {
-			return messages;
+			sms.addAll(conversations.get(c));
 		}
+		
+		return sms;
 	}
 
 	@Override
 	public String toString() {
 		return "BackupManager [countryCode="+ countryCode + ", locale=" + languageCode + "-" + regionCode
-				+ ", messages = " + ms.size() + ", contacts = " + conversations.keySet().size() + "]";
+				+ ", messages = " + getMessages().size() + ", contacts = " + conversations.keySet().size() + "]";
+	}
+
+	@Override
+	public MessageStore getMessages() {
+		SortedMessageStore allMessages = new SortedMessageStore();
+		
+		for (MessageStore ms: getCS().values()) {
+			allMessages.addAll(ms);
+		}
+
+		return allMessages;
+	}
+	
+	public void clear() {
+		conversations.clear();
 	}
 }

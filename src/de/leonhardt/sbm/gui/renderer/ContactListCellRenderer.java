@@ -12,7 +12,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 
 import de.leonhardt.sbm.gui.resource.FlagLoader;
-import de.leonhardt.sbm.xml.model.Contact;
+import de.leonhardt.sbm.model.Contact;
 
 /**
  * A renderer for ListModels containing Contacts.

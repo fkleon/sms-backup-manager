@@ -23,7 +23,8 @@ import javax.swing.JTextPane;
 import javax.xml.bind.JAXBException;
 
 import de.leonhardt.sbm.BackupManager;
-import de.leonhardt.sbm.MessageIO;
+import de.leonhardt.sbm.SmsesIO;
+import de.leonhardt.sbm.convert.SmsesConvert;
 import de.leonhardt.sbm.gui.handler.CustomLogHandler;
 import de.leonhardt.sbm.gui.model.Settings;
 import de.leonhardt.sbm.gui.pm.SettingsPM;
@@ -39,7 +40,8 @@ import de.leonhardt.sbm.gui.view.SettingsDialogView;
 import de.leonhardt.sbm.gui.view.StatusBarView;
 import de.leonhardt.sbm.gui.worker.ImportMessagesWorker;
 import de.leonhardt.sbm.gui.worker.ReadXMLWorker;
-import de.leonhardt.sbm.xml.model.Contact;
+import de.leonhardt.sbm.model.Contact;
+import de.leonhardt.sbm.model.Message;
 import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
 
@@ -68,7 +70,7 @@ public class BackupManagerGUI {
 	private static String VERSION_INFO = "v0.8 (2012-12-11)";
 	
 	private BackupManager bm;
-	private MessageIO mio;
+	private SmsesIO mio;
 		
 	private JFrame frmBackupManager;
 	private JDialog dlgSettings;
@@ -137,7 +139,7 @@ public class BackupManagerGUI {
 		
 		// init business logic
 		this.bm = new BackupManager(set.getCountryCode(), set.getLanguageCode(), set.getRegionCode());
-		this.mio = new MessageIO(true);
+		this.mio = new SmsesIO(true);
 	}
 
 	
@@ -444,12 +446,14 @@ public class BackupManagerGUI {
 			}
 			
 			Smses smses = null;
+			SmsesConvert converter = SmsesConvert.getInstance();
+			boolean keepOrig = !Settings.getInstance().getExportInternationalNumbers();
+			boolean exportDupes = Settings.getInstance().isExportDupes();
 			
 			// determine which messages to export
 			if (!selectedOnly) {
 				// all messages
-				List<Sms> msList = new ArrayList<Sms>(bm.getMS());
-				smses = new Smses(msList);
+				smses = converter.convert(bm.getMessages(),keepOrig,exportDupes);
 			} else {
 				// get selected contact
 				// get selected index directly from list
@@ -466,7 +470,7 @@ public class BackupManagerGUI {
 				
 				if (o instanceof Contact) {
 					Contact c = (Contact) o;
-					smses = new Smses(new ArrayList<Sms>(bm.getMessages(c)));
+					smses = converter.convert(bm.getMessages(c),keepOrig,exportDupes);
 				} else {
 					GuiUtils.alertInfo(frmBackupManager,"Export", "No conversation selected.");
 					return;
@@ -475,7 +479,7 @@ public class BackupManagerGUI {
 		
 			// try exporting the stuff
 			try {
-				mio.writeToXML(smses, f);
+				mio.writeTo(smses, f);
 				//alertInfo("Export sucessfull", "Export successfull.");
 			} catch (IllegalArgumentException e1) {
 				log.severe("Error writing file:" + e1.toString());
@@ -542,7 +546,7 @@ public class BackupManagerGUI {
 			if (o instanceof Contact) {
 				// and load the messages
 				Contact c = (Contact) o;
-				Collection<Sms> messages = bm.getMessages(c);
+				Collection<Message> messages = bm.getMessages(c);
 				
 				log.info(messages.size() + " messages in conversation with '" + c.getContactName() + " <" + c.getAddressIntl() + ">'.");
 				

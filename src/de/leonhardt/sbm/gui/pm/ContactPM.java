@@ -5,7 +5,7 @@ import org.beanfabrics.model.IntegerPM;
 import org.beanfabrics.model.PMManager;
 import org.beanfabrics.model.TextPM;
 
-import de.leonhardt.sbm.xml.model.Contact;
+import de.leonhardt.sbm.model.Contact;
 
 /**
  * The Presentation Model of a Contact.

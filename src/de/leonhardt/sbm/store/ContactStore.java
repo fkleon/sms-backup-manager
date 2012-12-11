@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.logging.Logger;
 
 
+import de.leonhardt.sbm.model.Contact;
 import de.leonhardt.sbm.util.Utils.IdGenerator;
-import de.leonhardt.sbm.xml.model.Contact;
 
 public class ContactStore extends ObjectStore<Contact> {
 
@@ -16,7 +16,7 @@ public class ContactStore extends ObjectStore<Contact> {
 	 * @param idGen
 	 */
 	public ContactStore(IdGenerator idGen) {
-		super(idGen, new HashSet<Contact>());
+		super(new HashSet<Contact>());
 		this.log = Logger.getLogger("ContactStore");
 	}
 	
@@ -26,9 +26,9 @@ public class ContactStore extends ObjectStore<Contact> {
 	 * @param contact
 	 * @return reference to the original object (now with id)
 	 */
-	protected Contact assignId(Contact contact) {
-		contact.setId(idGen.getNextId());
-		return contact;
-	}
+//	protected Contact assignId(Contact contact) {
+//		contact.setId(idGen.getNextId());
+//		return contact;
+//	}
 
 }

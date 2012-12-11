@@ -25,6 +25,7 @@ public class Settings implements SettingsService {
 	private String regionCode;
 	
 	private boolean exportIntl;
+	private boolean exportDupes;
 		
 	private Settings() {
 		this.prefs = Preferences.userNodeForPackage(this.getClass());
@@ -58,6 +59,7 @@ public class Settings implements SettingsService {
 
 		// settings
 		prefs.putBoolean("exportInternational", this.exportIntl);
+		prefs.putBoolean("exportDuplicates", this.exportDupes);
 		
 		try {
 			prefs.flush();
@@ -78,6 +80,7 @@ public class Settings implements SettingsService {
 		this.regionCode = prefs.get("regionCode", curLocale.getVariant());
 		
 		this.exportIntl = prefs.getBoolean("exportInternational", false);
+		this.exportDupes = prefs.getBoolean("exportDuplicates", false);
 		
 		log.info("Loaded prefs: "+this);
 	}
@@ -138,6 +141,14 @@ public class Settings implements SettingsService {
 		return this.exportIntl;
 	}
 
+	public boolean isExportDupes() {
+		return exportDupes;
+	}
+
+	public void setExportDupes(boolean exportDupes) {
+		this.exportDupes = exportDupes;
+	}
+
 	/**
 	 * Returns the preference store
 	 * @return
@@ -173,10 +184,11 @@ public class Settings implements SettingsService {
 	 */
 	@Override
 	public void store(String countryCode, String languageCode,
-			boolean exportIntl) {
+			boolean exportIntl, boolean exportDupes) {
 		setCountryCode(countryCode);
 		setLanguageCode(languageCode);
 		setExportInternationalNumbers(exportIntl);
+		setExportDupes(exportDupes);
 		save();
 	}
 	

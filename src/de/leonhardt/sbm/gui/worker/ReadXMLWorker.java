@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.xml.bind.JAXBException;
 
-import de.leonhardt.sbm.MessageIO;
+import de.leonhardt.sbm.SmsesIO;
 import de.leonhardt.sbm.exception.FaultyInputXMLException;
 import de.leonhardt.sbm.gui.GuiUtils;
 import de.leonhardt.sbm.xml.model.Smses;
@@ -24,9 +24,9 @@ public class ReadXMLWorker extends SwingWorker<List<Smses>, Smses> {
 
 	private Logger log;
 	private File[] files;
-	private MessageIO mio;
+	private SmsesIO mio;
 	
-	public ReadXMLWorker(MessageIO mio, File[] files) {
+	public ReadXMLWorker(SmsesIO mio, File[] files) {
 		super();
 		this.log = Logger.getLogger(this.getClass().getSimpleName());
 		this.mio = mio;
@@ -43,7 +43,7 @@ public class ReadXMLWorker extends SwingWorker<List<Smses>, Smses> {
 		for (int i = 0; i<files.length; i++) {
 			File curFile = files[i];
 			try{
-				Smses smses = mio.readFromXML(curFile);
+				Smses smses = mio.readFrom(curFile);
 				smsList.add(smses);
 				//publish(smses);
 				// update progress
@@ -51,7 +51,7 @@ public class ReadXMLWorker extends SwingWorker<List<Smses>, Smses> {
 				setProgress(progress.intValue());
 				setText("Reading XML files.. " + progress + "% - '" + curFile.getPath() + "'");
 				// log status
-				log.info("[Load] Read " + smses.getCount() +  " messages.");
+				log.info("[Load] Read " + smses.getSms().size() +  " messages.");
 			// raise any exceptions later as alert dialog in the EDT thread
 			} catch (JAXBException e) {
 				log.severe("JAXB Error loading file:" + e.toString());
@@ -103,7 +103,7 @@ public class ReadXMLWorker extends SwingWorker<List<Smses>, Smses> {
 	
     @Override
     protected void done() {
-		log.info("[Load] Done.");
+		log.fine("[Load] Done.");
 		setText("Done!");
     }
     

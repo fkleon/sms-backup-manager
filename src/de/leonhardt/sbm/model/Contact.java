@@ -1,4 +1,4 @@
-package de.leonhardt.sbm.xml.model;
+package de.leonhardt.sbm.model;
 
 // TODO use contact format from Contact Backup
 public class Contact {
@@ -78,6 +78,11 @@ public class Contact {
 		return result;
 	}
 
+	/**
+	 * To determine equality, only use:
+	 * - (normalized) international address
+	 * - contact name
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

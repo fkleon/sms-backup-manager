@@ -23,7 +23,7 @@ import de.leonhardt.sbm.xml.model.Smses;
  * @author Frederik Leonhardt
  *
  */
-public class MessageIO {
+public class SmsesIO {
 
 	private final String XML_XSL_HEADER = "\n<?xml-stylesheet type=\"text/xsl\" href=\"sms.xsl\"?>";
 	private final String XML_SCHEMA = "schema/schema.xsd";
@@ -40,7 +40,7 @@ public class MessageIO {
 	 * @param includeXSL, if xsl-stylesheet header should be included in XML
 	 * @throws JAXBException, if JAXB can not be initialized
 	 */
-	public MessageIO(boolean includeXSL) throws JAXBException {
+	public SmsesIO(boolean includeXSL) throws JAXBException {
 		// do we include XSL header information?
 		this.includeXSL = includeXSL;
 		
@@ -72,7 +72,7 @@ public class MessageIO {
 	 * @throws FaultyInputXMLException, if file does not contain any messages
 	 * @throws JAXBException
 	 */
-	public Smses readFromXML(String filePath) throws IllegalArgumentException, FaultyInputXMLException, JAXBException {
+	public Smses readFrom(String filePath) throws IllegalArgumentException, FaultyInputXMLException, JAXBException {
 		// check file path
 		if (filePath == null) {
 			throw new IllegalArgumentException("File path can not be null!");
@@ -81,7 +81,7 @@ public class MessageIO {
 		// initialize File
 		File file = new File(filePath);
 		
-		return readFromXML(file);
+		return readFrom(file);
 	}
 	
 	/**
@@ -94,7 +94,7 @@ public class MessageIO {
 	 * @throws FaultyInputXMLException, if file does not contain any messages
 	 * @throws JAXBException
 	 */
-	public Smses readFromXML(File file) throws IllegalArgumentException, FaultyInputXMLException, JAXBException {
+	public Smses readFrom(File file) throws IllegalArgumentException, FaultyInputXMLException, JAXBException {
 		// check file
 		if (file == null) {
 			throw new IllegalArgumentException("File can not be null!");
@@ -140,7 +140,7 @@ public class MessageIO {
 	 * @throws IllegalArgumentException, if filePath is null
 	 * @throws JAXBException
 	 */
-	public void writeToXML(Smses smses, String filePath) throws IllegalArgumentException, JAXBException {
+	public void writeTo(Smses smses, String filePath) throws IllegalArgumentException, JAXBException {
 		// check file path
 		if (filePath == null) {
 			throw new IllegalArgumentException("File path can not be null!");
@@ -149,7 +149,7 @@ public class MessageIO {
 		// initialize File
 		File f = new File(filePath);
 
-		writeToXML(smses, f);
+		writeTo(smses, f);
 	}
 	
 	/**
@@ -160,7 +160,7 @@ public class MessageIO {
 	 * @throws IllegalArgumentException, if file is null
 	 * @throws JAXBException
 	 */
-	public void writeToXML(Smses smses, File file) throws IllegalArgumentException, JAXBException {
+	public void writeTo(Smses smses, File file) throws IllegalArgumentException, JAXBException {
 		// check file
 		if (file == null) {
 			throw new IllegalArgumentException("File can not be null!");

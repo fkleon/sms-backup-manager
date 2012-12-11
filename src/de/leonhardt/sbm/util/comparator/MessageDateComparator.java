@@ -2,26 +2,18 @@ package de.leonhardt.sbm.util.comparator;
 
 import java.util.Comparator;
 
-import de.leonhardt.sbm.xml.model.Sms;
+import de.leonhardt.sbm.model.Message;
 
-public class MessageDateComparator implements Comparator<Sms> {
-
-	private boolean desc;
-	
-	public MessageDateComparator() {
-		this.desc = false;
-	}
-	
-	public MessageDateComparator(boolean desc) {
-		this.desc = desc;
-	}
-	
+public class MessageDateComparator implements Comparator<Message> {
+		
 	@Override
-	public int compare(Sms o1, Sms o2) {
-		if (desc) {
-			return o2.getDate().compareTo(o1.getDate());
+	public int compare(Message o1, Message o2) {
+		int compDate = o2.getDate().compareTo(o1.getDate());
+		
+		if (compDate == 0 && !o1.equals(o2)) {
+			return new ContactNameComparator().compare(o1.getContact(), o2.getContact());
 		} else {
-			return o1.getDate().compareTo(o2.getDate());
+			return compDate;
 		}
 	}
 }

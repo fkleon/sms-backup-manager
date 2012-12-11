@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import de.leonhardt.sbm.util.Utils.IdGenerator;
 
 
-
 public abstract class ObjectStore<E> extends AbstractCollection<E> {
 
 	/**
@@ -25,7 +24,7 @@ public abstract class ObjectStore<E> extends AbstractCollection<E> {
 	/**
 	 * Application-wide ID Generator
 	 */
-	protected IdGenerator idGen;
+	//protected IdGenerator idGen;
 	
 	/**
 	 * Creates a new ObjectStore with given Id Generator.
@@ -34,8 +33,8 @@ public abstract class ObjectStore<E> extends AbstractCollection<E> {
 	 * 
 	 * @param idGen
 	 */
-	public ObjectStore(IdGenerator idGen) {
-		this.idGen = idGen;
+	public ObjectStore() {
+//		this.idGen = idGen;
 		this.col = new ArrayList<E>();
 		this.log = Logger.getLogger("ObjectStore");
 	}
@@ -46,8 +45,8 @@ public abstract class ObjectStore<E> extends AbstractCollection<E> {
 	 * 
 	 * @param idGen
 	 */
-	public ObjectStore(IdGenerator idGen, Collection<E> col) {
-		this.idGen = idGen;
+	public ObjectStore(Collection<E> col) {
+//		this.idGen = idGen;
 		this.col = col;
 		this.log = Logger.getLogger("ObjectStore");
 	}
@@ -57,23 +56,48 @@ public abstract class ObjectStore<E> extends AbstractCollection<E> {
 	 * Before adding the object, it also assigns an ID to it.
 	 * 
 	 * @param obj
+	 * @return true, if object was added successfully to the store
 	 */
-	public boolean addObject(E obj) {
-		boolean success = col.add(assignId(obj));
-		
-		if (success) {
-			log.finest("Sucessfully added object: " + obj);
-		} else {
-			log.finest("Object already in store: " + obj);
+	protected boolean addObject(E obj) {
+		if (col.contains(obj)) {
+			//log.info("Object already in store: " + obj);
+			//log.info("coldump: " + col);
+			return false;
 		}
 		
-		return success;
+//		boolean success = col.add(assignId(obj));
+		return col.add(obj);
+//		log.finest("Sucessfully added object: " + obj);
+
+//		return success;
 	}
 	
-	protected abstract E assignId(E obj);
+//	protected abstract E assignId(E obj);
 	
 	public boolean add(E e) {
-		return col.add(e);
+		return addObject(e);
+	}
+	
+	@Override
+	public boolean addAll(Collection<? extends E> col) {
+		return super.addAll(col);
+	}
+	
+	/**
+	 * Finds the reference to a given object in the store.
+	 * 
+	 * @param objectToFind
+	 * @return null, if this object is not in store
+	 */
+	protected E find(Object objectToFind) {
+		//System.out.println("finding "+objectToFind);
+		for (E obj: this) {
+			if (obj.equals(objectToFind)) {
+				//System.out.println("! this: "+obj);
+				return obj;
+			}
+		}
+		return null;
 	}
 
 	@Override

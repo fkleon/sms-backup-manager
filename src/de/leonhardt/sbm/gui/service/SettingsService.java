@@ -15,7 +15,7 @@ public interface SettingsService {
 	 * @param languageCode
 	 * @param exportIntl
 	 */
-	public void store(String countryCode, String languageCode, boolean exportIntl);
+	public void store(String countryCode, String languageCode, boolean exportIntl, boolean exportDupes);
 	
 	/**
 	 * Returns the current settings.

@@ -1,12 +1,11 @@
 package de.leonhardt.sbm.gui.service;
 
-import java.util.Collection;
-
-import de.leonhardt.sbm.xml.model.Contact;
-import de.leonhardt.sbm.xml.model.Sms;
+import de.leonhardt.sbm.model.Contact;
+import de.leonhardt.sbm.store.MessageStore;
 
 public interface MessageService {
 
 	//TODO rethink
-	public Collection<Sms> getMessages(Contact c);	
+	public MessageStore getMessages();
+	public MessageStore getMessages(Contact c);
 }

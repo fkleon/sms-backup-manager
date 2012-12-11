@@ -49,8 +49,8 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 			setText("Importing messages.. " + progress + "%");
 
 			// log status
-			log.info("[Import] Imported " + smses.getCount() + " messages.");
-			this.totalCount += smses.getCount();
+			log.info("[Import] Imported " + smses.getSms().size() + " messages.");
+			this.totalCount += smses.getSms().size();
 		}
 		return null;
 	}
@@ -73,7 +73,7 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 	
 	@Override
 	public void done() {
-		log.info("[Import] Done.");
+		log.fine("[Import] Done.");
 		
 		// populate list
 		clm.addElements(bm.getContacts());

@@ -24,6 +24,7 @@ public class SettingsPM extends AbstractPM {
 	public TextPM languageCode = new TextPM();
 	public CountryFlagPM countryFlag = new CountryFlagPM();
 	public BooleanPM exportIntl = new BooleanPM();
+	public BooleanPM exportDupes = new BooleanPM();
 	public OperationPM save = new OperationPM();
 	public OperationPM cancel = new OperationPM();
 	
@@ -36,21 +37,23 @@ public class SettingsPM extends AbstractPM {
 		this.languageCode.setMandatory(true);
 
 		this.exportIntl.setEditable(true);
+		this.exportDupes.setEditable(true);
 	}
 	
-	public SettingsPM(String languageCode, String countryCode, boolean exportIntl) {
+	public SettingsPM(String languageCode, String countryCode, boolean exportIntl, boolean exportDupes) {
 		this();
-		initModels(languageCode, countryCode, exportIntl);
+		initModels(languageCode, countryCode, exportIntl, exportDupes);
 	}
 	
-	private void initModels(String languageCode, String countryCode, boolean exportIntl) {
+	private void initModels(String languageCode, String countryCode, boolean exportIntl, boolean exportDupes) {
 		this.languageCode.setText(languageCode);
 		this.countryFlag.setCountryCode(countryCode);
 		this.exportIntl.setBoolean(exportIntl);
+		this.exportDupes.setBoolean(exportDupes);
 	}
 	
 	public void setSettings(Settings settings) {
-		initModels(settings.getLanguageCode(), settings.getCountryCode(), settings.getExportInternationalNumbers());
+		initModels(settings.getLanguageCode(), settings.getCountryCode(), settings.getExportInternationalNumbers(), settings.isExportDupes());
 	}
 
 	@Service
@@ -70,7 +73,7 @@ public class SettingsPM extends AbstractPM {
 	
 	@Operation(path="save")
 	public void save() {
-		controller.store(countryFlag.countryCode.getText(), languageCode.getText(), exportIntl.getBoolean());
+		controller.store(countryFlag.countryCode.getText(), languageCode.getText(), exportIntl.getBoolean(), exportDupes.getBoolean());
 	}
 	
 	@Validation(path="languageCode")

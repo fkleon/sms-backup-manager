@@ -2,7 +2,7 @@ package de.leonhardt.sbm.util.comparator;
 
 import java.util.Comparator;
 
-import de.leonhardt.sbm.xml.model.Contact;
+import de.leonhardt.sbm.model.Contact;
 
 public class ContactNameComparator implements Comparator<Contact> {
 	@Override

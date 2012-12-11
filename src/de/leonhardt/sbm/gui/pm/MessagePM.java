@@ -25,6 +25,8 @@ public class MessagePM extends AbstractPM {
 	public IntegerPM type = new IntegerPM();
 	public IntegerPM status = new IntegerPM();
 	
+	public IntegerPM numDuplicates = new IntegerPM();
+	
 	public MessagePM() {
 		PMManager.setup(this);
 		
@@ -33,6 +35,7 @@ public class MessagePM extends AbstractPM {
 		address.setEditable(false);
 		type.setEditable(false);
 		status.setEditable(false);
+		numDuplicates.setEditable(false);
 	}
 	
 	public MessagePM(Sms sms) {
