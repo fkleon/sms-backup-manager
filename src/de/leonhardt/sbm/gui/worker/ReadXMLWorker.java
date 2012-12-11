@@ -47,9 +47,9 @@ public class ReadXMLWorker extends SwingWorker<List<Smses>, Smses> {
 				smsList.add(smses);
 				//publish(smses);
 				// update progress
-				Double progress = ((i+1.)/files.length)*100;
+				Float progress = ((i+1.f)/files.length)*100.f;
 				setProgress(progress.intValue());
-				setText("Reading XML files.. " + progress + "% - '" + curFile.getPath() + "'");
+				setText("Reading XML files.. %d%% - '%s'", progress.intValue(), curFile.getPath());
 				// log status
 				log.info("[Load] Read " + smses.getSms().size() +  " messages.");
 			// raise any exceptions later as alert dialog in the EDT thread
@@ -113,6 +113,16 @@ public class ReadXMLWorker extends SwingWorker<List<Smses>, Smses> {
      */
     private void setText(String text) {
 		firePropertyChange("text", null, text);
+    }
+    
+    /**
+     * Fires a property change (text)
+     * Takes a format string.
+     * @param format
+     * @param args
+     */
+    private void setText(String format, Object... args) {
+    	firePropertyChange("text", null, String.format(format, args));
     }
     
 }

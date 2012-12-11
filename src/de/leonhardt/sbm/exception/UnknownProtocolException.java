@@ -1,6 +1,14 @@
 package de.leonhardt.sbm.exception;
 
+/**
+ * Exception for an unknown protocol while importing a message.
+ * 
+ * @author Frederik Leonhardt
+ *
+ */
 public class UnknownProtocolException extends Exception {
+
+	private static final long serialVersionUID = 247400595758190848L;
 
 	public UnknownProtocolException() {
 		super();
@@ -17,7 +25,5 @@ public class UnknownProtocolException extends Exception {
 	public UnknownProtocolException(Throwable arg0) {
 		super(arg0);
 	}
-
-	private static final long serialVersionUID = 247400595758190848L;
 
 }

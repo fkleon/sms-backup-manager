@@ -1,5 +1,11 @@
 package de.leonhardt.sbm.exception;
 
+/**
+ * Exception for a faulty XML.
+ * 
+ * @author Frederik Leonhardt
+ *
+ */
 public class FaultyInputXMLException extends Exception {
 
 	public FaultyInputXMLException() {

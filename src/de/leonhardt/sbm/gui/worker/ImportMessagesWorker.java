@@ -26,6 +26,7 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 	private List<Smses> messagesToImport;
 	private CustomListModel clm;
 	private int totalCount;
+	private int duplicateCount;
 	
 	public ImportMessagesWorker(BackupManager bm, CustomListModel clm) {
 		this.bm = bm;
@@ -42,15 +43,16 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 		for (int i = 0; i<messagesToImport.size(); i++) {
 			Smses smses = messagesToImport.get(i);
 			bm.importMessages(smses);
+			this.totalCount += smses.getSms().size();
+			this.duplicateCount = bm.getMessages().countDuplicates() - duplicateCount;
 			
 			// update progress
-			Double progress = ((i+1.)/messagesToImport.size()*100);
+			Float progress = ((i+1.f)/messagesToImport.size()*100.f);
 			setProgress(progress.intValue());
-			setText("Importing messages.. " + progress + "%");
+			setText("Importing messages.. %d%%", progress.intValue());
 
 			// log status
 			log.info("[Import] Imported " + smses.getSms().size() + " messages.");
-			this.totalCount += smses.getSms().size();
 		}
 		return null;
 	}
@@ -78,7 +80,7 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 		// populate list
 		clm.addElements(bm.getContacts());
 		
-		setText("Done! [Imported " + totalCount + " messages.]");
+		setText("Done! Imported %d messages (+%d duplicates)", totalCount, duplicateCount);
 	}
 	
     /**
@@ -87,6 +89,16 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
      */
     private void setText(String text) {
 		firePropertyChange("text", null, text);
+    }
+    
+    /**
+     * Fires a property change (text)
+     * Takes a format string.
+     * @param format
+     * @param args
+     */
+    private void setText(String format, Object... args) {
+    	firePropertyChange("text", null, String.format(format, args));
     }
 
 }

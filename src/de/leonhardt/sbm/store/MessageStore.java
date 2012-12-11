@@ -1,12 +1,12 @@
 package de.leonhardt.sbm.store;
 
+import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 import de.leonhardt.sbm.model.Message;
-import de.leonhardt.sbm.util.Utils.IdGenerator;
-import de.leonhardt.sbm.xml.model.Smses;
 
 /**
  * The MessageStore holds all messages of a contact.
@@ -16,8 +16,11 @@ import de.leonhardt.sbm.xml.model.Smses;
  * @author Frederik Leonhardt
  *
  */
-public class MessageStore extends ObjectStore<Message> {
+public class MessageStore extends AbstractCollection<Message> {
 
+	protected Collection<Message> col; // underlying collection
+	protected Logger log;
+	
 	/**
 	 * Creates a new MessageStore.
 	 * Needs an ID generator to be able to assign ids to messages.
@@ -36,33 +39,22 @@ public class MessageStore extends ObjectStore<Message> {
 	 * @param idGen
 	 */
 	protected MessageStore(Collection<Message> col) {
-		super(col);
+		this.col = col;
 		this.log = Logger.getLogger("MessageStore");
 	}
-	
-		
-	/**
-	 * Assigns the next free id to the given message,
-	 * if it has no id yet.
-	 * 
-	 * @param message
-	 * @return reference to the original object (now with id)
-	 */
-	/*
-	protected Message assignId(Message message) {
-		if (message.getId() <= 0) {
-			message.setId(idGen.getNextId());
-		}
-		return message;
-	}
-	*/
 
+	/**
+	 * Adds the given message to store.
+	 * If message already exists, increase duplicate count for it.
+	 * 
+	 * @param msg
+	 */
 	@Override
 	public boolean add(Message msg) {
 		for (Message m: this) {
 			if (m.equals(msg)) {
 				m.incDuplicates();
-				log.info("Throw away duplicate: " + msg + " of " + m);
+				//log.info("Throw away duplicate: " + msg + " of " + m);
 				return false;
 //				System.out.println("contains: " + contains(msg));
 //				System.out.println("m: " + m);
@@ -73,16 +65,9 @@ public class MessageStore extends ObjectStore<Message> {
 		}
 		
 		return col.add(msg);
-		/*
-		if (!addObject(msg)) {
-			find(msg).incDuplicates();
-			return false;
-		} else {
-			return true;
-		}*/
 	}
 	
-	/*@Override
+	@Override
 	public boolean addAll(Collection<? extends Message> msges) {
 		boolean hasChanged = false;
 		for (Message msg: msges) {
@@ -93,7 +78,7 @@ public class MessageStore extends ObjectStore<Message> {
 		
 		return hasChanged;
 	}
-*/
+
 	/**
 	 * Returns total number of duplicates in this storage.
 	 * 
@@ -108,39 +93,15 @@ public class MessageStore extends ObjectStore<Message> {
 		
 		return duplicates;
 	}
-	
-//	public Smses toSmses() {
-//		//Smses smses = new Smses(this);
-//	}
-	
-	/*
-	public Map<Sms, Integer> findDuplicates() {
-		Map<Sms, Integer> duplicates = new HashMap<Sms, Integer>();
-		Set<Sms> tempSet = new HashSet<Sms>();
-		
-		for (Sms message: col) {
-			if (!tempSet.add(message)) {
-				// we got ourselves a lil' duplicate here!
-				if (duplicates.containsKey(message)) {
-					// increment
-					int prevValue = duplicates.get(message);
-					duplicates.put(message, ++prevValue);
-				} else {
-					// new entry
-					duplicates.put(message, 1);
-				}
-			}
-		}
-		return duplicates;
+
+	@Override
+	public Iterator<Message> iterator() {
+		return col.iterator();
 	}
-	*/
-	
-	/*
-	public Collection<Message> clearDuplicates() {
-		Set<Message> tempSet = new HashSet<Message>(col);
-		log.info("Removed " + (col.size() - tempSet.size()) + " duplicates.");
-		return tempSet;
+
+	@Override
+	public int size() {
+		return col.size();
 	}
-	*/
 
 }
