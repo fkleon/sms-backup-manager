@@ -6,14 +6,24 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collections;
+import java.util.Comparator;
 
 
+import de.leonhardt.sbm.model.Message;
 import de.leonhardt.sbm.util.Utils;
 import de.leonhardt.sbm.util.comparator.MessageDateComparator;
+import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
 
 public class TestUtils {
 
+	public class SmsMessageDateComparator implements Comparator<Sms> {
+		@Override
+		public int compare(Sms o1, Sms o2) {
+			return o2.getDate().compareTo(o1.getDate());
+		}
+	}
+	
 	public String readFileContent(String filePath) throws IOException {
 		return readFileContent(new File(filePath));
 	}
@@ -56,7 +66,7 @@ public class TestUtils {
 	}
 	
 	public void sortSmses(Smses smses) {
-		Collections.sort(smses.getSms(), new MessageDateComparator());
+		Collections.sort(smses.getSms(), new SmsMessageDateComparator());
 	}
 	
 }

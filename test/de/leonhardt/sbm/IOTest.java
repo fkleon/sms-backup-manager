@@ -17,7 +17,7 @@ import de.leonhardt.sbm.xml.model.Smses;
 
 public class IOTest {
 
-	private static MessageIO smsIO;
+	private static SmsesIO smsIO;
 	private static TestUtils testUtils;
 	private static String testOutputPath;
 	
@@ -26,7 +26,7 @@ public class IOTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		smsIO = new MessageIO(true);
+		smsIO = new SmsesIO(true);
 		testUtils = new TestUtils();
 		testOutputPath = "test.xml";
 	}
@@ -46,7 +46,7 @@ public class IOTest {
 		// test, if a file can be read successfully
 		String validPath = "fixtures/sms-20121011143146.xml";
 		int messageCount = 2444;
-		Smses validSmses = smsIO.readFromXML(validPath);
+		Smses validSmses = smsIO.readFrom(validPath);
 		
 		assertNotNull("The imported object is null.", validSmses);
 		assertNotNull("The sms list is null.", validSmses.getSms());
@@ -61,7 +61,7 @@ public class IOTest {
 		// this file does not exist
 		String invalidPath = "fixtures/whatup.xml";
 		try {
-			smsIO.readFromXML(invalidPath);
+			smsIO.readFrom(invalidPath);
 		} catch (UnmarshalException e) {
 			// this should have been caused by a file not found exception
 			if (!(e.getCause() instanceof FileNotFoundException))
@@ -70,7 +70,7 @@ public class IOTest {
 		
 		// null file
 		File f = null;
-		smsIO.readFromXML(f);
+		smsIO.readFrom(f);
 	}
 	
 	@Test
@@ -86,7 +86,7 @@ public class IOTest {
 		
 		for (int i = 0; i < invalidPaths.length; i++) {
 			try {
-				results = smsIO.readFromXML(invalidPaths[i]);
+				results = smsIO.readFrom(invalidPaths[i]);
 			} catch (UnmarshalException e) {
 				// yep..
 				System.out.println(e.toString());
@@ -103,8 +103,8 @@ public class IOTest {
 	public void testWriteValidSimple() throws Exception {
 		String validPath = "fixtures/sms-20121011143146.xml";
 		
-		Smses validSmses = smsIO.readFromXML(validPath);
-		smsIO.writeToXML(validSmses, testOutputPath);
+		Smses validSmses = smsIO.readFrom(validPath);
+		smsIO.writeTo(validSmses, testOutputPath);
 		
 		int lines1 = testUtils.readLineCount(validPath);
 		int lines2 = testUtils.readLineCount(testOutputPath);
@@ -117,14 +117,14 @@ public class IOTest {
 		String validPath = "fixtures/sms-20121011143146.xml";
 		
 		// read original source file
-		Smses validSmses = smsIO.readFromXML(validPath);
+		Smses validSmses = smsIO.readFrom(validPath);
 		
 		// write bak to temp file
-		smsIO.writeToXML(validSmses, testOutputPath);
+		smsIO.writeTo(validSmses, testOutputPath);
 		
 		// read temp file
 		//String invalidPath = "schema/sms-20121203092757.xml";
-		Smses newSmses = smsIO.readFromXML(testOutputPath);
+		Smses newSmses = smsIO.readFrom(testOutputPath);
 		
 		// sort first to make equals work
 		testUtils.sortSmses(validSmses);

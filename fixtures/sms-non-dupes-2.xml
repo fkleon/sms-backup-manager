@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<smses count="2">
+  <sms protocol="0" address="+491766932526" date="1331055444391" type="2" subject="null" body="Wie sieht es aus? Wegen buchen bald " toa="null" sc_toa="null" service_center="null" read="1" status="-1" locked="0" date_sent="null" readable_date="Mar 6, 2012 6:37:24 PM" contact_name="John Doe" />
+  <sms protocol="0" address="+491732532532" date="1331055444391" type="2" subject="null" body="Wie sieht es aus? Wegen buchen bald " toa="null" sc_toa="null" service_center="null" read="1" status="-1" locked="0" date_sent="null" readable_date="Mar 6, 2012 6:37:24 PM" contact_name="Jane Doe" />
+</smses>

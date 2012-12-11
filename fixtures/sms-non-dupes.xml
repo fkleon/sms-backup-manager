@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<smses count="2">
+  <sms protocol="0" address="+4915112313123" date="1336729664538" type="2" subject="null" body="Klar " toa="null" sc_toa="null" service_center="null" read="1" status="-1" locked="0" date_sent="null" readable_date="May 11, 2012 11:47:44 AM" contact_name="Test Contact" />
+  <sms protocol="0" address="+4915112313123" date="1349550921412" type="1" subject="null" body="Klar " toa="null" sc_toa="null" service_center="+491760000443" read="1" status="-1" locked="0" date_sent="null" readable_date="Oct 6, 2012 9:15:21 PM" contact_name="Test Contact" />
+</smses>
