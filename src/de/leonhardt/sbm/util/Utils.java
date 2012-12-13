@@ -36,10 +36,6 @@ public class Utils {
 		return new Utils.SimpleIdGenerator();
 	}
 	
-	public static void sortSmses(Smses smses) {
-		Collections.sort(smses.getSms(), new MessageDateComparator());
-	}
-	
 	public static class TimeTracker {
 		
 		long startTime;

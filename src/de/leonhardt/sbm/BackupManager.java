@@ -13,12 +13,19 @@ import de.leonhardt.sbm.model.Contact;
 import de.leonhardt.sbm.model.Message;
 import de.leonhardt.sbm.store.MessageStore;
 import de.leonhardt.sbm.store.SortedMessageStore;
-import de.leonhardt.sbm.util.Utils;
-import de.leonhardt.sbm.util.Utils.IdGenerator;
 import de.leonhardt.sbm.util.comparator.ContactNameComparator;
 import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
 
+/**
+ * The BackupManager is the main entry point for GUI and CMD.
+ * There should be only one BackupManager instance per application.
+ * 
+ * It manages all messages, contacts and conversations.
+ * 
+ * @author Frederik Leonhardt
+ *
+ */
 public class BackupManager implements MessageService {
 
 	private Logger log;
@@ -102,7 +109,7 @@ public class BackupManager implements MessageService {
 			}
 		}
 		
-		log.info(String.format("Imported %d messages (+%d duplicates)",getMessages().size(),getMessages().countDuplicates()));
+		log.info(String.format("[Manager] %d messages in store (+ %d duplicates).",getMessages().size(),getMessages().countDuplicates()));
 	}
 	
 	private void putMessage(Contact contact, Message message) {
@@ -178,6 +185,10 @@ public class BackupManager implements MessageService {
 		return allMessages;
 	}
 	
+	/**
+	 * Clears the underlying conversation store.
+	 * Removes all contacts and messages.
+	 */
 	public void clear() {
 		conversations.clear();
 	}

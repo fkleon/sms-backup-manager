@@ -26,7 +26,6 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 	private List<Smses> messagesToImport;
 	private CustomListModel clm;
 	private int totalCount;
-	private int duplicateCount;
 	
 	public ImportMessagesWorker(BackupManager bm, CustomListModel clm) {
 		this.bm = bm;
@@ -44,7 +43,6 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 			Smses smses = messagesToImport.get(i);
 			bm.importMessages(smses);
 			this.totalCount += smses.getSms().size();
-			this.duplicateCount = bm.getMessages().countDuplicates() - duplicateCount;
 			
 			// update progress
 			Float progress = ((i+1.f)/messagesToImport.size()*100.f);
@@ -57,10 +55,12 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		 if ("state".equals(event.getPropertyName())
-                 && SwingWorker.StateValue.DONE == event.getNewValue()) {
+                 && SwingWorker.StateValue.DONE == event.getNewValue()
+                 && event.getSource() instanceof SwingWorker) {
 			 SwingWorker<List<Smses>, Smses> worker = (SwingWorker<List<Smses>, Smses>) event.getSource();
 			 try {
 				this.messagesToImport = worker.get();
@@ -80,7 +80,7 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 		// populate list
 		clm.addElements(bm.getContacts());
 		
-		setText("Done! Imported %d messages (+%d duplicates)", totalCount, duplicateCount);
+		setText("Done! Imported %d messages (incl. duplicates)", totalCount);
 	}
 	
     /**
