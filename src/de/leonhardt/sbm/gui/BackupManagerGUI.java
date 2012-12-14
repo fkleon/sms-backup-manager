@@ -24,7 +24,6 @@ import javax.xml.bind.JAXBException;
 
 import de.leonhardt.sbm.BackupManager;
 import de.leonhardt.sbm.PhoneNumberParser;
-import de.leonhardt.sbm.SmsesIO;
 import de.leonhardt.sbm.convert.MessageConverter;
 import de.leonhardt.sbm.convert.SmsBrConverter;
 import de.leonhardt.sbm.gui.handler.CustomLogHandler;
@@ -42,6 +41,7 @@ import de.leonhardt.sbm.gui.view.SettingsDialogView;
 import de.leonhardt.sbm.gui.view.StatusBarView;
 import de.leonhardt.sbm.gui.worker.ImportMessagesWorker;
 import de.leonhardt.sbm.gui.worker.ReadXMLWorker;
+import de.leonhardt.sbm.io.SmsBrIO;
 import de.leonhardt.sbm.model.Contact;
 import de.leonhardt.sbm.model.Message;
 import de.leonhardt.sbm.xml.model.Sms;
@@ -69,10 +69,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class BackupManagerGUI {
 
 	private Logger log = Logger.getLogger("BackupManagerGUI");
-	private static String VERSION_INFO = "v0.8 (2012-12-11)";
+	private static String VERSION_INFO = "v0.8 (2012-12-14)";
 	
 	private BackupManager bm;
-	private SmsesIO mio;
+	private SmsBrIO mio;
 	private MessageConverter<Sms> msgConv;
 		
 	private JFrame frmBackupManager;
@@ -142,7 +142,7 @@ public class BackupManagerGUI {
 		
 		// init business logic
 		this.bm = new BackupManager();
-		this.mio = new SmsesIO(true);
+		this.mio = new SmsBrIO(true);
 		this.msgConv = new SmsBrConverter();
 	}
 

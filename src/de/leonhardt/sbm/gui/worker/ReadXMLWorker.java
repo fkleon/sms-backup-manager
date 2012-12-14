@@ -11,9 +11,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.xml.bind.JAXBException;
 
-import de.leonhardt.sbm.SmsesIO;
 import de.leonhardt.sbm.exception.FaultyInputXMLException;
 import de.leonhardt.sbm.gui.GuiUtils;
+import de.leonhardt.sbm.io.SmsBrIO;
 import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
 
@@ -26,9 +26,9 @@ public class ReadXMLWorker extends SwingWorker<Collection<Sms>, Sms> {
 
 	private Logger log;
 	private File[] files;
-	private SmsesIO mio;
+	private SmsBrIO mio;
 	
-	public ReadXMLWorker(SmsesIO mio, File[] files) {
+	public ReadXMLWorker(SmsBrIO mio, File[] files) {
 		super();
 		this.log = Logger.getLogger(this.getClass().getSimpleName());
 		this.mio = mio;

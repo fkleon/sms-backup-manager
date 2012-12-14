@@ -1,4 +1,4 @@
-package de.leonhardt.sbm;
+package de.leonhardt.sbm.io;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -23,7 +23,7 @@ import de.leonhardt.sbm.xml.model.Smses;
  * @author Frederik Leonhardt
  *
  */
-public class SmsesIO {
+public class SmsBrIO {
 
 	private final String XML_XSL_HEADER = "\n<?xml-stylesheet type=\"text/xsl\" href=\"sms.xsl\"?>";
 	private final String XML_SCHEMA = "schema/schema.xsd";
@@ -40,7 +40,7 @@ public class SmsesIO {
 	 * @param includeXSL, if xsl-stylesheet header should be included in XML
 	 * @throws JAXBException, if JAXB can not be initialized
 	 */
-	public SmsesIO(boolean includeXSL) throws JAXBException {
+	public SmsBrIO(boolean includeXSL) throws JAXBException {
 		// do we include XSL header information?
 		this.includeXSL = includeXSL;
 		

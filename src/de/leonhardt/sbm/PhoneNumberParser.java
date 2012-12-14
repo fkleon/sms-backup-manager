@@ -53,9 +53,7 @@ public class PhoneNumberParser {
 	 */
 	public String getInternationalFormat(String phoneNumber) {
 		String internationalFormat = phoneNumber;
-		
-		System.out.println("using locale "+Settings.getInstance().getLocale().toString());
-		
+				
 		try {
 			PhoneNumber number = parseToPhoneNumber(phoneNumber);
 		

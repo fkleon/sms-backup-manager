@@ -1,4 +1,4 @@
-package de.leonhardt.sbm;
+package de.leonhardt.sbm.io;
 
 import java.io.File;
 
