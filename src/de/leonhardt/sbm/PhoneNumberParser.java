@@ -1,6 +1,5 @@
 package de.leonhardt.sbm;
 
-import java.util.Locale;
 import java.util.logging.Logger;
 
 import com.google.i18n.phonenumbers.NumberParseException;
@@ -9,30 +8,22 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 import com.google.i18n.phonenumbers.geocoding.PhoneNumberOfflineGeocoder;
 
+import de.leonhardt.sbm.gui.model.Settings;
+
 /**
  * The PhoneNumberParser performs operations on phone numbers.
- * It can be initialized with a country code and locale to process national number formats.
+ * It uses the currently available locale from {@link LocaleProvider} to process national number formats.
+ * 
+ * There are special countryCodes permitted:
+ * - null and "ZZ" are permitted (assumes international numbers).
+ * 
+ * Language and region code are used for phone number validation.
  * 
  * @author Frederik Leonhardt
  *
  */
 public class PhoneNumberParser {
 	
-	/**
-	 * Specifies country code to use for non-international number parsing
-	 * Uses ISO-3166-1 two-letter country code.
-	 * Also null and "ZZ" are permitted (assumes international numbers).
-	 */
-	String countryCode = null;
-	
-	/**
-	 * Language and region codes are used to validate phone numbers
-	 * Usual format is "languageCode-regionCode", e.g. en-US
-	 */
-	String languageCode = "en"; // Default languageCode to English if nothing is
-								// entered.
-	String regionCode = "";
-
 	/**
 	 * Logger
 	 */
@@ -47,39 +38,11 @@ public class PhoneNumberParser {
 	
 	/**
 	 * Creates default phone number parser.
-	 * Assumes input to be formated according to international phone number format.
-	 * Locale is en-US.
+	 * Assumes input to be formated according to current locale settings specified by {@link LocaleProvider}.
 	 */
 	public PhoneNumberParser() {
-		// null country code assumes international phone numbers, 
-		// "ZZ" also possible for that
-		init(null, "en", "US");
-	}
-	
-	/**
-	 * Creates phone number parser by given values.
-	 * 
-	 * @param countryCode
-	 * @param languageCode
-	 * @param regionCode
-	 */
-	public PhoneNumberParser(String countryCode, String languageCode, String regionCode) {
-		init(countryCode, languageCode, regionCode);
-	}
-	
-	/**
-	 * Initializes fields
-	 * 
-	 * @param countryCode
-	 * @param languageCode
-	 * @param regionCode
-	 */
-	private void init(String countryCode, String languageCode, String regionCode) {
 		this.phoneUtil = PhoneNumberUtil.getInstance();
 		this.phoneGeocoder = PhoneNumberOfflineGeocoder.getInstance();
-		this.countryCode = countryCode;
-		this.languageCode = languageCode;
-		this.regionCode = regionCode;
 	}
 	
 	/**
@@ -91,6 +54,8 @@ public class PhoneNumberParser {
 	public String getInternationalFormat(String phoneNumber) {
 		String internationalFormat = phoneNumber;
 		
+		System.out.println("using locale "+Settings.getInstance().getLocale().toString());
+		
 		try {
 			PhoneNumber number = parseToPhoneNumber(phoneNumber);
 		
@@ -100,8 +65,7 @@ public class PhoneNumberParser {
 			internationalFormat = phoneUtil.format(number, PhoneNumberFormat.INTERNATIONAL);
 		} catch (NumberParseException e) {
 			log.fine("Could not parse phone number '" + phoneNumber + "'. "
-						+ "[country=" + this.countryCode
-						+ ", locale=" + languageCode + "-" + countryCode + ((this.regionCode == null || this.regionCode.isEmpty())?"":"-"+this.regionCode) +  "]"
+						+ "[locale=" + Settings.getInstance().getLocale().toString() +  "]"
 						+ " Error: " + e.getMessage());
 		}
 		
@@ -122,8 +86,7 @@ public class PhoneNumberParser {
 			countryCode = phoneUtil.getRegionCodeForNumber(number);
 		} catch (NumberParseException e) {
 			log.fine("Could not parse phone number '" + phoneNumber + "'. "
-						+ "[country=" + this.countryCode
-						+ ", locale=" + languageCode + "-" + regionCode +  "]"
+						+ "[locale=" + Settings.getInstance().getLocale().toString() +  "]"
 						+ " Error: " + e.getMessage());
 		}
 		
@@ -140,11 +103,10 @@ public class PhoneNumberParser {
 		String geoInfo = null;
 		try {
 			PhoneNumber number = parseToPhoneNumber(phoneNumber);
-			geoInfo = phoneGeocoder.getDescriptionForNumber(number, new Locale(languageCode, regionCode));
+			geoInfo = phoneGeocoder.getDescriptionForNumber(number, Settings.getInstance().getLocale());
 		} catch (NumberParseException e) {
 			log.fine("Could not parse phone number '" + phoneNumber + "'. "
-					+ "[country=" + this.countryCode
-					+ ", locale=" + languageCode + "-" + regionCode +  "]"
+					+ "[locale=" + Settings.getInstance().getLocale().toString() +  "]"
 					+ " Error: " + e.getMessage());
 		}
 		
@@ -159,6 +121,6 @@ public class PhoneNumberParser {
 	 * @throws NumberParseException
 	 */
 	private PhoneNumber parseToPhoneNumber(String phoneNumber) throws NumberParseException {
-		return phoneUtil.parseAndKeepRawInput(phoneNumber, this.countryCode);
+		return phoneUtil.parseAndKeepRawInput(phoneNumber, Settings.getInstance().getLocale().getCountry());
 	}
 }

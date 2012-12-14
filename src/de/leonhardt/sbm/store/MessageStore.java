@@ -53,7 +53,16 @@ public class MessageStore extends AbstractCollection<Message> {
 	public boolean add(Message msg) {
 		for (Message m: this) {
 			if (m.equals(msg)) {
-				m.incDuplicates();
+				int msgDupes = msg.getNumDuplicates();
+				
+				// if there are already dupes, add this number instead
+				if (msgDupes > 0) {
+					// msgDupes + 1 message
+					m.incDuplicates(msgDupes+1);
+				} else {
+					// increase one
+					m.incDuplicates();
+				}
 				//log.info("Throw away duplicate: " + msg + " of " + m);
 				return false;
 //				System.out.println("contains: " + contains(msg));

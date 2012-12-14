@@ -8,6 +8,7 @@
 package de.leonhardt.sbm.xml.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -52,8 +53,8 @@ public class Smses {
     @XmlAttribute(required = true)
     protected Integer count;
 
-    public Smses(List<Sms> sms) {
-    	this.sms = sms;
+    public Smses(Collection<Sms> sms) {
+    	this.sms = new ArrayList<Sms>(sms);
     	this.count = sms.size();
     }
     

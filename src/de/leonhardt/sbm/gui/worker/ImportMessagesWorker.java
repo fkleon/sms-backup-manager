@@ -3,15 +3,16 @@ package de.leonhardt.sbm.gui.worker;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 import javax.swing.SwingWorker;
 
 import de.leonhardt.sbm.BackupManager;
+import de.leonhardt.sbm.convert.MessageConverter;
 import de.leonhardt.sbm.gui.renderer.CustomListModel;
-import de.leonhardt.sbm.xml.model.Smses;
+import de.leonhardt.sbm.model.Message;
 
 /**
  * Background Worker to import previously read messages into the MessageStore and populate the list afterwards.
@@ -19,39 +20,40 @@ import de.leonhardt.sbm.xml.model.Smses;
  * @author Frederik Leonhardt
  *
  */
-public class ImportMessagesWorker extends SwingWorker<Void, Void> implements PropertyChangeListener {
+public class ImportMessagesWorker<T> extends SwingWorker<Void, Void> implements PropertyChangeListener {
 
 	private Logger log;
 	private BackupManager bm;
-	private List<Smses> messagesToImport;
+	private MessageConverter<T> msgConverter;
+	private Collection<T> messagesToImport;
 	private CustomListModel clm;
-	private int totalCount;
 	
-	public ImportMessagesWorker(BackupManager bm, CustomListModel clm) {
+	public ImportMessagesWorker(BackupManager bm, MessageConverter<T> msgConv, CustomListModel clm) {
 		this.bm = bm;
-		this.messagesToImport = new ArrayList<Smses>();
+		this.msgConverter = msgConv;
+		this.messagesToImport = new ArrayList<T>();
 		this.clm = clm;
 		this.log = Logger.getLogger("ImportMessagesWorker");
 	}
 	
 	@Override
 	protected Void doInBackground() throws Exception {
-		this.totalCount = 0;
-		
 		setText("Importing messages..");
-		for (int i = 0; i<messagesToImport.size(); i++) {
-			Smses smses = messagesToImport.get(i);
-			bm.importMessages(smses);
-			this.totalCount += smses.getSms().size();
-			
+		int i = 0;
+		for (T msg: messagesToImport) {
+			// import messages
+			Message message = msgConverter.toInternalMessage(msg);
+			bm.importMessage(message);
+
 			// update progress
 			Float progress = ((i+1.f)/messagesToImport.size()*100.f);
 			setProgress(progress.intValue());
 			setText("Importing messages.. %d%%", progress.intValue());
-
-			// log status
-			log.info("[Import] Imported " + smses.getSms().size() + " messages.");
+			
+			i++;
 		}
+		// log status
+		log.info("[Import] Imported " + messagesToImport.size() + " messages.");
 		return null;
 	}
 
@@ -61,7 +63,7 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 		 if ("state".equals(event.getPropertyName())
                  && SwingWorker.StateValue.DONE == event.getNewValue()
                  && event.getSource() instanceof SwingWorker) {
-			 SwingWorker<List<Smses>, Smses> worker = (SwingWorker<List<Smses>, Smses>) event.getSource();
+			 SwingWorker<Collection<T>, T> worker = (SwingWorker<Collection<T>, T>) event.getSource();
 			 try {
 				this.messagesToImport = worker.get();
 			} catch (InterruptedException e) {
@@ -80,7 +82,7 @@ public class ImportMessagesWorker extends SwingWorker<Void, Void> implements Pro
 		// populate list
 		clm.addElements(bm.getContacts());
 		
-		setText("Done! Imported %d messages (incl. duplicates)", totalCount);
+		setText("Done! Imported %d messages (incl. duplicates)", messagesToImport.size());
 	}
 	
     /**

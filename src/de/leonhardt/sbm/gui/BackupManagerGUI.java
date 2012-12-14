@@ -23,8 +23,10 @@ import javax.swing.JTextPane;
 import javax.xml.bind.JAXBException;
 
 import de.leonhardt.sbm.BackupManager;
+import de.leonhardt.sbm.PhoneNumberParser;
 import de.leonhardt.sbm.SmsesIO;
-import de.leonhardt.sbm.convert.SmsesConvert;
+import de.leonhardt.sbm.convert.MessageConverter;
+import de.leonhardt.sbm.convert.SmsBrConverter;
 import de.leonhardt.sbm.gui.handler.CustomLogHandler;
 import de.leonhardt.sbm.gui.model.Settings;
 import de.leonhardt.sbm.gui.pm.SettingsPM;
@@ -71,6 +73,7 @@ public class BackupManagerGUI {
 	
 	private BackupManager bm;
 	private SmsesIO mio;
+	private MessageConverter<Sms> msgConv;
 		
 	private JFrame frmBackupManager;
 	private JDialog dlgSettings;
@@ -138,8 +141,9 @@ public class BackupManagerGUI {
 		Settings set = Settings.getInstance();
 		
 		// init business logic
-		this.bm = new BackupManager(set.getCountryCode(), set.getLanguageCode(), set.getRegionCode());
+		this.bm = new BackupManager();
 		this.mio = new SmsesIO(true);
+		this.msgConv = new SmsBrConverter();
 	}
 
 	
@@ -215,7 +219,7 @@ public class BackupManagerGUI {
 				
 				// TODO check returnValue to determine if we need to re-initialize
 				// TODO actually, this should be solved by listener in Settings or something
-				bm.initLocale(set.getCountryCode(), set.getLanguageCode(), set.getRegionCode());
+				//bm.initLocale(set.getCountryCode(), set.getLanguageCode(), set.getRegionCode());
 			}
 		});
 		mnMessages.add(mntmSettings);
@@ -382,7 +386,7 @@ public class BackupManagerGUI {
 			listConversations.setModel(dlm);
 
 			SwingWorker loadWorker = new ReadXMLWorker(mio, selection);
-			SwingWorker importWorker = new ImportMessagesWorker(bm, dlm);
+			SwingWorker importWorker = new ImportMessagesWorker(bm, msgConv, dlm);
 			loadWorker.addPropertyChangeListener((PropertyChangeListener)statusBarModel);
 			importWorker.addPropertyChangeListener((PropertyChangeListener)statusBarModel);
 			loadWorker.addPropertyChangeListener((PropertyChangeListener)importWorker);
@@ -446,14 +450,13 @@ public class BackupManagerGUI {
 			}
 			
 			Smses smses = null;
-			SmsesConvert converter = SmsesConvert.getInstance();
 			boolean keepOrig = !Settings.getInstance().getExportInternationalNumbers();
 			boolean exportDupes = Settings.getInstance().isExportDupes();
 			
 			// determine which messages to export
 			if (!selectedOnly) {
 				// all messages
-				smses = converter.convert(bm.getMessages(),keepOrig,exportDupes);
+				smses = new Smses(msgConv.toExternalCol(bm.getMessages(),keepOrig,exportDupes));
 			} else {
 				// get selected contact
 				// get selected index directly from list
@@ -470,7 +473,7 @@ public class BackupManagerGUI {
 				
 				if (o instanceof Contact) {
 					Contact c = (Contact) o;
-					smses = converter.convert(bm.getMessages(c),keepOrig,exportDupes);
+					smses = new Smses(msgConv.toExternalCol(bm.getMessages(c),keepOrig,exportDupes));
 				} else {
 					GuiUtils.alertInfo(frmBackupManager,"Export", "No conversation selected.");
 					return;

@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import de.leonhardt.sbm.gui.service.LocaleProvider;
 import de.leonhardt.sbm.gui.service.SettingsService;
 
 /**
@@ -13,16 +14,14 @@ import de.leonhardt.sbm.gui.service.SettingsService;
  * @author Frederik Leonhardt
  *
  */
-public class Settings implements SettingsService {
+public class Settings implements SettingsService, LocaleProvider {
 
 	private static Settings _instance;
 	
 	private Logger log = Logger.getLogger("Settings");
 	private Preferences prefs;
-		
-	private String languageCode;
-	private String countryCode;
-	private String regionCode;
+
+	private Locale currentLocale;
 	
 	private boolean exportIntl;
 	private boolean exportDupes;
@@ -53,9 +52,9 @@ public class Settings implements SettingsService {
 		Preferences prefs = getPrefs();
 
 		// locale
-		prefs.put("language", this.languageCode);
-		prefs.put("countryCode", this.countryCode);
-		prefs.put("regionCode", this.regionCode);
+		prefs.put("language", this.currentLocale.getLanguage());
+		prefs.put("countryCode", this.currentLocale.getCountry());
+		prefs.put("regionCode", this.currentLocale.getVariant());
 
 		// settings
 		prefs.putBoolean("exportInternational", this.exportIntl);
@@ -74,10 +73,12 @@ public class Settings implements SettingsService {
 	public void load() {
 		Preferences prefs = getPrefs();
 		
-		Locale curLocale = Locale.getDefault();
-		this.languageCode = prefs.get("language", curLocale.getLanguage());
-		this.countryCode = prefs.get("countryCode", curLocale.getCountry());
-		this.regionCode = prefs.get("regionCode", curLocale.getVariant());
+		Locale defLocale = Locale.getDefault();
+		String languageCode = prefs.get("language", defLocale.getLanguage());
+		String countryCode = prefs.get("countryCode", defLocale.getCountry());
+		String regionCode = prefs.get("regionCode", defLocale.getVariant());
+		
+		this.currentLocale = new Locale(languageCode, countryCode, regionCode);
 		
 		this.exportIntl = prefs.getBoolean("exportInternational", false);
 		this.exportDupes = prefs.getBoolean("exportDuplicates", false);
@@ -87,8 +88,8 @@ public class Settings implements SettingsService {
 	
 	@Override
 	public String toString() {
-		return "Settings [languageCode=" + languageCode + ", countryCode="
-				+ countryCode + ", regionCode=" + regionCode + ", exportIntl="
+		return "Settings [languageCode=" + currentLocale.getLanguage() + ", countryCode="
+				+ currentLocale.getCountry() + ", regionCode=" + currentLocale.getVariant() + ", exportIntl="
 				+ exportIntl + "]";
 	}
 
@@ -103,34 +104,16 @@ public class Settings implements SettingsService {
 		}
 	}
 	
-	public void setLanguageCode(String languageCode) {
-		ensureNotNull(languageCode);
-		ensureLength(languageCode, 2);
-		this.languageCode = languageCode.toLowerCase();
-	}
-	
 	public String getLanguageCode() {
-		return this.languageCode;
+		return this.currentLocale.getLanguage();
 	}
-	
-	public void setCountryCode(String countryCode) {
-		ensureNotNull(countryCode);
-		ensureLength(countryCode, 2);
-		this.countryCode = countryCode.toUpperCase();
-	}
-	
+
 	public String getCountryCode() {
-		return this.countryCode;
-	}
-	
-	public void setRegionCode(String regionCode) throws IllegalArgumentException {
-		ensureNotNull(regionCode);
-		ensureLength(regionCode, 2);
-		this.regionCode = regionCode.toUpperCase();
+		return this.currentLocale.getCountry();
 	}
 	
 	public String getRegionCode() {
-		return this.regionCode;
+		return this.currentLocale.getVariant();
 	}
 	
 	public void setExportInternationalNumbers(boolean exportIntl) {
@@ -185,8 +168,7 @@ public class Settings implements SettingsService {
 	@Override
 	public void store(String countryCode, String languageCode,
 			boolean exportIntl, boolean exportDupes) {
-		setCountryCode(countryCode);
-		setLanguageCode(languageCode);
+		setLocale(languageCode, countryCode, "");
 		setExportInternationalNumbers(exportIntl);
 		setExportDupes(exportDupes);
 		save();
@@ -198,5 +180,27 @@ public class Settings implements SettingsService {
 	@Override
 	public Settings getSettings() {
 		return this;
+	}
+
+	@Override
+	public void setLocale(Locale locale) {
+		ensureNotNull(locale);
+		this.currentLocale = locale;
+	}
+
+	@Override
+	public void setLocale(String languageCode, String countryCode,
+			String regionCode) {
+		ensureNotNull(languageCode);
+		ensureLength(languageCode, 2);
+		ensureNotNull(countryCode);
+		ensureLength(countryCode, 2);
+		ensureNotNull(regionCode);
+		this.currentLocale = new Locale(languageCode, countryCode, regionCode);
+	}
+
+	@Override
+	public Locale getLocale() {
+		return this.currentLocale;
 	}
 }

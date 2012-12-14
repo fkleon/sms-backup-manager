@@ -2,6 +2,7 @@ package de.leonhardt.sbm.gui.worker;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -13,6 +14,7 @@ import javax.xml.bind.JAXBException;
 import de.leonhardt.sbm.SmsesIO;
 import de.leonhardt.sbm.exception.FaultyInputXMLException;
 import de.leonhardt.sbm.gui.GuiUtils;
+import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
 
 /**
@@ -20,7 +22,7 @@ import de.leonhardt.sbm.xml.model.Smses;
  * @author Frederik Leonhardt
  *
  */
-public class ReadXMLWorker extends SwingWorker<List<Smses>, Smses> {
+public class ReadXMLWorker extends SwingWorker<Collection<Sms>, Sms> {
 
 	private Logger log;
 	private File[] files;
@@ -34,17 +36,17 @@ public class ReadXMLWorker extends SwingWorker<List<Smses>, Smses> {
 	}
 	
 	@Override
-    public List<Smses> doInBackground() {
+    public Collection<Sms> doInBackground() {
 		setText("Reading XML files..");
 		
-		List<Smses> smsList = new ArrayList<Smses>();
+		Collection<Sms> smsList = new ArrayList<Sms>();
 
 		// try to read each file
 		for (int i = 0; i<files.length; i++) {
 			File curFile = files[i];
 			try{
 				Smses smses = mio.readFrom(curFile);
-				smsList.add(smses);
+				smsList.addAll(smses.getSms());
 				//publish(smses);
 				// update progress
 				Float progress = ((i+1.f)/files.length)*100.f;
@@ -68,7 +70,7 @@ public class ReadXMLWorker extends SwingWorker<List<Smses>, Smses> {
     }
 
 	@Override
-	protected void process(List<Smses> smses) {
+	protected void process(List<Sms> smses) {
 //		for (final Smses messagesToImport: smses) {
 //			log.info("[Read] Processed " + messagesToImport.getCount() +  " messages.");
 //			//bm.importMessages(messagesToImport);

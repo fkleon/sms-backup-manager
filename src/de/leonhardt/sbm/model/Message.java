@@ -16,12 +16,7 @@ import de.leonhardt.sbm.model.MessageConsts.Type;
  * @author Frederik Leonhardt
  *
  */
-public class Message {
-
-	/**
-	 * Internal id of message, not part of XML
-	 */
-	protected long id;
+public class Message extends AbstractEntity {
 	
 	/**
 	 * Holds number of duplicates
@@ -50,17 +45,9 @@ public class Message {
 	protected String originalContactName;
     
 	public Message(long id) {
-		this.id = id;
+		super(id);
 		this.numDuplicates = 0;
 	}
-	
-    public long getId() {
-    	return this.id;
-    }
-    
-    public void setId(long id) {
-    	this.id = id;
-    }
     
     public int getNumDuplicates() {
     	return this.numDuplicates;
@@ -72,6 +59,10 @@ public class Message {
     
     public void incDuplicates() {
     	this.numDuplicates++;
+    }
+    
+    public void incDuplicates(int count) {
+    	this.numDuplicates+=count;
     }
     
     public Protocol getProtocol() {

@@ -2,6 +2,8 @@ package de.leonhardt.sbm.util;
 
 import java.util.logging.Logger;
 
+import de.leonhardt.sbm.model.AbstractEntity;
+
 /**
  * Helper utilities and methods.
  * 
@@ -30,6 +32,12 @@ public class Utils {
 		 * @return
 		 */
 		public long getNumIds();
+		
+		/**
+		 * Assigns the next free ID to given AbstractEntity.
+		 * @param ae
+		 */
+		public <T extends AbstractEntity> T assignNextId(T ae);
 	}
 	
 	/**
@@ -54,6 +62,12 @@ public class Utils {
 		@Override
 		public long getNumIds() {
 			return this.nextId;
+		}
+
+		@Override
+		public <T extends AbstractEntity> T assignNextId(T ae) {
+			ae.setId(getNextId());
+			return ae;
 		}
 	}
 	

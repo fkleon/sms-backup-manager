@@ -7,15 +7,14 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
-import de.leonhardt.sbm.convert.SmsesConvert;
 import de.leonhardt.sbm.gui.service.MessageService;
 import de.leonhardt.sbm.model.Contact;
 import de.leonhardt.sbm.model.Message;
 import de.leonhardt.sbm.store.MessageStore;
 import de.leonhardt.sbm.store.SortedMessageStore;
+import de.leonhardt.sbm.util.Utils;
+import de.leonhardt.sbm.util.Utils.IdGenerator;
 import de.leonhardt.sbm.util.comparator.ContactNameComparator;
-import de.leonhardt.sbm.xml.model.Sms;
-import de.leonhardt.sbm.xml.model.Smses;
 
 /**
  * The BackupManager is the main entry point for GUI and CMD.
@@ -29,49 +28,14 @@ import de.leonhardt.sbm.xml.model.Smses;
 public class BackupManager implements MessageService {
 
 	private Logger log;
-	private PhoneNumberParser pnp;
 	private Map<Contact,MessageStore> conversations;
-	private SmsesConvert messageConverter;
-	
-	private String countryCode;
-	private String languageCode;
-	private String regionCode;
+	private IdGenerator idGen;
 	
 	/**
-	 * Creates a new BackupManager with given country and locale
-	 * 
-	 * @param countryCode
-	 * @param languageCode
-	 * @param regionCode
-	 */
-	public BackupManager(String countryCode, String languageCode, String regionCode) {
-		initLocale(countryCode, languageCode, regionCode);
-		init();
-	}
-	
-	/**
-	 * Creates a new default BackupManager with
-	 * - Country: DE
-	 * - Locale: de-DE
+	 * Creates a new BackupManager
 	 */
 	public BackupManager() {
-		initLocale("DE","de","DE");
 		init();
-	}
-	
-	/**
-	 * Initializes Locale and PNP
-	 * 
-	 * @param countryCode
-	 * @param languageCode
-	 * @param regionCode
-	 */
-	public void initLocale(String countryCode, String languageCode, String regionCode) {
-		this.countryCode = countryCode;
-		this.languageCode = languageCode;
-		this.regionCode = regionCode;
-		
-		this.pnp = new PhoneNumberParser(countryCode, languageCode, regionCode);
 	}
 	
 	/**
@@ -79,36 +43,42 @@ public class BackupManager implements MessageService {
 	 */
 	private void init() {
 		this.conversations = Collections.synchronizedMap(new HashMap<Contact, MessageStore>());
-		this.messageConverter = SmsesConvert.getInstance();
-		
+		this.idGen = Utils.getDefaultIdGenerator();
 		this.log = Logger.getLogger("BackupManager");
 	}
 	
 	/**
-	 * Imports all messages in the given Smses object.
+	 * Imports all messages in the given collection,
+	 * also assigns IDs to them.
 	 * 
-	 * @param smses
+	 * @param messages
 	 */
-	public void importMessages(Smses smses) {
-		if (smses == null || smses.getSms() == null) {
-			log.warning("Can not import null object.");
+	public void importMessages(Collection<Message> messages) {
+		if (messages == null) {
+			log.warning("Can not import null collection.");
 			return;
 		}
 		
-		// while importing, assign IDs and build Contacts
-		for (Sms sms: smses.getSms()) {
-			// add contact and message
-			Contact contact = getNormalizedContact(sms.getContactName(), sms.getAddress());
-			
-			try {
-				Message msg = messageConverter.toMessage(sms, contact);
-				putMessage(contact, msg);
-			} catch (Exception e) {
-				log.warning("Could not convert SMS to Message: " + e.toString());
-			}
+		for (Message message: messages) {
+			importMessage(message);
 		}
 		
 		log.info(String.format("[Manager] %d messages in store (+ %d duplicates).",getMessages().size(),getMessages().countDuplicates()));
+	}
+	
+	/**
+	 * Imports a given message,
+	 * also assigns ID to it.
+	 * 
+	 * @param message
+	 */
+	public void importMessage(Message message) {
+		if (message == null) {
+			log.warning("Can not import null message.");
+			return;
+		}
+		
+		putMessage(message.getContact(), idGen.assignNextId(message));
 	}
 	
 	/**
@@ -126,24 +96,6 @@ public class BackupManager implements MessageService {
 			ms.add(message);
 			conversations.put(contact, ms);
 		}
-	}
-	
-	/**
-	 * Build a contact object from given name and address.
-	 * - Normalises name by trimming
-	 * - Normalises address by conversion to international format
-	 * - Adds country code 
-	 * 
-	 * @param name
-	 * @param address
-	 * @return
-	 */
-	private Contact getNormalizedContact(String name, String address) {
-		String contactName = name.trim();
-		String addressIntl = pnp.getInternationalFormat(address);
-		String countryCode = pnp.getCountryCode(address);
-		Contact contact = new Contact(contactName, addressIntl, countryCode);
-		return contact;
 	}
 	
 	/**
@@ -187,8 +139,7 @@ public class BackupManager implements MessageService {
 
 	@Override
 	public String toString() {
-		return "BackupManager [countryCode="+ countryCode + ", locale=" + languageCode + "-" + regionCode
-				+ ", messages = " + getMessages().size() + ", contacts = " + conversations.keySet().size() + "]";
+		return "BackupManager [messages = " + getMessages().size() + ", contacts = " + conversations.keySet().size() + "]";
 	}
 
 	@Override

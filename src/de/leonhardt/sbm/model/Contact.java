@@ -6,32 +6,26 @@ package de.leonhardt.sbm.model;
  * @author Frederik Leonhardt
  */
 // TODO use contact format from Contact Backup
-public class Contact {
+// TODO use ids
+public class Contact extends AbstractEntity {
 
-	private long id;
 	private String contactName;
 	private String addressIntl;
 	private String countryCode;
 	private int numMessages; // not used atm
-		
+	
 	public Contact(String contactName, String addressIntl) {
+		super(0); //TODO
 		this.contactName = contactName;
 		this.addressIntl = addressIntl;
 		this.countryCode = "ZZ";
 	}
 	
 	public Contact(String contactName, String addressIntl, String countryCode) {
+		super(0);
 		this.contactName = contactName;
 		this.addressIntl = addressIntl;
 		this.countryCode = countryCode;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	public String getContactName() {

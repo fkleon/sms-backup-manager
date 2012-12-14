@@ -4,11 +4,15 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.leonhardt.sbm.convert.SmsesConvert;
+import de.leonhardt.sbm.convert.MessageConverter;
+import de.leonhardt.sbm.convert.SmsBrConverter;
 import de.leonhardt.sbm.util.MapUtil;
 import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
@@ -19,7 +23,7 @@ public class ManagerTest {
 	private static TestUtils testUtils;
 	private static String testOutputPath;
 	private static BackupManager bm;
-	private static SmsesConvert msgConv;
+	private static MessageConverter<Sms> msgConv;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -29,7 +33,7 @@ public class ManagerTest {
 		smsIO = new SmsesIO(true);
 		testUtils = new TestUtils();
 		bm = new BackupManager();
-		msgConv = SmsesConvert.getInstance();
+		msgConv = new SmsBrConverter();
 		testOutputPath = "test.xml";
 	}
 	
@@ -53,7 +57,7 @@ public class ManagerTest {
 		
 		assertEquals("Message number mismatch #import",messageCount,validSmses.getSms().size());
 	
-		bm.importMessages(validSmses);
+		bm.importMessages(msgConv.toInternalCol(validSmses.getSms()));
 		
 		assertEquals("Contact number mismatch",contactCount,bm.getContacts().size());
 		assertEquals("Duplicate number mismatch",dupeCount,bm.getMessages().countDuplicates());		
@@ -74,7 +78,7 @@ public class ManagerTest {
 		
 		Smses validSmses = smsIO.readFrom(validPath);
 		
-		bm.importMessages(validSmses);
+		bm.importMessages(msgConv.toInternalCol(validSmses.getSms()));
 
 		assertEquals("Contact number mismatch",contactCount,bm.getContacts().size());
 		assertEquals("Duplicate number mismatch",dupeCount,bm.getMessages().countDuplicates());		
@@ -93,7 +97,7 @@ public class ManagerTest {
 		
 		Smses validSmses = smsIO.readFrom(validPath);
 		
-		bm.importMessages(validSmses);
+		bm.importMessages(msgConv.toInternalCol(validSmses.getSms()));
 
 		MapUtil.dumpMap(bm.getCS());
 		
@@ -109,17 +113,19 @@ public class ManagerTest {
 		
 		Smses validSmses = smsIO.readFrom("fixtures/sms-dupes.xml");
 		
-		bm.importMessages(validSmses);
+		bm.importMessages(msgConv.toInternalCol(validSmses.getSms()));
 		
 		assertEquals("Message number mismatch",messageCount,bm.getMessages().size()+bm.getMessages().countDuplicates());
 
-		Smses newSmses = msgConv.convert(bm.getMessages(),true,true);
+		Collection<Sms> extSmses = msgConv.toExternalCol(bm.getMessages(),true,true);
+		Smses newSmses = new Smses(new ArrayList<Sms>(extSmses));
 		
 		assertEquals("Message number mismatch",messageCount,newSmses.getCount().intValue());
 		assertEquals("Message number mismatch",messageCount,newSmses.getSms().size());
 
-		newSmses = msgConv.convert(bm.getMessages(),true,false);
-
+		extSmses = msgConv.toExternalCol(bm.getMessages(),true,false);
+		newSmses = new Smses(new ArrayList<Sms>(extSmses));
+		
 		assertEquals("Message number mismatch",messageCount-dupeCount,newSmses.getCount().intValue());
 		assertEquals("Message number mismatch",messageCount-dupeCount,newSmses.getSms().size());
 	}
@@ -135,9 +141,10 @@ public class ManagerTest {
 		
 		assertEquals("Message number mismatch #import", messageCount, validSmses.getSms().size());
 		
-		bm.importMessages(validSmses);
+		bm.importMessages(msgConv.toInternalCol(validSmses.getSms()));
 		
-		Smses newSmses = msgConv.convert(bm.getMessages(),true,true);
+		Collection<Sms> extSmses = msgConv.toExternalCol(bm.getMessages(),true,true);
+		Smses newSmses = new Smses(new ArrayList<Sms>(extSmses));
 		
 		for (Sms sms: validSmses.getSms()) {
 			if (!newSmses.getSms().contains(sms)) {
