@@ -16,7 +16,8 @@ Dependencies:
 ### Version History
 
 #### v0.8 (upcoming)
-- [GUI] Added visible duplicate count in message header
+- [GUI] Improved status message output to clearly show number of imported messages and duplicates
+- [GUI] Added visible duplicate count in message headers
 - [GUI] Additional export settings (export duplicates, export international numbers)
 - [GUI] Added status bar
 - [GUI] Threaded execution (non-blocking import, etc.)
