@@ -1,6 +1,5 @@
 package de.leonhardt.sbm.gui.renderer;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -9,14 +8,12 @@ import java.text.DateFormat;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.border.BevelBorder;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -25,7 +22,6 @@ import de.leonhardt.sbm.gui.resource.IconLoader;
 import de.leonhardt.sbm.model.Message;
 import de.leonhardt.sbm.model.MessageConsts.Status;
 import de.leonhardt.sbm.model.MessageConsts.Type;
-import de.leonhardt.sbm.xml.model.Sms;
 
 /**
  * A renderer for ListModels containing Sms messages.

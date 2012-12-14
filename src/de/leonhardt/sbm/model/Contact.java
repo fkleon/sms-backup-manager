@@ -1,5 +1,10 @@
 package de.leonhardt.sbm.model;
 
+/**
+ * Internal representation of a contact.
+ * 
+ * @author Frederik Leonhardt
+ */
 // TODO use contact format from Contact Backup
 public class Contact {
 
@@ -7,7 +12,7 @@ public class Contact {
 	private String contactName;
 	private String addressIntl;
 	private String countryCode;
-	private int numMessages;
+	private int numMessages; // not used atm
 		
 	public Contact(String contactName, String addressIntl) {
 		this.contactName = contactName;

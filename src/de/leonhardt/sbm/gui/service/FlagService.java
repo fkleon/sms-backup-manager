@@ -10,6 +10,11 @@ import javax.swing.ImageIcon;
  */
 public interface FlagService {
 
+	/**
+	 * Returns the ImageIcon for a given countryCode.
+	 * @param countryCode
+	 * @return
+	 */
 	public ImageIcon getFlag(String countryCode);
 	
 }

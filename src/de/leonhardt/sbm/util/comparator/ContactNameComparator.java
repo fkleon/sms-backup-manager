@@ -4,6 +4,14 @@ import java.util.Comparator;
 
 import de.leonhardt.sbm.model.Contact;
 
+/**
+ * A comparator implementation for Contacts.
+ * 
+ * Sorts by name and then by address.
+ * 
+ * @author Frederik Leonhardt
+ *
+ */
 public class ContactNameComparator implements Comparator<Contact> {
 	@Override
 	public int compare(Contact o1, Contact o2) {

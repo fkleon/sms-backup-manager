@@ -8,7 +8,7 @@ import de.leonhardt.sbm.util.comparator.MessageDateComparator;
 
 /**
  * A sorted message store.
- * Guarantees sorting order.
+ * Guarantees a certain sorting order.
  * 
  * @author Frederik Leonhardt
  *

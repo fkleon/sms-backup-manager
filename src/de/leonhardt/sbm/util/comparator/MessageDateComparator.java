@@ -4,6 +4,14 @@ import java.util.Comparator;
 
 import de.leonhardt.sbm.model.Message;
 
+/**
+ * A comparator implementation for Messages.
+ * 
+ * Sorts by date and then by contact.
+ * 
+ * @author Frederik Leonhardt
+ *
+ */
 public class MessageDateComparator implements Comparator<Message> {
 		
 	@Override

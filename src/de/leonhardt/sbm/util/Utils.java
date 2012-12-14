@@ -1,19 +1,44 @@
 package de.leonhardt.sbm.util;
 
-import java.util.Collections;
 import java.util.logging.Logger;
 
-import de.leonhardt.sbm.util.comparator.MessageDateComparator;
-import de.leonhardt.sbm.xml.model.Smses;
-
-//TODO comments
+/**
+ * Helper utilities and methods.
+ * 
+ * @author Frederik Leonhardt
+ *
+ */
 public class Utils {
 
+	/**
+	 * An ID generator should generate unique IDs
+	 * and keep track of the number of generated IDs.
+	 * 
+	 * @author Frederik Leonhardt
+	 *
+	 */
 	public interface IdGenerator {
+		
+		/**
+		 * Return the next unassigned ID.
+		 * @return
+		 */
 		public long getNextId();
+		
+		/**
+		 * Return the total number of generated IDs.
+		 * @return
+		 */
 		public long getNumIds();
 	}
 	
+	/**
+	 * Simple implementation of IdGenerator.
+	 * Just uses integers in a row.
+	 * 
+	 * @author Frederik Leonhardt
+	 *
+	 */
 	public static class SimpleIdGenerator implements IdGenerator {
 		private long nextId;
 		
@@ -32,25 +57,48 @@ public class Utils {
 		}
 	}
 	
+	/**
+	 * Returns the default ID generator.
+	 * @return
+	 */
 	public static IdGenerator getDefaultIdGenerator() {
 		return new Utils.SimpleIdGenerator();
 	}
 	
+	/**
+	 * The TimeTracker class is a helper utility to easily
+	 * measure elapsed time spans for debugging.
+	 * 
+	 * @author Frederik Leonhardt
+	 *
+	 */
 	public static class TimeTracker {
 		
 		long startTime;
 		
+		/**
+		 * Starts the timer.
+		 */
 		public void start() {
 			this.startTime = System.currentTimeMillis();
 			Logger.getAnonymousLogger().info("Started time tracking.");
 		}
 		
-		public long ellapsedMillis() {
+		/**
+		 * Returns the milliseconds ellapsed since timer was started.
+		 * @return
+		 */
+		public long elapsedMillis() {
 			return (System.currentTimeMillis() - this.startTime);
 		}
 		
-		public String ellapsedTime() {
-			long ms = ellapsedMillis();
+		/**
+		 * Returns the time elapsed since timer was started,
+		 * formated as String.
+		 * @return
+		 */
+		public String elapsedTime() {
+			long ms = elapsedMillis();
 			
 			long s = (ms / 1000) % 60;
 			//long m = (ms / (1000 * 60)) % 60;
@@ -59,8 +107,12 @@ public class Utils {
 			return String.format("%02d seconds, %02d milliseconds", s, ms);
 		}
 		
-		public void logEllapsedTime(String description) {
-			Logger.getAnonymousLogger().info("["+description+"] Ellapsed: " + ellapsedTime());
+		/**
+		 * Logs the elapsed time to an anonymous logger.
+		 * @param description
+		 */
+		public void logElapsedTime(String description) {
+			Logger.getAnonymousLogger().info("["+description+"] Elapsed: " + elapsedTime());
 		}
 	}
 }

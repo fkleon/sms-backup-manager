@@ -7,10 +7,8 @@ import de.leonhardt.sbm.model.MessageConsts.Status;
 import de.leonhardt.sbm.model.MessageConsts.Type;
 
 /**
- * A internal representation of a message.
+ * An internal representation of a message.
  * It contains at least an application-wide unique ID.
- * 
- * External message classes should inherit from this class.
  * 
  * Subclasses must implement hashCode and equals for the system
  * to be able to determine duplicates.
@@ -180,9 +178,18 @@ public class Message {
 		result = prime * result + ((date == null) ? 0 : date.hashCode());
 		result = prime * result + ((subject == null) ? 0 : subject.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + ((body == null) ? 0 : body.hashCode());
 		return result;
 	}
 
+	/**
+	 * Used for equals:
+	 * - contact
+	 * - date
+	 * - subject
+	 * - type
+	 * - body
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -206,6 +213,11 @@ public class Message {
 			if (other.subject != null)
 				return false;
 		} else if (!subject.equals(other.subject))
+			return false;
+		if (body == null) {
+			if (other.body != null)
+				return false;
+		} else if (!body.equals(other.body))
 			return false;
 		if (type != other.type)
 			return false;

@@ -75,10 +75,9 @@ public class BackupManager implements MessageService {
 	}
 	
 	/**
-	 * Initializes MessageStore, ContactStore and Logger
+	 * Initializes MessageStore and Logger
 	 */
 	private void init() {
-		//this.idGen = Utils.getDefaultIdGenerator();
 		this.conversations = Collections.synchronizedMap(new HashMap<Contact, MessageStore>());
 		this.messageConverter = SmsesConvert.getInstance();
 		
@@ -99,7 +98,7 @@ public class BackupManager implements MessageService {
 		// while importing, assign IDs and build Contacts
 		for (Sms sms: smses.getSms()) {
 			// add contact and message
-			Contact contact = getNormalizedContact(sms);
+			Contact contact = getNormalizedContact(sms.getContactName(), sms.getAddress());
 			
 			try {
 				Message msg = messageConverter.toMessage(sms, contact);
@@ -112,6 +111,12 @@ public class BackupManager implements MessageService {
 		log.info(String.format("[Manager] %d messages in store (+ %d duplicates).",getMessages().size(),getMessages().countDuplicates()));
 	}
 	
+	/**
+	 * Adds a message to the appropriate message store for a given contact.
+	 * 
+	 * @param contact
+	 * @param message
+	 */
 	private void putMessage(Contact contact, Message message) {
 		MessageStore ms;
 		if ((ms = conversations.get(contact)) != null) {
@@ -123,10 +128,16 @@ public class BackupManager implements MessageService {
 		}
 	}
 	
-	private Contact getNormalizedContact(Sms message) {
-		return getNormalizedContact(message.getContactName(), message.getAddress());
-	}
-	
+	/**
+	 * Build a contact object from given name and address.
+	 * - Normalises name by trimming
+	 * - Normalises address by conversion to international format
+	 * - Adds country code 
+	 * 
+	 * @param name
+	 * @param address
+	 * @return
+	 */
 	private Contact getNormalizedContact(String name, String address) {
 		String contactName = name.trim();
 		String addressIntl = pnp.getInternationalFormat(address);
@@ -135,6 +146,12 @@ public class BackupManager implements MessageService {
 		return contact;
 	}
 	
+	/**
+	 * Returns the underlying conversation map.
+	 * Should only be used for testing.
+	 * 
+	 * @return
+	 */
 	protected Map<Contact, MessageStore> getCS() {
 		return this.conversations;
 	}

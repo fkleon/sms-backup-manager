@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 /**
  * some handy map utilities
  * 
- * @author Frederik Leonhardt <frederik.leonhardt@dfki.de>
+ * @author Frederik Leonhardt
  * @date 15.03.2012
  *
  */
@@ -21,7 +21,7 @@ public class MapUtil {
 	/**
 	 * order of sorting 
 	 * 
-	 * @author Frederik Leonhardt <frederik.leonhardt@dfki.de>
+	 * @author Frederik Leonhardt
 	 * @date 16.03.2012
 	 *
 	 */

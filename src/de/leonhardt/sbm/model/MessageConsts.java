@@ -4,8 +4,20 @@ import de.leonhardt.sbm.exception.UnknownProtocolException;
 import de.leonhardt.sbm.exception.UnknownStatusException;
 import de.leonhardt.sbm.exception.UnknownTypeException;
 
+/**
+ * This class holds enumerations used in messages.
+ * 
+ * @author Frederik Leonhardt
+ *
+ */
 public class MessageConsts {
 
+	/**
+	 * Protocol of a message.
+	 * Each protocol is represented by an unique integer.
+	 * 
+	 * @author Frederik Leonhardt
+	 */
 	public enum Protocol {
 		SMS(0),
 		MMS(1),
@@ -29,6 +41,13 @@ public class MessageConsts {
 		}
 	}
 	
+	/**
+	 * Type of a message.
+	 * Each type is represented by an unique integer.
+	 * Each type has an icon name.
+	 * 
+	 * @author Frederik Leonhardt
+	 */
 	public enum Type {
 		Received(1, "message-in.png"),
 		Sent(2, "message-out.png"),
@@ -64,6 +83,13 @@ public class MessageConsts {
 		}
 	}
 	
+	/**
+	 * Status of a message.
+	 * Each status is represented by an unique integer.
+	 * Each status has an icon name.
+	 * 
+	 * @author Frederik Leonhardt
+	 */
 	public enum Status {
 		None(-1, "status-none.png"),
 		Complete(0, "status-ok.png"),
