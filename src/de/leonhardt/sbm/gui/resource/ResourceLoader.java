@@ -9,7 +9,7 @@ import java.net.URL;
  * @author Frederik Leonhardt
  *
  */
-public abstract class ResourceLoader {
+public class ResourceLoader {
 
 	public ResourceLoader() {
 		

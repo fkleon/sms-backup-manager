@@ -61,19 +61,26 @@ public class SmsBrConverter extends AbstractConverter<Sms> {
 			UnknownStatusException, UnknownTypeException {
 		Message message = new Message(-1); // set id later
 		
+		// determine type of message
+		Type type = Type.toType(ensureNotNull(sms.getType()));
+		
 		// internationalize contact / address
 		Contact c = getNormalizedContact(sms.getContactName(), sms.getAddress());
 		
 		message.setContact(c);
+		message.setType(type);
 		message.setBody(sms.getBody());
 		message.setDate(getDateOrNull(sms.getDate()));
-		message.setDateSent(getDateOrNull(sms.getDateSent()));
+		
+		// if message type is not SENT, do not set the date sent!
+		// this would result in duplicate messages on the phone later.
+		message.setDateSent((type != Type.Sent) ? null : getDateOrNull(sms.getDateSent()));
+		
 		message.setProtocol(Protocol.toProtocol(ensureNotNull(sms.getProtocol())));
 		message.setRead(sms.getRead());
 		message.setServiceCenter(sms.getServiceCenter());
 		message.setStatus(Status.toStatus(ensureNotNull(sms.getStatus())));
 		message.setSubject(sms.getSubject());
-		message.setType(Type.toType(ensureNotNull(sms.getType())));
 		
 		// keep original values
 		message.setOriginalAddress(sms.getAddress());
@@ -108,6 +115,19 @@ public class SmsBrConverter extends AbstractConverter<Sms> {
 		sms.setBody(message.getBody());
 		sms.setContactName(message.getContact().getContactName());
 		sms.setDate(message.getDate().getTime());
+		
+		// This validation already takes place while importing messages.
+		/*
+		if (message.getType() == Type.Received && message.getDateSent() != null) {
+			sms.setDateSent(null);
+			System.out.println("date information wrong.");
+		} else if (message.getType() == Type.Sent) {
+			sms.setDateSent(getTimeOrNull(message.getDateSent()));
+		} else {
+			System.out.println("help " + message);
+		}
+		*/
+		
 		sms.setDateSent(getTimeOrNull(message.getDateSent()));
 		sms.setLocked(0); // TODO check
 		sms.setProtocol(message.getProtocol().getValue());

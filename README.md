@@ -21,6 +21,7 @@ Dependencies:
 
 #### v0.9 (upcoming)
 - [GUI] Further GUI code refactoring
+- [GEN] Added import validation for sending date (only acceptable on sent/outgoing messages)
 
 #### v0.8 (Dec 14, 2012)
 - [GUI] Improved status message output to clearly show number of imported messages and duplicates

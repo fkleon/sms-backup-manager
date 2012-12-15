@@ -20,8 +20,7 @@ public class NullLongAdapter extends XmlAdapter<String, Long> {
 	@Override
 	public String marshal(Long arg0) throws Exception {
 		if (arg0 == null) {
-			//System.out.println(arg0);
-			return "null";
+			return "null"; //TODO: check if thsi should be "null" or "0"
 		} else {
 			return arg0.toString();
 		}
