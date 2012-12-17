@@ -17,6 +17,10 @@ Dependencies:
 - commons-lang 3.1 - [get it here][commons-lang]
 - beanfabrics-core and beanfabrics-swing 0.9.4 - [get it here][beanfabrics]
 
+### License
+SMS Backup Manager is distributed under the GNU Lesser General Public License (LGPL). See LICENSE file for more details.  
+Also, see 3rdparty-licenses.txt for any third party licenses.
+
 ### Version History
 
 #### v0.9 (upcoming)
