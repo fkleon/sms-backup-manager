@@ -8,15 +8,21 @@ import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Comparator;
 
+import de.leonhardt.sbm.smsbr.xml.model.Sms;
+import de.leonhardt.sbm.smsbr.xml.model.Smses;
 
-import de.leonhardt.sbm.model.Message;
-import de.leonhardt.sbm.util.Utils;
-import de.leonhardt.sbm.util.comparator.MessageDateComparator;
-import de.leonhardt.sbm.xml.model.Sms;
-import de.leonhardt.sbm.xml.model.Smses;
-
+/**
+ * A bunch of useful utilities to for testing all the stuff.
+ * @author Frederik Leonhardt
+ *
+ */
 public class TestUtils {
 
+	/**
+	 * Compares SMS based their dates.
+	 * @author Frederik Leonhardt
+	 *
+	 */
 	public class SmsMessageDateComparator implements Comparator<Sms> {
 		@Override
 		public int compare(Sms o1, Sms o2) {
@@ -24,10 +30,22 @@ public class TestUtils {
 		}
 	}
 	
+	/**
+	 * Returns the given file's contents.
+	 * @param filePath
+	 * @return
+	 * @throws IOException
+	 */
 	public String readFileContent(String filePath) throws IOException {
 		return readFileContent(new File(filePath));
 	}
 	
+	/**
+	 * returns the given file's contents.
+	 * @param inputFile
+	 * @return
+	 * @throws IOException
+	 */
 	public String readFileContent(File inputFile) throws IOException {
 		FileInputStream fin =  new FileInputStream(inputFile);
 		BufferedReader myInput = new BufferedReader(new InputStreamReader(fin));
@@ -40,10 +58,22 @@ public class TestUtils {
 		return sb.toString();
 	}
 	
+	/**
+	 * Returns the number of line sin the specified file.
+	 * @param filePath
+	 * @return
+	 * @throws IOException
+	 */
 	public int readLineCount(String filePath) throws IOException {
 		return readLineCount(new File(filePath));
 	}
 	
+	/**
+	 * Returns the number of lines in the specified file.
+	 * @param inputFile
+	 * @return
+	 * @throws IOException
+	 */
 	public int readLineCount(File inputFile) throws IOException {
 		FileInputStream fin =  new FileInputStream(inputFile);
 		BufferedReader myInput = new BufferedReader(new InputStreamReader(fin));
@@ -55,6 +85,13 @@ public class TestUtils {
 		return lines;
 	}
 	
+	/**
+	 * Compares two files based on their content.
+	 * @param filePath1
+	 * @param filePath2
+	 * @return
+	 * @throws IOException
+	 */
 	public boolean fileCompare(String filePath1, String filePath2) throws IOException {
 		File file1 = new File(filePath1);
 		File file2 = new File(filePath2);
@@ -65,6 +102,10 @@ public class TestUtils {
 		return fileContent1.equals(fileContent2);
 	}
 	
+	/**
+	 * Sorts a given Smses object by the dates of their sms messages.
+	 * @param smses
+	 */
 	public void sortSmses(Smses smses) {
 		Collections.sort(smses.getSms(), new SmsMessageDateComparator());
 	}

@@ -7,11 +7,11 @@ import java.util.Random;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
-import de.leonhardt.sbm.model.Contact;
-import de.leonhardt.sbm.model.Message;
-import de.leonhardt.sbm.model.MessageConsts.Protocol;
-import de.leonhardt.sbm.model.MessageConsts.Status;
-import de.leonhardt.sbm.model.MessageConsts.Type;
+import de.leonhardt.sbm.core.model.Contact;
+import de.leonhardt.sbm.core.model.Message;
+import de.leonhardt.sbm.core.model.MessageConsts.Protocol;
+import de.leonhardt.sbm.core.model.MessageConsts.Status;
+import de.leonhardt.sbm.core.model.MessageConsts.Type;
 
 /**
  * Class which generates random messages and contacts for testing purpose.
@@ -21,11 +21,14 @@ import de.leonhardt.sbm.model.MessageConsts.Type;
  */
 public class MessageGenerator {
 
+	// some basic configuration
 	public static int maxMsgLength = 500;
 	public static int minContacts = 2;
 	public static int maxContacts = 50;
 	public static int maxMsgsPerContact = 50;
-	Random rand;
+	
+	// the ranom generator to use
+	private Random rand;
 	
 	/**
 	 * Creates new MessageGenerator
