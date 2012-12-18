@@ -12,12 +12,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import de.leonhardt.sbm.io.SmsBrIO;
 import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
 
 public class IOTest {
 
-	private static SmsesIO smsIO;
+	private static SmsBrIO smsIO;
 	private static TestUtils testUtils;
 	private static String testOutputPath;
 	
@@ -26,7 +27,7 @@ public class IOTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		smsIO = new SmsesIO(true);
+		smsIO = new SmsBrIO(true);
 		testUtils = new TestUtils();
 		testOutputPath = "test.xml";
 	}

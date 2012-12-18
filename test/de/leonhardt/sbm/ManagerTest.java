@@ -13,13 +13,14 @@ import org.junit.Test;
 
 import de.leonhardt.sbm.convert.MessageConverter;
 import de.leonhardt.sbm.convert.SmsBrConverter;
+import de.leonhardt.sbm.io.SmsBrIO;
 import de.leonhardt.sbm.util.MapUtil;
 import de.leonhardt.sbm.xml.model.Sms;
 import de.leonhardt.sbm.xml.model.Smses;
 
 public class ManagerTest {
 
-	private static SmsesIO smsIO;
+	private static SmsBrIO smsIO;
 	private static TestUtils testUtils;
 	private static String testOutputPath;
 	private static BackupManager bm;
@@ -30,7 +31,7 @@ public class ManagerTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		smsIO = new SmsesIO(true);
+		smsIO = new SmsBrIO(true);
 		testUtils = new TestUtils();
 		bm = new BackupManager();
 		msgConv = new SmsBrConverter();
