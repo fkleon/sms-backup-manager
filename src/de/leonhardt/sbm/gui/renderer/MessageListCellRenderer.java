@@ -1,9 +1,9 @@
 package de.leonhardt.sbm.gui.renderer;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -24,7 +24,7 @@ import de.leonhardt.sbm.model.MessageConsts.Status;
 import de.leonhardt.sbm.model.MessageConsts.Type;
 
 /**
- * A renderer for ListModels containing Sms messages.
+ * A renderer for ListModels containing messages.
  * @author Frederik Leonhardt
  *
  */
@@ -58,7 +58,7 @@ public class MessageListCellRenderer extends DefaultListCellRenderer {
 	public Component getListCellRendererComponent(JList jlist, Object value,
 			int cellIndex, boolean isSelected, boolean cellHasFocus) {
 		
-		// since there is no generic support in Java 6 ListModels yet, check if we actually get a sms
+		// since there is no generic support in Java 6 ListModels yet, check if we actually get a message
 		if (value instanceof Message) {
 			Message message = (Message) value;
 			
@@ -91,9 +91,8 @@ public class MessageListCellRenderer extends DefaultListCellRenderer {
 	 */
 	private Component getMessageListEntryComponent(Type messageType, Date messageDate, String messageSubject, String messageBody, Status messageStatus, int dupes) {
 		// the main panel
-		JPanel mPanel = new JPanel(new GridLayout(0, 1));
+		JPanel mPanel = new JPanel(new BorderLayout(5,10));
 		
-		//cPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		mPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 		
 		// we need several sub-elements
@@ -132,12 +131,8 @@ public class MessageListCellRenderer extends DefaultListCellRenderer {
 		JTextArea mBodyTextArea = GuiUtils.buildLabelStyleTextArea(wrappedBody);
 		
 		// assemble..
-		mPanel.add(mHeaderPanel);
-		mPanel.add(mBodyTextArea);
-		
-//		JPanel aPanel = new JPanel(new BorderLayout());
-//		aPanel.add(mPanel, BorderLayout.CENTER);
-//		aPanel.setBorder(BorderFactory.createEtchedBorder());
+		mPanel.add(mHeaderPanel, BorderLayout.NORTH);
+		mPanel.add(mBodyTextArea, BorderLayout.CENTER);
 		
 		return mPanel;
 	}
