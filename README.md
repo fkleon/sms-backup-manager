@@ -23,9 +23,16 @@ Also, see 3rdparty-licenses.txt for any third party licenses.
 
 ### Version History
 
-#### v0.9 (upcoming)
-- [GUI] Further GUI code refactoring
-- [GEN] Added import validation for sending date (only acceptable on sent/outgoing messages)
+#### v1.0 (upcoming)
+
+#### v0.9 (Dec 18, 2012)
+- [GUI] New GUI implementation - now using beanfabrics for everything, closes #2
+- [GUI] More multithreading and visual feedback
+- [GUI] Further GUI code refactoring towards #2
+- [GEN] Added import validation for sending date field in messages (only acceptable on sent/outgoing messages)
+- [GEN] Fixed bug #1 where an empty output file got created
+- [GEN] Added LGPL license, closes #3
+- [GEN] Major code restructuring
 
 #### v0.8 (Dec 14, 2012)
 - [GUI] Improved status message output to clearly show number of imported messages and duplicates
