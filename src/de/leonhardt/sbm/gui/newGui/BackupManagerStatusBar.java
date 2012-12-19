@@ -15,8 +15,8 @@ import org.beanfabrics.Path;
 import org.beanfabrics.View;
 import org.beanfabrics.swing.BnIconLabel;
 import org.beanfabrics.swing.BnLabel;
+import org.beanfabrics.swing.BnProgressBar;
 
-import de.leonhardt.sbm.gui.common.BnProgressBar;
 import de.leonhardt.sbm.gui.common.StatusBarPM;
 
 /**
@@ -40,7 +40,6 @@ public class BackupManagerStatusBar extends JPanel implements View<StatusBarPM>,
 		
 		BnIconLabel iconLabel = new BnIconLabel(localModelProvider, new Path("this.icon"));
 		BnProgressBar progressBar = new BnProgressBar(localModelProvider, new Path("this.progress"));
-		progressBar.setVisible(false);
 		BnLabel textLabel = new BnLabel(localModelProvider, new Path("this.status"));
 		init(iconLabel, progressBar, textLabel);
 	}
