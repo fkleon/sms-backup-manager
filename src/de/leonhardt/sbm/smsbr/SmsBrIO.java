@@ -91,9 +91,9 @@ public class SmsBrIO implements MessageIOService<Sms> {
 	
 		
 		// done!
-		this.log.info("Initialized MessageIO."
+		this.log.info("Initialized MessageIO (SMS Backup and Restore)."
 				+ "\n IncludeXSL = " + includeXSL
-				+ "\n Schema = " + schema.toString());
+				+ "\n Schema = " + (schema == null ? "none" : schema.toString()));
 	}
 	
 	/**
