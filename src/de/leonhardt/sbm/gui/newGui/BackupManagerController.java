@@ -77,6 +77,10 @@ public class BackupManagerController implements ViewController {
 		});
 		*/
     	
+    	// global services
+    	IconService iconService = new IconLoader();
+    	FlagService flagService = new FlagLoader();
+
     	// create settings view and pm
     	sdv = new SettingsDialogView(getMainView());
     	spm = new SettingsPM(sdv); // the pm knows its view to hide it, TODO: use ViewController instead?
@@ -86,7 +90,7 @@ public class BackupManagerController implements ViewController {
     	// the SettingsPM needs a SettingsService to manipulate settings
     	// and a FlagService to load the proper flags for the current locale setting.
         spm.getContext().addService(SettingsService.class, Settings.getInstance());
-        spm.getContext().addService(FlagService.class, new FlagLoader());
+        spm.getContext().addService(FlagService.class, flagService);
 
     	// create main context
         // The BackupmanagerPM needs a BackupManagerService containing
@@ -105,14 +109,17 @@ public class BackupManagerController implements ViewController {
     	MessageIOService<Sms> mio = new SmsBrIO(true);
     	service = new BackupManagerService<Sms>(mio, bm, bm, mcs);
     	
-        pm.getContext().addService(IconService.class, new IconLoader());
-        pm.getContext().addService(FlagService.class, new FlagLoader());
+        pm.getContext().addService(IconService.class, iconService);
+        pm.getContext().addService(FlagService.class, flagService);
         pm.getContext().addService(ViewController.class, this);
     	pm.getContext().addService(BackupManagerService.class, service);
         pm.getContext().addService(SettingsService.class, Settings.getInstance());
     	
     	// assign pm to view
     	mainView.setPresentationModel(pm);
+    	
+    	// set application icon
+    	mainView.setIconImage(iconService.getIcon("sbm-book-open.png").getImage());
     }
     
     /**

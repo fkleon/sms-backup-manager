@@ -22,6 +22,7 @@ import org.beanfabrics.View;
 import org.beanfabrics.swing.BnLabel;
 import org.beanfabrics.swing.list.BnList;
 
+import de.leonhardt.sbm.gui.common.resource.IconService;
 import de.leonhardt.sbm.gui.newGui.renderer.ContactPMListCellRenderer;
 import de.leonhardt.sbm.gui.newGui.renderer.MessagePMListCellRenderer;
 
@@ -54,10 +55,10 @@ public class BackupManagerView extends JFrame implements View<BackupManagerPM>, 
 	 * Creates a new BackupManagerFrame
 	 */
 	public BackupManagerView() {
-		super("BackupManager");
+		super("SMS Backup Manager");
 		
 		// configure frame itself
-		setTitle("BackupManager");
+		setTitle("SMS Backup Manager");
 		setBounds(100, 100, 900, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
