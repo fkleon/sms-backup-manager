@@ -12,10 +12,10 @@ Please refer to the [HowTo][wiki-howto] page of the Wiki.
 
 ### Developers
 Dependencies:
-- libphonenumber 5.2 - [get it here][libphonenumber]
-- offline-geocoder 2.3 - [get it here][libphonenumber]
-- commons-lang 3.1 - [get it here][commons-lang]
-- beanfabrics-core and beanfabrics-swing 0.9.4 - [get it here][beanfabrics]
+- [libphonenumber 5.2+][libphonenumber]
+- [offline-geocoder 2.3+][libphonenumber]
+- [commons-lang 3.1][commons-lang]
+- [beanfabrics-core and beanfabrics-swing 1.0.0][beanfabrics]
 
 ### License
 SMS Backup Manager is distributed under the GNU Lesser General Public License (LGPL). See LICENSE file for more details.  
@@ -23,8 +23,12 @@ Also, see 3rdparty-licenses.txt for any third party licenses.
 
 ### Version History
 
-#### v1.0 (upcoming)
-
+#### v1.0 (upcoming, 2013)
+- [GUI] Added main application icon
+- [GEN] Fixed a bug where message rendering got stuck
+- [GEN] Fixed a bug which would crash program on missing schema file
+- [GEN] Upgraded beanfabrics to 1.0.0
+s
 #### v0.9 (Dec 18, 2012)
 - [GUI] New GUI implementation - now using beanfabrics for everything, closes #2
 - [GUI] More multithreading and visual feedback
