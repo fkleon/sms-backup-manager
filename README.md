@@ -28,7 +28,7 @@ Also, see 3rdparty-licenses.txt for any third party licenses.
 - [GEN] Fixed a bug where message rendering got stuck
 - [GEN] Fixed a bug which would crash program on missing schema file
 - [GEN] Upgraded beanfabrics to 1.0.0
-s
+
 #### v0.9 (Dec 18, 2012)
 - [GUI] New GUI implementation - now using beanfabrics for everything, closes #2
 - [GUI] More multithreading and visual feedback
