@@ -53,7 +53,7 @@ public class PopulateListWorker extends SwingWorker<Void, MessagePM> {
 		for (Message msg: messages) {
 			curPos = i % CHUNK_SIZE;
 			
-			MessagePM mPM =  new MessagePM(msg, is);
+			MessagePM mPM = new MessagePM(msg, is);
 
 			chunks[curPos] = mPM;
 
@@ -62,7 +62,7 @@ public class PopulateListWorker extends SwingWorker<Void, MessagePM> {
 				publish(chunks);
 				// reset array
 				chunks = new MessagePM[CHUNK_SIZE];
-				
+								
 				// announce progress
 				int progress = Utils.calcProgress(i+1, messages.size());
 				setProgress(progress);
@@ -71,9 +71,14 @@ public class PopulateListWorker extends SwingWorker<Void, MessagePM> {
 			
 			i++;
 		}
-		
-		// trim array, might contain null values
-		publish(Arrays.copyOf(chunks, curPos+1));
+
+		// If we handled exactly CHUNK_SIZE messages before,
+		// the counter will be at CHUNK_SIZE - 1.
+		// In this case we are already done.
+		if (curPos < CHUNK_SIZE - 1) {
+			// trim array to remove null values at the end
+			publish(Arrays.copyOf(chunks, curPos+1));
+		}
 		
 		// finish up
 		setProgress(100);
