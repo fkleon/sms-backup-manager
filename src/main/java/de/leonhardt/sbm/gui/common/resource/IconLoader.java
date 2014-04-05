@@ -11,7 +11,7 @@ import de.leonhardt.sbm.core.model.MessageConsts.Type;
 //TODO refactor, rewrite
 public class IconLoader extends ResourceLoader implements IconService {
 
-	private static String resPath = "/resources/images/uiIcons/%s";
+	private static String resPath = "/images/uiIcons/%s";
 	
 	
 	public ImageIcon getLoadingAnimation() {
