@@ -11,17 +11,22 @@ Supported file formats:
 Please refer to the [HowTo][wiki-howto] page of the Wiki.
 
 ### Developers
-The project uses Maven. Dependencies can be found in the pom.xml.
+The project uses Maven. To build an executable jar, execute
 
-They include:
-- [libphonenumber 5.2+][libphonenumber]
-- [offline-geocoder 2.3+][libphonenumber]
-- [commons-lang 3.1][commons-lang]
-- [beanfabrics-core and beanfabrics-swing 1.0.0][beanfabrics]
+```
+mvn clean compile assembly:single
+```
+
+Dependencies can be found in the [pom.xml](pom.xml). They include:
+- [libphonenumber][libphonenumber]
+- [offline-geocoder][libphonenumber]
+- [commons-lang][commons-lang]
+- [beanfabrics-core and beanfabrics-swing][beanfabrics] (not in central maven repository)
+
 
 ### License
-SMS Backup Manager is distributed under the GNU Lesser General Public License (LGPL). See LICENSE file for more details.  
-Also, see 3rdparty-licenses.txt for any third party licenses.
+SMS Backup Manager is distributed under the GNU Lesser General Public License (LGPL). See [LICENSE](LICENSE) file for more details.  
+Also, see [3rdparty-licenses.txt](3rdparty-licenses.txt) for any third party licenses.
 
 [sms-backup-restore]: http://android.riteshsahu.com/apps/sms-backup-restore
 [wiki-howto]: https://github.com/fkleon/sms-backup-manager/wiki/HowTo
