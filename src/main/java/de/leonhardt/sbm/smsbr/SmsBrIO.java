@@ -1,6 +1,10 @@
 package de.leonhardt.sbm.smsbr;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Collection;
 import java.util.logging.Logger;
 
@@ -33,6 +37,7 @@ public class SmsBrIO implements MessageIOService<Sms> {
 
 	private final String XML_XSL_HEADER = "\n<?xml-stylesheet type=\"text/xsl\" href=\"sms.xsl\"?>";
 	private final String XML_SCHEMA = "schema/schema.xsd";
+	
 	protected boolean DEBUG = false;
 	protected Logger log = Logger.getLogger("SmsIO");
 	
@@ -52,7 +57,8 @@ public class SmsBrIO implements MessageIOService<Sms> {
 		// load schema
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		try {
-			this.schema = schemaFactory.newSchema(new File(XML_SCHEMA)); 
+			URL schemaUrl = this.getClass().getClassLoader().getResource(XML_SCHEMA);
+			this.schema = schemaFactory.newSchema(schemaUrl); 
 		} catch (SAXException e) {
 			log.warning("Schema '" + XML_SCHEMA + "' could not be loaded. No validation will take place.");
 		}
@@ -97,6 +103,37 @@ public class SmsBrIO implements MessageIOService<Sms> {
 	}
 	
 	/**
+	 * Imports SMS from a given file.
+	 * 
+	 * @param file the file
+	 * @return Messages wrapped by Smses object
+	 * 
+	 * @throws IllegalArgumentException, if filePath == null
+	 * @throws MessageIOException, if file does not exist, does not contain any messages or a JAXB error occured
+	 */
+	@Override
+	public Collection<Sms> readFrom(File file) throws IllegalArgumentException, MessageIOException {
+		// check file path
+		if (file == null) {
+			throw new IllegalArgumentException("File cannot be null!");
+		}
+		
+		// initialize Input Stream
+		InputStream is;
+		try {
+			is = new FileInputStream(file);
+		} catch (FileNotFoundException e) {
+			throw wrapException(e);
+		}
+		
+		Collection<Sms> smsCol = readFrom(is);
+		
+		log.info("Sucessfully read " + smsCol.size() + " messages from '" + file.getPath() + "'.");
+		
+		return smsCol;
+	}
+	
+	/**
 	 * Imports SMS from a given file path.
 	 * 
 	 * @param filePath
@@ -105,10 +142,11 @@ public class SmsBrIO implements MessageIOService<Sms> {
 	 * @throws IllegalArgumentException, if filePath == null
 	 * @throws MessageIOException, if file does not contain any messages or a JAXB error occured
 	 */
+	@Override
 	public Collection<Sms> readFrom(String filePath) throws IllegalArgumentException, MessageIOException {
 		// check file path
 		if (filePath == null) {
-			throw new IllegalArgumentException("File path can not be null!");
+			throw new IllegalArgumentException("File path cannot be null!");
 		}
 		
 		// initialize File
@@ -118,23 +156,24 @@ public class SmsBrIO implements MessageIOService<Sms> {
 	}
 	
 	/**
-	 * Imports SMS from a given file.
+	 * Imports SMS from a given input stream.
 	 * 
-	 * @param file
+	 * @param is the input stream
 	 * @return Messages wrapped by Smses object
 	 * 
-	 * @throws IllegalArgumentException, if file == null
-	 * @throws MessageIOException, if file does not contain any messages or could not be parsed
+	 * @throws IllegalArgumentException, if inputStream == null
+	 * @throws MessageIOException, if stream does not contain any messages or could not be parsed
 	 */
-	public Collection<Sms> readFrom(File file) throws IllegalArgumentException, MessageIOException {
-		// check file
-		if (file == null) {
-			throw new IllegalArgumentException("File can not be null!");
+	@Override
+	public Collection<Sms> readFrom(InputStream inputStream) throws IllegalArgumentException, MessageIOException {
+		// check input stream
+		if (inputStream == null) {
+			throw new IllegalArgumentException("Input stream cannot be null!");
 		}
 		
 		Smses smses;
 		try {
-			smses = (Smses)unmarshaller.unmarshal(file);
+			smses = (Smses)unmarshaller.unmarshal(inputStream);
 		} catch (JAXBException e) {
 			// rethrow
 			throw wrapException(e);
@@ -155,7 +194,7 @@ public class SmsBrIO implements MessageIOService<Sms> {
 			log.warning("Expected " + expectedCount + " messages, but found only " + actualCount + " messages.");
 		}
 		
-		log.info("Sucessfully read " + actualCount + " messages from '" + file.getPath() + "'.");
+		log.fine("Sucessfully read " + actualCount + " messages from '" + inputStream.toString() + "'.");
 		
 		return smses.getSms();
 	}
@@ -168,6 +207,7 @@ public class SmsBrIO implements MessageIOService<Sms> {
 	 * @throws IllegalArgumentException, if filePath is null
 	 * @throws JAXBException
 	 */
+	@Override
 	public void writeTo(Collection<Sms> smses, String filePath) throws IllegalArgumentException, MessageIOException {
 		// check file path
 		if (filePath == null) {
@@ -188,6 +228,7 @@ public class SmsBrIO implements MessageIOService<Sms> {
 	 * @throws IllegalArgumentException, if file is null
 	 * @throws JAXBException
 	 */
+	@Override
 	public void writeTo(Collection<Sms> smsCol, File file) throws IllegalArgumentException, MessageIOException {
 		// check file
 		if (file == null) {
@@ -214,7 +255,7 @@ public class SmsBrIO implements MessageIOService<Sms> {
 	 * @param e
 	 * @return
 	 */
-	private static MessageIOException wrapException(Exception e) {
+	private MessageIOException wrapException(Exception e) {
 		return new MessageIOException(e);
 	}
 	

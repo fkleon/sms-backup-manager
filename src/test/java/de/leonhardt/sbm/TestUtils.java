@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,6 +33,15 @@ public class TestUtils {
 	
 	/**
 	 * Returns the given file's contents.
+	 * @param inputFile	 * @return
+	 * @throws IOException
+	 */
+	public String readFileContent(File inputFile) throws IOException {
+		return readFileContent(new FileInputStream(inputFile));
+	}
+	
+	/**
+	 * Returns the given file's contents.
 	 * @param filePath
 	 * @return
 	 * @throws IOException
@@ -41,14 +51,13 @@ public class TestUtils {
 	}
 	
 	/**
-	 * returns the given file's contents.
-	 * @param inputFile
+	 * returns the given stream's contents.
+	 * @param inputStream
 	 * @return
 	 * @throws IOException
 	 */
-	public String readFileContent(File inputFile) throws IOException {
-		FileInputStream fin =  new FileInputStream(inputFile);
-		BufferedReader myInput = new BufferedReader(new InputStreamReader(fin));
+	public String readFileContent(InputStream inputStream) throws IOException {
+		BufferedReader myInput = new BufferedReader(new InputStreamReader(inputStream));
 		StringBuilder sb = new StringBuilder();
 		String thisLine;
 		while ((thisLine = myInput.readLine()) != null) {  
@@ -59,7 +68,17 @@ public class TestUtils {
 	}
 	
 	/**
-	 * Returns the number of line sin the specified file.
+	 * Returns the number of lines in the specified file.
+	 * @param inputFile
+	 * @return
+	 * @throws IOException
+	 */
+	public int readLineCount(File file) throws IOException {
+		return readLineCount(new FileInputStream(file));
+	}
+	
+	/**
+	 * Returns the number of lines in the specified file.
 	 * @param filePath
 	 * @return
 	 * @throws IOException
@@ -69,14 +88,13 @@ public class TestUtils {
 	}
 	
 	/**
-	 * Returns the number of lines in the specified file.
-	 * @param inputFile
+	 * Returns the number of lines in the specified IS.
+	 * @param inputStream
 	 * @return
 	 * @throws IOException
 	 */
-	public int readLineCount(File inputFile) throws IOException {
-		FileInputStream fin =  new FileInputStream(inputFile);
-		BufferedReader myInput = new BufferedReader(new InputStreamReader(fin));
+	public int readLineCount(InputStream inputStream) throws IOException {
+		BufferedReader myInput = new BufferedReader(new InputStreamReader(inputStream));
 		int lines = 0;
 		while (myInput.readLine() != null) {  
 			lines++;
@@ -110,4 +128,12 @@ public class TestUtils {
 		Collections.sort(smses.getSms(), new SmsMessageDateComparator());
 	}
 	
+	/**
+	 * Returns the input string to a given resource.
+	 * @param resourcePath
+	 * @return null, if no such file exists.
+	 */
+	public static InputStream getInputStreamFromResource(String resourcePath) {
+		return TestUtils.class.getClassLoader().getResourceAsStream(resourcePath);
+	}
 }

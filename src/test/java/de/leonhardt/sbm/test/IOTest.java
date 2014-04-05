@@ -1,23 +1,33 @@
 package de.leonhardt.sbm.test;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import static org.junit.Assert.*;
 import de.leonhardt.sbm.TestUtils;
 import de.leonhardt.sbm.core.exception.MessageIOException;
+import de.leonhardt.sbm.core.service.MessageIOService;
 import de.leonhardt.sbm.smsbr.SmsBrIO;
 import de.leonhardt.sbm.smsbr.xml.model.Sms;
 import de.leonhardt.sbm.smsbr.xml.model.Smses;
 
+/**
+ * Tests the {@link MessageIOService} implementation {@link SmsBrIO}.
+ * 
+ * @author Frederik Leonhardt
+ *
+ */
 public class IOTest {
 
-	private static SmsBrIO smsIO;
+	private MessageIOService<Sms> smsIO;
 	private static TestUtils testUtils;
 	private static String testOutputPath;
 	
@@ -26,32 +36,50 @@ public class IOTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		smsIO = new SmsBrIO(true);
 		testUtils = new TestUtils();
 		testOutputPath = "test.xml";
 	}
+	
+	/**
+	 * 
+	 * SmsBr is not thread safe, create new objecz for each test
+	 * to allow multi-threaded test executions.
+	 * 
+	 * @throws Exception
+	 */
+	@Before
+	public void setUpBeforeTests() throws Exception {
+		smsIO = new SmsBrIO(false);
+	}
+	
 
 	/**
-	 * @throws java.lang.Exception
+	 * @throws java.lang.ExceptionInputStream
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		System.out.println("Removing temporary test files..");
-		new File(testOutputPath).delete();
+		File f = new File(testOutputPath);
+		if(f.exists()) f.delete();
 		System.out.println("Done!");
 	}
 	
 	@Test
 	public void testReadValid() throws Exception {
 		// test, if a file can be read successfully
-		String validPath = "fixtures/sms-20121011143146.xml";
-		int messageCount = 2444;
-		Smses validSmses = new Smses(smsIO.readFrom(validPath));
+		//String validPath = "fixtures/sms-20121011143146.xml";
+		//int messageCount = 2444;
+		String validPath = "fixtures/sms-dupes.xml";
+		int messageCount = 8;
+		
+		InputStream is = TestUtils.getInputStreamFromResource(validPath);
+		Smses validSmses = new Smses(smsIO.readFrom(is));
 		
 		assertNotNull("The imported object is null.", validSmses);
 		assertNotNull("The sms list is null.", validSmses.getSms());
 		assertNotNull("The sms count is null.", validSmses.getCount());
-		assertEquals("Count and number of messages differ.", (int)validSmses.getCount(), validSmses.getSms().size());
+		assertEquals("Count and number of messages differ, expected " + validSmses.getCount() + " but was" + validSmses.getSms().size(),
+				(int)validSmses.getCount(), validSmses.getSms().size());
 		assertEquals(messageCount, (int)validSmses.getCount());
 		assertEquals(messageCount, validSmses.getSms().size());
 	}
@@ -84,8 +112,9 @@ public class IOTest {
 								};
 		
 		for (int i = 0; i < invalidPaths.length; i++) {
+			InputStream is = TestUtils.getInputStreamFromResource(invalidPaths[i]);
 			try {
-				results = smsIO.readFrom(invalidPaths[i]);
+				results = smsIO.readFrom(is);
 			} catch (MessageIOException e) {
 				// yep..
 				System.out.println(e.toString());
@@ -100,16 +129,20 @@ public class IOTest {
 	
 	@Test
 	public void testWriteValidSimple() throws Exception {
-		String validPath = "fixtures/sms-20121011143146.xml";
-		
-		Smses validSmses = new Smses(smsIO.readFrom(validPath));
+		//String validPath = "fixtures/sms-20121011143146.xml";
+		String validPath = "fixtures/sms-non-dupes.xml";
+		InputStream is = TestUtils.getInputStreamFromResource(validPath);
+
+		Smses validSmses = new Smses(smsIO.readFrom(is));
 		smsIO.writeTo(validSmses.getSms(), testOutputPath);
 		
-		int lines1 = testUtils.readLineCount(validPath);
+		is = TestUtils.getInputStreamFromResource(validPath);
+		int lines1 = testUtils.readLineCount(is);
 		int lines2 = testUtils.readLineCount(testOutputPath);
-		assertTrue("Line count differs.", lines1 == lines2);
+		assertTrue("Line count differs, expected " + lines1 + " but was " + lines2, lines1 == lines2);
 	}
 	
+	@Ignore("Fixture missing")
 	@Test
 	public void testWriteValidExtended() throws Exception {
 		// test if an exported XML contains the same messages as the source XML
@@ -134,9 +167,8 @@ public class IOTest {
 		assertTrue("Messages are not equal.",equalMessages);
 	}
 	
-	public void getRandomSMS() {
+	private void getRandomSMS() {
 		//TODO
 		//Random rand = new Random(1337);
 	}
-	
 }

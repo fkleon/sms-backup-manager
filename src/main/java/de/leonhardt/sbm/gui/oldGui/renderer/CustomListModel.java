@@ -12,7 +12,7 @@ import javax.swing.AbstractListModel;
  * @author Frederik Leonhardt
  *
  */
-public class CustomListModel extends AbstractListModel {
+public class CustomListModel extends AbstractListModel<Object> {
 
 	private static final long serialVersionUID = 8502920390418488566L;
 	

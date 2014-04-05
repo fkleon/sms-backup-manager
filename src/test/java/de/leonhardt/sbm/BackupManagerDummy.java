@@ -2,8 +2,6 @@ package de.leonhardt.sbm;
 
 import java.util.Collection;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import de.leonhardt.sbm.core.model.Contact;
 import de.leonhardt.sbm.core.model.Message;
 import de.leonhardt.sbm.core.service.ContactService;
@@ -35,7 +33,7 @@ public class BackupManagerDummy implements MessageService, ContactService {
 	
 	@Override
 	public Contact findContact(String contactName, String intlAddress) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException("Not implemented yet.");
 	}
 
 	@Override
@@ -78,12 +76,12 @@ public class BackupManagerDummy implements MessageService, ContactService {
 
 	@Override
 	public void importMessages(Collection<Message> messages) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException("Not implemented yet.");
 	}
 
 	@Override
 	public Message importMessage(Message message) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException("Not implemented yet.");
 	}
 
 	@Override

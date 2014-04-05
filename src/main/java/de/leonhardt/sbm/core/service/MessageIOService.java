@@ -1,9 +1,11 @@
 package de.leonhardt.sbm.core.service;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Collection;
 
 import de.leonhardt.sbm.core.exception.MessageIOException;
+import de.leonhardt.sbm.smsbr.xml.model.Sms;
 
 /**
  * Message I/O interface.
@@ -33,6 +35,17 @@ public interface MessageIOService<E> {
 	 * @throws MessageIOException
 	 */
 	public Collection<E> readFrom(File file) throws IllegalArgumentException, MessageIOException;
+	
+	/**
+	 * Imports SMS from a given input stream.
+	 * 
+	 * @param is the input stream
+	 * @return Messages wrapped by Smses object
+	 * 
+	 * @throws IllegalArgumentException, if inputStream == null
+	 * @throws MessageIOException, if stream does not contain any messages or could not be parsed
+	 */
+	public Collection<Sms> readFrom(InputStream inputStream) throws IllegalArgumentException, MessageIOException;
 	
 	/**
 	 * Writes to a given file path.

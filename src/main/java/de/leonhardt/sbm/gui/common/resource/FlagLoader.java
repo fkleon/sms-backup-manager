@@ -15,7 +15,7 @@ import javax.swing.ImageIcon;
  */
 public class FlagLoader extends ResourceLoader implements FlagService {
 	
-	private static String resPath = "/resources/images/flagIcons/%s.png";
+	private static String resPath = "/images/flagIcons/%s.png";
 		
 	
 	/**
