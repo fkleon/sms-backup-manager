@@ -1,6 +1,7 @@
 *.class
 .classpath
 .project
+.settings
 
 # Folders #
 bin/
@@ -9,3 +10,4 @@ bin/
 *.jar
 *.war
 *.ear
+/target
