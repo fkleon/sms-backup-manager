@@ -35,7 +35,7 @@ public class PanelListCellRenderer extends DefaultListCellRenderer {
 	   * cellHasFocus - true if the cell has focus
 	   */
 	@Override
-	public Component getListCellRendererComponent(JList jlist, Object value,
+	public Component getListCellRendererComponent(JList<?> jlist, Object value,
 			int cellIndex, boolean isSelected, boolean cellHasFocus) {
 		
 		// since there is no generic support in Java 6 ListModels yet, check if we actually get a message

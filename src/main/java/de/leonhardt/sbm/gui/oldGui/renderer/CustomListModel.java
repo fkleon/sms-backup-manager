@@ -12,15 +12,15 @@ import javax.swing.AbstractListModel;
  * @author Frederik Leonhardt
  *
  */
-public class CustomListModel extends AbstractListModel<Object> {
+public class CustomListModel<T> extends AbstractListModel<T> {
 
 	private static final long serialVersionUID = 8502920390418488566L;
 	
 	// the underlying list
-	private List<Object> delegate = new LinkedList<Object>();
+	private List<T> delegate = new LinkedList<>();
 	
 	@Override
-	public Object getElementAt(int index) {
+	public T getElementAt(int index) {
 		return delegate.get(index);
 	}
 
@@ -33,7 +33,7 @@ public class CustomListModel extends AbstractListModel<Object> {
 	 * Adds an element to the model.
 	 * @param obj
 	 */
-	public void addElement(Object obj) {
+	public void addElement(T obj) {
 		delegate.add(obj);
 		fireIntervalAdded(this, getSize(), getSize());
 	}
@@ -42,7 +42,7 @@ public class CustomListModel extends AbstractListModel<Object> {
 	 * Adds a collection of elements to the model.
 	 * @param objects
 	 */
-	public void addElements(Collection<? extends Object> objects) {
+	public void addElements(Collection<? extends T> objects) {
 		if (objects.size() < 1) {
 			return;
 		}
@@ -85,7 +85,7 @@ public class CustomListModel extends AbstractListModel<Object> {
 	 * @param obj
 	 * @return
 	 */
-	public boolean contains(Object obj) {
+	public boolean contains(T obj) {
 		return delegate.contains(obj);
 	}
 	
@@ -94,7 +94,7 @@ public class CustomListModel extends AbstractListModel<Object> {
 	 * @param index
 	 * @param element
 	 */
-	public void setElementAt(int index, Object element) {
+	public void setElementAt(int index, T element) {
 		delegate.set(index, element);
 		fireContentsChanged(this, index, index);
 	}

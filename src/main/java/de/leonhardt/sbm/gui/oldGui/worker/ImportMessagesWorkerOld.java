@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javax.swing.SwingWorker;
 
 import de.leonhardt.sbm.core.BackupManager;
+import de.leonhardt.sbm.core.model.Contact;
 import de.leonhardt.sbm.core.model.Message;
 import de.leonhardt.sbm.core.service.MessageConverterService;
 import de.leonhardt.sbm.gui.oldGui.renderer.CustomListModel;
@@ -26,9 +27,9 @@ public class ImportMessagesWorkerOld<T> extends SwingWorker<Void, Void> implemen
 	private BackupManager bm;
 	private MessageConverterService<T> msgConverter;
 	private Collection<T> messagesToImport;
-	private CustomListModel clm;
+	private CustomListModel<Contact> clm;
 	
-	public ImportMessagesWorkerOld(BackupManager bm, MessageConverterService<T> msgConv, CustomListModel clm) {
+	public ImportMessagesWorkerOld(BackupManager bm, MessageConverterService<T> msgConv, CustomListModel<Contact> clm) {
 		this.bm = bm;
 		this.msgConverter = msgConv;
 		this.messagesToImport = new ArrayList<T>();

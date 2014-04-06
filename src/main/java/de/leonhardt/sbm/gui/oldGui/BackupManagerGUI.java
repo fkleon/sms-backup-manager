@@ -15,6 +15,7 @@ import javax.swing.ListModel;
 import javax.swing.SwingWorker;
 
 import java.awt.BorderLayout;
+
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 import javax.swing.JSeparator;
@@ -53,7 +54,9 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import javax.swing.JScrollPane;
+
 import java.awt.Dimension;
 import java.io.File;
 import java.awt.GridLayout;
@@ -81,8 +84,8 @@ public class BackupManagerGUI {
 		
 	private JFrame frmBackupManager;
 	private JDialog dlgSettings;
-	private JList listConversations;
-	private JList listMessages;
+	private JList<Contact> listConversations;
+	private JList<Message> listMessages;
 	private JFileChooser fileChooserLoad;
 	private JFileChooser fileChooserSave;
 	private JTextPane logPane;
@@ -258,19 +261,19 @@ public class BackupManagerGUI {
 		 * Conversation list to the left of split pane,
 		 * sitting on a scroll pane
 		 */
-		listConversations = new JList();
+		listConversations = new JList<Contact>();
 		listConversations.setCellRenderer(new ContactListCellRenderer());
 		listConversations.setVisibleRowCount(0);
 		listConversations.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listConversations.addListSelectionListener(new ContactListSelectionListener());
-		listConversations.setModel(getDefaultListModel("Import your backup."));
+		listConversations.setModel(getDefaultListModel(new Contact("na", "na")));
 		JScrollPane scrollPaneContacts = new JScrollPane(listConversations);
 		
 		/*
 		 * Message output to the right of the split pane,
 		 * sitting on a scroll pane
 		 */
-		listMessages = new JList();
+		listMessages = new JList<Message>();
 		listMessages.setCellRenderer(new MessageListCellRenderer());
 		listMessages.setVisibleRowCount(0);
 		listMessages.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -320,18 +323,18 @@ public class BackupManagerGUI {
 		frmBackupManager.add(statusBarView, BorderLayout.SOUTH);
 	}
 	
-	protected ListModel<Object> getDefaultListModel(String entry) {
-		DefaultListModel<Object> dlm = new DefaultListModel<>();
-		if (entry !=null) {
+	protected <T> ListModel<T> getDefaultListModel(T entry) {
+		DefaultListModel<T> dlm = new DefaultListModel<>();
+		if (entry != null) {
 			dlm.addElement(entry);
 		}
 		return dlm;
 	}
 
-	protected JList getListConversations() {
+	protected JList<Contact> getListConversations() {
 		return listConversations;
 	}
-	protected JList getListMessages() {
+	protected JList<Message> getListMessages() {
 		return listMessages;
 	}
 	protected JTextPane getlogPane() {
@@ -380,10 +383,10 @@ public class BackupManagerGUI {
 			//statusBarModel.setStatus("Importing messages..", load_anim, 0);
 //			statusBar.setText("Importing messages..");
 			
-			CustomListModel dlm = new CustomListModel();
+			CustomListModel<Contact> dlm = new CustomListModel<>();
 			listConversations.setModel(dlm);
 
-			SwingWorker loadWorker = new ReadFilesWorker(mio, selection);
+			SwingWorker loadWorker = new ReadFilesWorker<Sms>(mio, selection);
 			SwingWorker importWorker = new ImportMessagesWorkerOld<Sms>(bm, msgConv, dlm);
 			loadWorker.addPropertyChangeListener((PropertyChangeListener)statusBarModel);
 			importWorker.addPropertyChangeListener((PropertyChangeListener)statusBarModel);
@@ -537,7 +540,7 @@ public class BackupManagerGUI {
 			
 			if (index < 0 || index > listConversations.getModel().getSize()) {
 				// no selection
-				listMessages.setModel(getDefaultListModel("Please select a contact to display the messages."));
+				listMessages.setModel(getDefaultListModel(new Message(-1)));
 				return;
 			}
 
@@ -552,7 +555,7 @@ public class BackupManagerGUI {
 				log.info(messages.size() + " messages in conversation with '" + c.getContactName() + " <" + c.getAddressIntl() + ">'.");
 				
 				// populate message list
-				CustomListModel dlm = new CustomListModel();
+				CustomListModel<Message> dlm = new CustomListModel<>();
 				listMessages.setModel(dlm);
 
 				dlm.addElements(messages);
