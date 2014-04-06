@@ -22,6 +22,8 @@ import org.beanfabrics.View;
 import org.beanfabrics.swing.BnLabel;
 import org.beanfabrics.swing.list.BnList;
 
+import de.leonhardt.sbm.gui.common.ContactPM;
+import de.leonhardt.sbm.gui.common.MessagePM;
 import de.leonhardt.sbm.gui.newGui.renderer.ContactPMListCellRenderer;
 import de.leonhardt.sbm.gui.newGui.renderer.MessagePMListCellRenderer;
 
@@ -164,7 +166,7 @@ public class BackupManagerView extends JFrame implements View<BackupManagerPM>, 
 	 * Builds the contact list.
 	 * @return
 	 */
-	private JList getContactList() {
+	private JList<ContactPM> getContactList() {
 		BnList contactList = new BnList();
 		contactList.setModelProvider(getLocalModelProvider());
 		contactList.setPath(new Path("this.contacts"));
@@ -177,13 +179,12 @@ public class BackupManagerView extends JFrame implements View<BackupManagerPM>, 
 	 * Builds the message list.
 	 * @return
 	 */
-	private JList getMessageList() {
+	private JList<MessagePM> getMessageList() {
 		BnList messageList = new BnList();
 		messageList.setModelProvider(getLocalModelProvider());
 		messageList.setPath(new Path("this.currentMessages"));
 		messageList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		messageList.setCellRenderer(new MessagePMListCellRenderer());
-
 		return messageList;
 	}
 	
