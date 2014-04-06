@@ -1,11 +1,13 @@
 package de.leonhardt.sbm.core.model;
 
 import java.util.Locale;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import de.leonhardt.sbm.core.util.LocaleProvider;
+import de.leonhardt.sbm.core.util.StringUtils;
 import de.leonhardt.sbm.gui.common.SettingsService;
 
 /**
@@ -139,28 +141,6 @@ public class Settings implements SettingsService, LocaleProvider {
 	private Preferences getPrefs() {
 		return this.prefs;
 	}
-	
-	/**
-	 * Ensures that the given object is not null
-	 * @param obj
-	 * @throws IllegalArgumentException
-	 */
-	private void ensureNotNull(Object obj) throws IllegalArgumentException {
-		if (obj==null)
-			throw new IllegalArgumentException("obj is null");
-	}
-	
-	/**
-	 * Ensures that the given string is of given length
-	 * @param str
-	 * @param length
-	 * @throws IllegalArgumentException
-	 */
-	private void ensureLength(String str, int length) throws IllegalArgumentException {
-		if (str.length() != length) {
-			throw new IllegalArgumentException(String.format("Expected string '%s' to be of length %d",str,length));
-		}
-	}
 
 	/**
 	 * Implementation of service pattern method
@@ -184,18 +164,18 @@ public class Settings implements SettingsService, LocaleProvider {
 
 	@Override
 	public void setLocale(Locale locale) {
-		ensureNotNull(locale);
+		Objects.requireNonNull(locale, "Locale must not be null.");
 		this.currentLocale = locale;
 	}
 
 	@Override
 	public void setLocale(String languageCode, String countryCode,
 			String regionCode) {
-		ensureNotNull(languageCode);
-		ensureLength(languageCode, 2);
-		ensureNotNull(countryCode);
-		ensureLength(countryCode, 2);
-		ensureNotNull(regionCode);
+		Objects.requireNonNull(languageCode, "Language code must not be null.");
+		StringUtils.ensureLength(languageCode, 2);
+		Objects.requireNonNull(countryCode, "Country code must not be null.");
+		StringUtils.ensureLength(countryCode, 2);
+		Objects.requireNonNull(regionCode, "Region code must not be null.");
 		this.currentLocale = new Locale(languageCode, countryCode, regionCode);
 	}
 

@@ -1,5 +1,7 @@
 package de.leonhardt.sbm.core.model;
 
+import java.util.Objects;
+
 /**
  * Internal representation of a contact.
  * 
@@ -68,13 +70,7 @@ public class Contact extends AbstractEntity {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((addressIntl == null) ? 0 : addressIntl.hashCode());
-		result = prime * result
-				+ ((contactName == null) ? 0 : contactName.hashCode());
-		return result;
+		return Objects.hash(addressIntl, contactName);
 	}
 
 	/**

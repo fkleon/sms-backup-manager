@@ -10,16 +10,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * some handy map utilities
+ * Some handy map utilities.
  * 
  * @author Frederik Leonhardt
- * @date 15.03.2012
  *
  */
-public class MapUtil {
+public class MapUtils {
 	
 	/**
-	 * order of sorting 
+	 * Order of sorting 
 	 * 
 	 * @author Frederik Leonhardt
 	 * @date 16.03.2012
@@ -31,7 +30,7 @@ public class MapUtil {
 	}
 
 	/**
-	 * sorts a map by values,
+	 * Sorts a map by values,
 	 * highest first!
 	 * 
 	 * @param map
@@ -43,7 +42,7 @@ public class MapUtil {
 	}
 	
 	/**
-	 * sorts a map by values,
+	 * Sorts a map by values,
 	 * by the Order given
 	 * 
 	 * @param map
@@ -87,7 +86,7 @@ public class MapUtil {
 	}
 	
 	/**
-	 * dumps all entries of a map to console output
+	 * Dumps all entries of a map to console output.
 	 * 
 	 * @param map
 	 */
@@ -122,7 +121,7 @@ public class MapUtil {
 		
 		int noEntries = keys.length > values.length ? keys.length : values.length;
 		
-		for(int i = 0; i<noEntries; i++) {
+		for(int i = 0; i < noEntries; i++) {
 			map.put(keys[i], values[i]);
 		}
 		

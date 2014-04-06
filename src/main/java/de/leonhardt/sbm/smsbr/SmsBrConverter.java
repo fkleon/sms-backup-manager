@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import de.leonhardt.sbm.core.AbstractConverter;
@@ -63,7 +64,7 @@ public class SmsBrConverter extends AbstractConverter<Sms> {
 		Message message = new Message(-1); // set id later
 		
 		// determine type of message
-		Type type = Type.toType(ensureNotNull(sms.getType()));
+		Type type = Type.toType(Objects.requireNonNull(sms.getType()));
 		
 		// internationalize contact / address
 		Contact c = getNormalizedContact(sms.getContactName(), sms.getAddress());
@@ -77,10 +78,10 @@ public class SmsBrConverter extends AbstractConverter<Sms> {
 		// this would result in duplicate messages on the phone later.
 		message.setDateSent((type != Type.Sent) ? null : getDateOrNull(sms.getDateSent()));
 		
-		message.setProtocol(Protocol.toProtocol(ensureNotNull(sms.getProtocol())));
+		message.setProtocol(Protocol.toProtocol(Objects.requireNonNull(sms.getProtocol())));
 		message.setRead(sms.getRead());
 		message.setServiceCenter(sms.getServiceCenter());
-		message.setStatus(Status.toStatus(ensureNotNull(sms.getStatus())));
+		message.setStatus(Status.toStatus(Objects.requireNonNull(sms.getStatus())));
 		message.setSubject(sms.getSubject());
 		
 		// keep original values
@@ -145,16 +146,10 @@ public class SmsBrConverter extends AbstractConverter<Sms> {
 	}
 
 	private Date getDateOrNull(Long time) {
-		return (time==null?null:new Date(time));
+		return (time == null ? null : new Date(time));
 	}
 	
 	private Long getTimeOrNull(Date date) {
-		return (date==null?null:date.getTime());
+		return (date == null ? null : date.getTime());
 	}
-		
-	private <E> E ensureNotNull(E o) throws IllegalArgumentException {
-		if (o == null) throw new IllegalArgumentException("Object can not be null");
-		return o;
-	}
-	
 }

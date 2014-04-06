@@ -1,6 +1,7 @@
 package de.leonhardt.sbm.core.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 import de.leonhardt.sbm.core.model.MessageConsts.Protocol;
 import de.leonhardt.sbm.core.model.MessageConsts.Status;
@@ -163,14 +164,7 @@ public class Message extends AbstractEntity {
 	
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((contact == null) ? 0 : contact.hashCode());
-		result = prime * result + ((date == null) ? 0 : date.hashCode());
-		result = prime * result + ((subject == null) ? 0 : subject.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		result = prime * result + ((body == null) ? 0 : body.hashCode());
-		return result;
+		return Objects.hash(contact, date, subject, type, body);
 	}
 
 	/**
