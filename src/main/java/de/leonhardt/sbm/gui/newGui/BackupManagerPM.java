@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.logging.Logger;
@@ -14,12 +15,14 @@ import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.beanfabrics.model.AbstractPM;
+import org.beanfabrics.model.IOperationPM;
 import org.beanfabrics.model.IntegerPM;
 import org.beanfabrics.model.ListPM;
 import org.beanfabrics.model.OperationPM;
 import org.beanfabrics.model.PMManager;
 import org.beanfabrics.support.OnChange;
 import org.beanfabrics.support.Operation;
+import org.beanfabrics.support.Property;
 import org.beanfabrics.support.Service;
 import org.beanfabrics.support.Validation;
 
@@ -44,33 +47,35 @@ import de.leonhardt.sbm.smsbr.xml.model.Sms;
  * @author Frederik Leonhardt
  *
  */
+@SuppressWarnings("unused")
 public class BackupManagerPM extends AbstractPM {
 
-	public static final String VERSION = "v0.9beta-newGui (2012-12-18)";
+	public static final String VERSION = "v1.0-SNAPSHOT-newGui (2014-04-06)";
 	
 	// log
-	private Logger log = Logger.getLogger(getClass().getSimpleName());
+	private final Logger log = Logger.getLogger(getClass().getSimpleName());
 	
 	// menu operations
-	OperationPM importMessages = new OperationPM();
-	OperationPM exportSelectedMessages = new OperationPM();
-	OperationPM exportAllMessages = new OperationPM();
-	OperationPM openSettings = new OperationPM();
-	OperationPM openAbout = new OperationPM();
-	OperationPM openLog = new OperationPM();
+	private final IOperationPM importMessages = new OperationPM();
+	private final IOperationPM exportSelectedMessages = new OperationPM();
+	private final IOperationPM exportAllMessages = new OperationPM();
+	private final IOperationPM openSettings = new OperationPM();
+	private final IOperationPM openAbout = new OperationPM();
+	private final IOperationPM openLog = new OperationPM();
 
 	// other operations
 	// TODO: edit contact (right-click event?)
 	
 	// properties
-	ListPM<ContactPM> contacts = new ListPM<ContactPM>(50);
-	ListPM<MessagePM> currentMessages = new ListPM<MessagePM>(500);
-	IntegerPM messageCount = new IntegerPM(0);
-	IntegerPM contactCount = new IntegerPM(0);
+	private final ListPM<ContactPM> contacts = new ListPM<ContactPM>(50);
+	private final ListPM<MessagePM> currentMessages = new ListPM<MessagePM>(500);
+	
+	private final IntegerPM messageCount = new IntegerPM(0);
+	private final IntegerPM contactCount = new IntegerPM(0);
 	
 	// sub-PMs
 	// views should share same ModelProvider to share context as well
-	StatusBarPM statusBar = new StatusBarPM();
+	private final StatusBarPM statusBar = new StatusBarPM();
 	
 	// log text
 	// TODO: LogPM? Or own view..
@@ -85,7 +90,7 @@ public class BackupManagerPM extends AbstractPM {
 	private int selectedMessageIndex;
 	
 	// other stuff
-	private JFrame rootFrame;
+	private final JFrame rootFrame;
 	private JFileChooser fileChooserLoad;
 	private JFileChooser fileChooserSave;
 	private SwingWorker<?,?> populateWorker;
@@ -95,20 +100,12 @@ public class BackupManagerPM extends AbstractPM {
 	 * @param rootFrame
 	 */
 	public BackupManagerPM(JFrame rootFrame) {
-		PMManager.setup(this);
 		this.rootFrame = rootFrame;
-		
 		this.messageCount.setMandatory(false);
-		
+		this.contacts.getValidator().clear(); //TODO double check
+		PMManager.setup(this);
+
 		initFileChooser();
-	}
-	
-	/**
-	 * Sets the root frame.
-	 * @param frame
-	 */
-	public void setRootFrame(JFrame frame) {
-		this.rootFrame = frame;
 	}
 	
 	/**
@@ -129,7 +126,7 @@ public class BackupManagerPM extends AbstractPM {
 	 * Refreshes the contact list and the current message selection.
 	 */
 	public void refresh() {
-		if (vc != null) {
+		if (bms != null) {
 			setContacts(bms.getContactService().getContacts());
 			setMessagesBySelection();
 		} else {
@@ -140,10 +137,6 @@ public class BackupManagerPM extends AbstractPM {
 	@Service
 	public void setService(BackupManagerService<Sms> bms) {
 		this.bms = bms;
-
-		// TODO do we need to do all of that?
-		this.revalidate();
-		this.revalidateProperties();
 		this.refresh();
 	}
 	
@@ -164,14 +157,17 @@ public class BackupManagerPM extends AbstractPM {
 	 */
 	private void setContacts(Collection<Contact> contacts) {
 		this.contacts.clear();
+		
+		Collection<ContactPM> contactPMs = new ArrayList<>();
 		for (Contact c: contacts) {
 			ContactPM cPM = new ContactPM(c);
-			this.contacts.add(cPM);
+			contactPMs.add(cPM);
 		}
 		
-		// update contact count
-		contactCount.setInteger(contacts.size());
-		
+		this.contacts.addAll(contactPMs);
+
+		// update contact and message count
+		contactCount.setInteger(this.contacts.size());
 		messageCount.setInteger(bms.getMessageService().getMessageCount());
 	}
 	
@@ -209,7 +205,7 @@ public class BackupManagerPM extends AbstractPM {
 	@OnChange(path="contacts")
 	public void setMessagesBySelection() {
 		int newSelection = contacts.getSelection().getMinIndex();
-		
+
 		if (!isNotRendering() || newSelection == selectedContactIndex) {
 			// busy, reset selection
 			contacts.getSelection().setInterval(selectedContactIndex, selectedContactIndex);
@@ -221,7 +217,7 @@ public class BackupManagerPM extends AbstractPM {
 		
 		// get selected contact
 		Contact selectedContactObject = getSelectedContact();
-		
+
 		if (selectedContactObject != null) {
 			// clear message list
 			currentMessages.clear();
@@ -320,7 +316,7 @@ public class BackupManagerPM extends AbstractPM {
 	 */
 	@Validation(path = {"exportSelectedMessages", "exportAllMessages"})
 	public boolean canExport() {
-		return (!contacts.isEmpty() && bms!=null);
+		return (!contacts.isEmpty() && bms != null);
 	}
 	
 	/**

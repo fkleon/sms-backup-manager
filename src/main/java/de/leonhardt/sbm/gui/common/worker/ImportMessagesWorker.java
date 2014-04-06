@@ -78,7 +78,7 @@ public class ImportMessagesWorker<T> extends SwingWorker<Void, MessageView> impl
 			} catch (ExecutionException e) {
 				e.printStackTrace();
 			}
-			 this.execute();
+			this.execute();
 		 }
 	}
 	

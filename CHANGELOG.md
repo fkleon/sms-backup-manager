@@ -4,12 +4,12 @@
 - [GEN] Convert project to maven project
 - [GEN] Fix deprecations and data loading from resources
 - [GEN] Upgraded dependencies:
-  - beanfabrics to 1.1.0
+  - beanfabrics to 1.3.0
   - libphonenumber to 6.0
   - geocoder to 2.9
   - commons-lang3 to 3.3.1
 
-#### v0.9.1 (unreleased)
+#### v0.9.1 (no public release)
 - [GUI] Added main application icon
 - [GEN] Fixed a bug where message rendering got stuck
 - [GEN] Fixed a bug which would crash program on missing schema file

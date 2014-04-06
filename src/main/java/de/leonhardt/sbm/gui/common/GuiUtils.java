@@ -10,6 +10,7 @@ import javax.swing.JTextPane;
 
 /**
  * A bunch of utilities related to GUI actions.
+ * 
  * @author Frederik Leonhardt
  */
 public class GuiUtils {
@@ -19,6 +20,7 @@ public class GuiUtils {
 	
 	/**
 	 * Scrolls down the given JTextPane, if no text is selected.
+	 * 
 	 * @param jtp
 	 */
 	public static void autoscroll(JTextPane jtp) {
@@ -29,6 +31,7 @@ public class GuiUtils {
 	
 	/**
 	 * Returns a new JTextArea in label style.
+	 * 
 	 * @param text
 	 * @return
 	 */
@@ -43,6 +46,7 @@ public class GuiUtils {
 	
 	/**
 	 * Applies label style to a given TextArea.
+	 * 
 	 * @param jTA
 	 * @return
 	 */
@@ -54,13 +58,21 @@ public class GuiUtils {
 		return jTA;
 	}
 	  
-	/** Sets cursor for specified frame to Wait cursor */
+	/** 
+	 * Sets cursor for specified frame to "Wait" cursor
+	 * 
+	 *  @param frame
+	 */
 	public static void startWaitCursor(JFrame frame) {
 		frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		frame.getGlassPane().setVisible(true);
 	}
 	  
-	/** Sets cursor for specified frame to Wait cursor */
+	/**
+	 * Sets cursor for specified frame to "Default" cursor
+	 * 
+	 * @param frame
+	 */
 	public static void stopWaitCursor(JFrame frame) {
 		frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		frame.getGlassPane().setVisible(false);
@@ -68,6 +80,7 @@ public class GuiUtils {
 	
 	/**
 	 * Opens an alert dialog.
+	 * 
 	 * @param parent
 	 * @param title
 	 * @param msg
@@ -79,6 +92,7 @@ public class GuiUtils {
 	
 	/**
 	 * Opens an info dialog.
+	 * 
 	 * @param parent
 	 * @param title
 	 * @param msg
@@ -90,6 +104,7 @@ public class GuiUtils {
 	
 	/**
 	 * Opens a selection dialog.
+	 * 
 	 * @param parent
 	 * @param title
 	 * @param msg
