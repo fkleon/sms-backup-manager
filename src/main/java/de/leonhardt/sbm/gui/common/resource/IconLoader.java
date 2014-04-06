@@ -19,10 +19,12 @@ public class IconLoader extends ResourceLoader implements IconService {
 	}
 	
 	public ImageIcon getMessageTypeIcon(Type mType) {
+		if (mType == null) throw new IllegalArgumentException("Type cannot be null");
 		return getIcon2(mType.getIcon());
 	}
 	
 	public ImageIcon getMessageStatusIcon(Status mStatus) {
+		if (mStatus == null) throw new IllegalArgumentException("Status cannot be null");
 		return getIcon2(mStatus.getIcon());
 	}
 	
