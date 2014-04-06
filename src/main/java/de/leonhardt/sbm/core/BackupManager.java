@@ -64,7 +64,7 @@ public class BackupManager implements MessageService, ContactService {
 			importMessage(message);
 		}
 		
-		log.info(String.format("[Manager] %d messages in store (+ %d duplicates).",getMessages().size(),getMessages().countDuplicates()));
+		log.info(String.format("%d messages in store (+ %d duplicates).",getMessages().size(),getMessages().countDuplicates()));
 	}
 	
 	/**

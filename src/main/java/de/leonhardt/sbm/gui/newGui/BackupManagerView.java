@@ -22,7 +22,6 @@ import org.beanfabrics.View;
 import org.beanfabrics.swing.BnLabel;
 import org.beanfabrics.swing.list.BnList;
 
-import de.leonhardt.sbm.gui.common.resource.IconService;
 import de.leonhardt.sbm.gui.newGui.renderer.ContactPMListCellRenderer;
 import de.leonhardt.sbm.gui.newGui.renderer.MessagePMListCellRenderer;
 

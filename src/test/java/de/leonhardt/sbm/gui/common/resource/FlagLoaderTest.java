@@ -1,4 +1,4 @@
-package de.leonhardt.sbm.test;
+package de.leonhardt.sbm.gui.common.resource;
 
 import static org.junit.Assert.*;
 

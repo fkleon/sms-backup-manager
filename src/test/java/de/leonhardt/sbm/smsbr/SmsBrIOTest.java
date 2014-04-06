@@ -1,4 +1,4 @@
-package de.leonhardt.sbm.test;
+package de.leonhardt.sbm.smsbr;
 
 import java.io.File;
 import java.io.InputStream;
@@ -25,12 +25,22 @@ import de.leonhardt.sbm.smsbr.xml.model.Smses;
  * @author Frederik Leonhardt
  *
  */
-public class IOTest {
+public class SmsBrIOTest {
 
 	private MessageIOService<Sms> smsIO;
 	private static TestUtils testUtils;
 	private static String testOutputPath;
 	
+	private static final String RES_SMS_DUPES = "/fixtures/sms-dupes.xml";
+	private static final String RES_SMS_NON_DUPES = "/fixtures/sms-non-dupes.xml";
+	private static final String RES_SMS_NON_DUPES_2 = "/fixtures/sms-non-dupes-2.xml";
+	private static final String RES_NOT_EXISTENT = "/fixtures/whatup.xml";
+	private static final String[] RES_SMS_INVALIDS = 
+			{"/fixtures/invalidSms.xml", 	// this file contains invalid entries
+			 "/fixtures/emptySms.xml", 		// this file contains no message entries
+			 "/fixtures/invalidSms2.xml", 	// this file contains a message with invalid date
+			};
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -61,18 +71,21 @@ public class IOTest {
 		System.out.println("Removing temporary test files..");
 		File f = new File(testOutputPath);
 		if(f.exists()) f.delete();
-		System.out.println("Done!");
 	}
 	
+	/**
+	 * Reads a valid XML file.
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testReadValid() throws Exception {
 		// test, if a file can be read successfully
 		//String validPath = "fixtures/sms-20121011143146.xml";
 		//int messageCount = 2444;
-		String validPath = "fixtures/sms-dupes.xml";
 		int messageCount = 8;
 		
-		InputStream is = TestUtils.getInputStreamFromResource(validPath);
+		InputStream is = TestUtils.getInputStreamForResource(RES_SMS_DUPES);
 		Smses validSmses = new Smses(smsIO.readFrom(is));
 		
 		assertNotNull("The imported object is null.", validSmses);
@@ -84,12 +97,16 @@ public class IOTest {
 		assertEquals(messageCount, validSmses.getSms().size());
 	}
 	
+	/**
+	 * Tries to read a non existent XML file.
+	 * 
+	 * @throws Exception
+	 */
 	@Test(expected=IllegalArgumentException.class)
 	public void testReadNotExistent() throws Exception {
 		// this file does not exist
-		String invalidPath = "fixtures/whatup.xml";
 		try {
-			smsIO.readFrom(invalidPath);
+			smsIO.readFrom(RES_NOT_EXISTENT);
 		} catch (MessageIOException e) {
 			// this should have been caused by a file not found exception
 			if (!(e.toString().contains("FileNotFound")))
@@ -101,47 +118,51 @@ public class IOTest {
 		smsIO.readFrom(f);
 	}
 	
+	/**
+	 * Tries to read XML files with errors.
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testReadBroken() throws Exception {
 		// test reading of broken files
 		Collection<Sms> results = new ArrayList<Sms>();
-		
-		String[] invalidPaths = {"fixtures/invalidSms.xml", 	// this file contains invalid entries
-								 "fixtures/emptySms.xml", 		// this file contains no message entries
-								 "fixtures/invalidSms2.xml", 	// this file contains a message with invalid date
-								};
-		
-		for (int i = 0; i < invalidPaths.length; i++) {
-			InputStream is = TestUtils.getInputStreamFromResource(invalidPaths[i]);
+
+		for (int i = 0; i < RES_SMS_INVALIDS.length; i++) {
+			InputStream is = TestUtils.getInputStreamForResource(RES_SMS_INVALIDS[i]);
 			try {
 				results = smsIO.readFrom(is);
 			} catch (MessageIOException e) {
 				// yep..
-				System.out.println(e.toString());
+				//System.out.println(e.toString());
 			}
-		}
-
-		
-		for (Sms s: results) {
-			System.out.println(s);
 		}
 	}
 	
+	/**
+	 * Writes a simple output file.
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testWriteValidSimple() throws Exception {
 		//String validPath = "fixtures/sms-20121011143146.xml";
-		String validPath = "fixtures/sms-non-dupes.xml";
-		InputStream is = TestUtils.getInputStreamFromResource(validPath);
+		InputStream is = TestUtils.getInputStreamForResource(RES_SMS_NON_DUPES);
 
 		Smses validSmses = new Smses(smsIO.readFrom(is));
 		smsIO.writeTo(validSmses.getSms(), testOutputPath);
 		
-		is = TestUtils.getInputStreamFromResource(validPath);
+		is = TestUtils.getInputStreamForResource(RES_SMS_NON_DUPES);
 		int lines1 = testUtils.readLineCount(is);
 		int lines2 = testUtils.readLineCount(testOutputPath);
 		assertTrue("Line count differs, expected " + lines1 + " but was " + lines2, lines1 == lines2);
 	}
 	
+	/**
+	 * Tests if an exported XML contains the same messages as the source XML.
+	 * 
+	 * @throws Exception
+	 */
 	@Ignore("Fixture missing")
 	@Test
 	public void testWriteValidExtended() throws Exception {
@@ -151,7 +172,7 @@ public class IOTest {
 		// read original source file
 		Collection<Sms> validSmses = smsIO.readFrom(validPath);
 		
-		// write bak to temp file
+		// write back to temp file
 		smsIO.writeTo(validSmses, testOutputPath);
 		
 		// read temp file
@@ -165,10 +186,5 @@ public class IOTest {
 		boolean equalMessages = newSmses == null ? false : newSmses.equals(validSmses);
 		
 		assertTrue("Messages are not equal.",equalMessages);
-	}
-	
-	private void getRandomSMS() {
-		//TODO
-		//Random rand = new Random(1337);
 	}
 }

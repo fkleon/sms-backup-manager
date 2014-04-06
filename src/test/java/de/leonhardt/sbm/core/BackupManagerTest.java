@@ -1,4 +1,4 @@
-package de.leonhardt.sbm.test;
+package de.leonhardt.sbm.core;
 
 import static org.junit.Assert.*;
 
@@ -16,24 +16,21 @@ import de.leonhardt.sbm.TestUtils;
 import de.leonhardt.sbm.core.BackupManager;
 import de.leonhardt.sbm.core.service.MessageConverterService;
 import de.leonhardt.sbm.core.service.MessageIOService;
-import de.leonhardt.sbm.core.util.MapUtil;
 import de.leonhardt.sbm.smsbr.SmsBrConverter;
 import de.leonhardt.sbm.smsbr.SmsBrIO;
 import de.leonhardt.sbm.smsbr.xml.model.Sms;
 import de.leonhardt.sbm.smsbr.xml.model.Smses;
 
 /**
- * Tests the {@link MessageConverterService} implementation {@link SmsBrConverter},
- * and the {@link BackupManager}.
+ * Tests the {@link BackupManager}.
  * 
  * @author Frederik Leonhardt
  *
  */
-public class ManagerTest {
+public class BackupManagerTest {
 
 	private MessageIOService<Sms> smsIO;
 	private static TestUtils testUtils;
-	private static String testOutputPath;
 	private BackupManager bm;
 	private static MessageConverterService<Sms> msgConv;
 	
@@ -44,7 +41,6 @@ public class ManagerTest {
 	public static void setUpBeforeClass() throws Exception {
 		testUtils = new TestUtils();
 		msgConv = new SmsBrConverter();
-		testOutputPath = "test.xml";
 	}
 	
 	@After
@@ -69,8 +65,8 @@ public class ManagerTest {
 	public void simpleDupeTest() throws Exception {
 		assertEquals("BM not empty.", 0, bm.getMessages().size());
 		
-		String validPath = "fixtures/sms-dupes.xml"; // says 2444 but has 8
-		InputStream validIs = TestUtils.getInputStreamFromResource(validPath);
+		String validPath = "/fixtures/sms-dupes.xml"; // says 2444 but has 8
+		InputStream validIs = TestUtils.getInputStreamForResource(validPath);
 		
 		int messageCount = 8;
 		int dupeCount = 1;
@@ -93,8 +89,8 @@ public class ManagerTest {
 	public void simpleNonDupeTest() throws Exception {
 		assertEquals("BM not empty.", 0, bm.getMessages().size());
 		
-		String validPath = "fixtures/sms-non-dupes.xml"; // messages with same content and contact, but different date/type
-		InputStream validIs = TestUtils.getInputStreamFromResource(validPath);
+		String validPath = "/fixtures/sms-non-dupes.xml"; // messages with same content and contact, but different date/type
+		InputStream validIs = TestUtils.getInputStreamForResource(validPath);
 
 		int messageCount = 2;
 		int dupeCount = 0;
@@ -113,8 +109,8 @@ public class ManagerTest {
 	public void simpleNonDupeTest2() throws Exception {
 		assertEquals("BM not empty.",0,bm.getMessages().size());
 		
-		String validPath = "fixtures/sms-non-dupes-2.xml"; // messages with same content, date and type, but different contact
-		InputStream validIs = TestUtils.getInputStreamFromResource(validPath);
+		String validPath = "/fixtures/sms-non-dupes-2.xml"; // messages with same content, date and type, but different contact
+		InputStream validIs = TestUtils.getInputStreamForResource(validPath);
 
 		int messageCount = 2;
 		int dupeCount = 0;
@@ -136,8 +132,8 @@ public class ManagerTest {
 		int messageCount = 8;
 		int dupeCount = 1;
 		
-		String validPath = "fixtures/sms-dupes.xml";
-		InputStream validIs = TestUtils.getInputStreamFromResource(validPath);
+		String validPath = "/fixtures/sms-dupes.xml";
+		InputStream validIs = TestUtils.getInputStreamForResource(validPath);
 		
 		Smses validSmses =  new Smses(smsIO.readFrom(validIs));
 		
@@ -161,8 +157,8 @@ public class ManagerTest {
 	@Ignore("Missing fixture")
 	@Test
 	public void extendedDupeTest() throws Exception {
-		String validPath = "fixtures/sms-20121011143146.xml";
-		InputStream validIs = TestUtils.getInputStreamFromResource(validPath);
+		String validPath = "/fixtures/sms-20121011143146.xml";
+		InputStream validIs = TestUtils.getInputStreamForResource(validPath);
 
 		int messageCount = 2444;
 		int dupeCount = 0;

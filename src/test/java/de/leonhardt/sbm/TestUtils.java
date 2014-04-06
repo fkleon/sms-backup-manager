@@ -51,7 +51,7 @@ public class TestUtils {
 	}
 	
 	/**
-	 * returns the given stream's contents.
+	 * Returns the given stream's contents.
 	 * @param inputStream
 	 * @return
 	 * @throws IOException
@@ -130,10 +130,11 @@ public class TestUtils {
 	
 	/**
 	 * Returns the input string to a given resource.
-	 * @param resourcePath
+	 * 
+	 * @param resourcePath, absolute path with leading /
 	 * @return null, if no such file exists.
 	 */
-	public static InputStream getInputStreamFromResource(String resourcePath) {
-		return TestUtils.class.getClassLoader().getResourceAsStream(resourcePath);
+	public static InputStream getInputStreamForResource(String resourcePath) {
+		return TestUtils.class.getResourceAsStream(resourcePath);
 	}
 }

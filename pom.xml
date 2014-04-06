@@ -64,6 +64,11 @@
 				<configuration>
 					<parallel>methods</parallel>
 					<threadCount>10</threadCount>
+					<includes>
+						<include>**/Test*.java</include>
+						<include>**/*Test.java</include>
+						<include>**/*TestSuite.java</include>
+					</includes>
 				</configuration>
 			</plugin>
 			<plugin>

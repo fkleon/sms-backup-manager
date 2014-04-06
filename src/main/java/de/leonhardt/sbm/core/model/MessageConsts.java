@@ -32,8 +32,8 @@ public class MessageConsts {
 		public static Protocol toProtocol(int num) throws UnknownProtocolException {
 			if (num == 0) return SMS;
 			if (num == 1) return MMS;
-			if (num==65) return PUSH; //TODO not sure
-			throw new UnknownProtocolException("Unknown protocol: "+num);
+			if (num == 65) return PUSH; //TODO not sure
+			throw new UnknownProtocolException("Unknown protocol: " + num);
 		}
 
 		public int getValue() {
@@ -71,7 +71,7 @@ public class MessageConsts {
 			if (num == 4) return Outbox;
 			if (num == 5) return Failed;
 			if (num == 6) return Queued;
-			throw new UnknownTypeException("Unknown type: "+num);
+			throw new UnknownTypeException("Unknown type: " + num);
 		}
 		
 		public String getIcon() {
@@ -109,7 +109,7 @@ public class MessageConsts {
 			if (num == 0) return Complete;
 			if (num == 32) return Pending;
 			if (num == 64) return Failed;
-			throw new UnknownStatusException("Unknown type: "+num);
+			throw new UnknownStatusException("Unknown type: " + num);
 		}
 		
 		public String getIcon() {

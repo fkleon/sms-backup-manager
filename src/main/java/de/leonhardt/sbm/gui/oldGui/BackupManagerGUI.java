@@ -320,8 +320,8 @@ public class BackupManagerGUI {
 		frmBackupManager.add(statusBarView, BorderLayout.SOUTH);
 	}
 	
-	protected ListModel getDefaultListModel(String entry) {
-		DefaultListModel dlm = new DefaultListModel();
+	protected ListModel<Object> getDefaultListModel(String entry) {
+		DefaultListModel<Object> dlm = new DefaultListModel<>();
 		if (entry !=null) {
 			dlm.addElement(entry);
 		}

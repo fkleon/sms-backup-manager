@@ -58,8 +58,8 @@ public interface MessageConverterService<T> {
 	 * Converts a Message to T.
 	 * Does not care about duplicates, e.g. only one sms will be returned.
 	 * 
-	 * @param message
-	 * @param keepOriginals, true if original values for address and contact should be kept (non-internationalised).
+	 * @param message the message
+	 * @param keepOriginals true if original values for address and contact should be kept (non-internationalised).
 	 * 
 	 * @return
 	 */

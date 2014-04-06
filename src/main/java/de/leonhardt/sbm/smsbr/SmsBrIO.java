@@ -39,7 +39,7 @@ public class SmsBrIO implements MessageIOService<Sms> {
 	private final String XML_SCHEMA = "schema/schema.xsd";
 	
 	protected boolean DEBUG = false;
-	protected Logger log = Logger.getLogger("SmsIO");
+	protected Logger log = Logger.getLogger("SmsBrIO");
 	
 	private JAXBContext jc; // our jaxb context
 	private Schema schema; // the validation schema, can be null (= no validation)
@@ -97,7 +97,7 @@ public class SmsBrIO implements MessageIOService<Sms> {
 	
 		
 		// done!
-		this.log.info("Initialized MessageIO (SMS Backup and Restore)."
+		this.log.fine("Initialized MessageIO (SMS Backup and Restore)."
 				+ "\n IncludeXSL = " + includeXSL
 				+ "\n Schema = " + (schema == null ? "none" : schema.toString()));
 	}
