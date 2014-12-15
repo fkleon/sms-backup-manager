@@ -117,7 +117,7 @@
 			<name>Frederik Leonhardt</name>
 			<email>frederik.leonhardt@gmail.com</email>
 			<url>https://www.leonhardt.co.nz</url>
-			<timezone>1</timezone>
+			<timezone>Pacific/Auckland</timezone>
 			<roles>
 				<role>architect</role>
 				<role>developer</role>
