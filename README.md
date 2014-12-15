@@ -17,11 +17,16 @@ The project uses Maven. To build an executable jar, execute
 mvn clean compile assembly:single
 ```
 
+To run all tests, execute
+```
+mvn test
+```
+
 Dependencies can be found in the [pom.xml](pom.xml). They include:
 - [libphonenumber][libphonenumber]
 - [offline-geocoder][libphonenumber]
 - [commons-lang][commons-lang]
-- [beanfabrics-core and beanfabrics-swing][beanfabrics] (not in central maven repository)
+- [beanfabrics-core and beanfabrics-swing][beanfabrics]
 
 
 ### License
