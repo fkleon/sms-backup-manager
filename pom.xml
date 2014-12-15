@@ -28,9 +28,9 @@
 			<version>2.18</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.beanfabrics</groupId>
-		    <artifactId>beanfabrics-swing</artifactId>
-		    <version>1.4.0</version>
+			<groupId>org.beanfabrics</groupId>
+			<artifactId>beanfabrics-swing</artifactId>
+			<version>1.4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
