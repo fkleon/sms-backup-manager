@@ -182,6 +182,28 @@ public class SmsBrIOTest {
 	}
 
 	/**
+	 * Writes a simple output file with MMS.
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testWriteValidSimpleWithMms() throws Exception {
+		//String validPath = "fixtures/sms-20121011143146.xml";
+		InputStream is = TestUtils.getInputStreamForResource(RES_SMS_AND_MMS);
+
+		Smses validSmses = new Smses(smsIO.readFrom(is));
+		smsIO.writeTo(validSmses.getSms(), testOutputPath);
+
+		is = TestUtils.getInputStreamForResource(RES_SMS_AND_MMS);
+		int lines1 = testUtils.readLineCount(is);
+		int lines2 = testUtils.readLineCount(testOutputPath);
+
+		// We're only exporting SMS, so line count will differ
+		assertTrue(lines2 > 0);
+		assertTrue(lines1 != lines2);
+	}
+
+	/**
 	 * Tests if an exported XML contains the same messages as the source XML.
 	 *
 	 * @throws Exception

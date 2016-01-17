@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import de.leonhardt.sbm.smsbr.xml.NullLongAdapter;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -24,6 +25,7 @@ public abstract class Message {
     @XmlAttribute(name = "date", required = true)
     @XmlSchemaType(name = "unsignedLong")
     @XmlJavaTypeAdapter(NullLongAdapter.class)
+    @NonNull
     protected Long date;
 
     /**
@@ -32,6 +34,7 @@ public abstract class Message {
     @XmlAttribute(name = "date_sent")
     @XmlSchemaType(name = "unsignedLong")
     @XmlJavaTypeAdapter(NullLongAdapter.class)
+    @NonNull
     protected Long dateSent;
 
     /**

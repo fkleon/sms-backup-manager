@@ -150,6 +150,6 @@ public class SmsBrConverter extends AbstractConverter<Sms> {
 	}
 
 	private Long getTimeOrNull(Date date) {
-		return (date == null ? null : date.getTime());
+		return (date == null ? 0l : date.getTime());
 	}
 }
