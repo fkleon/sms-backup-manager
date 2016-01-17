@@ -26,6 +26,7 @@
           <xs:element maxOccurs="unbounded" name="mms">
             <xs:complexType>
               <xs:sequence>
+              <xs:choice maxOccurs="unbounded">
                 <xs:element name="parts">
                   <xs:complexType>
                     <xs:sequence>
@@ -48,7 +49,24 @@
                     </xs:sequence>
                   </xs:complexType>
                 </xs:element>
+
+				<!-- Element choice not in the latest public version of SMSBR xsd -->
+                <xs:element name="addrs">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element maxOccurs="unbounded" name="addr">
+                        <xs:complexType>
+                          <xs:attribute name="address" type="xs:string" use="required" />
+                          <xs:attribute name="type" type="xs:string" use="required" />
+                          <xs:attribute name="charset" type="xs:string" use="required" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+                </xs:choice>
               </xs:sequence>
+
               <xs:attribute name="text_only" type="xs:unsignedByte" use="optional" />
               <xs:attribute name="sub" type="xs:string" use="optional" />
               <xs:attribute name="retr_st" type="xs:string" use="required" />
@@ -60,7 +78,8 @@
               <xs:attribute name="tr_id" type="xs:string" use="required" />
               <xs:attribute name="st" type="xs:string" use="required" />
               <xs:attribute name="msg_box" type="xs:unsignedByte" use="required" />
-              <xs:attribute name="address" type="xs:long" use="required" />
+              <!-- Was long, but can be arbitrary string -->
+              <xs:attribute name="address" type="xs:string" use="required" />
               <xs:attribute name="m_cls" type="xs:string" use="required" />
               <xs:attribute name="d_tm" type="xs:string" use="required" />
               <xs:attribute name="read_status" type="xs:string" use="required" />
@@ -75,9 +94,11 @@
               <xs:attribute name="exp" type="xs:string" use="required" />
               <xs:attribute name="pri" type="xs:unsignedByte" use="required" />
               <xs:attribute name="rr" type="xs:string" use="required" />
+
               <!-- XXX rr (read-report) should be an unsigned byte (boolean), but is sometimes null in exports -->
               <!-- <xs:attribute name="rr" type="xs:unsignedByte" use="optional" /> -->
               <xs:attribute name="resp_txt" type="xs:string" use="required" />
+
               <xs:attribute name="rpt_a" type="xs:string" use="required" />
               <xs:attribute name="locked" type="xs:unsignedByte" use="required" />
               <xs:attribute name="retr_txt" type="xs:string" use="required" />
@@ -85,6 +106,10 @@
               <xs:attribute name="m_size" type="xs:string" use="required" />
               <xs:attribute name="readable_date" type="xs:string" use="optional" />
               <xs:attribute name="contact_name" type="xs:string" use="optional" />
+
+              <!-- Attributes not in the latest public version of SMSBR xsd -->
+              <xs:attribute name="creator" type="xs:string" use="optional" />
+              <xs:attribute name="sub_id" type="xs:integer" use="optional" />
             </xs:complexType>
           </xs:element>
         </xs:choice>

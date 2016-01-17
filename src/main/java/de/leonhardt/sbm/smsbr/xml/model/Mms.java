@@ -6,7 +6,6 @@
 //
 package de.leonhardt.sbm.smsbr.xml.model;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,7 +135,7 @@ public class Mms extends Message {
     @XmlSchemaType(name = "unsignedByte")
     protected short msgBox;
     @XmlAttribute(name = "address", required = true)
-    protected long address;
+    protected String address;
     @XmlAttribute(name = "m_cls", required = true)
     protected String mCls;
     @XmlAttribute(name = "d_tm", required = true)
@@ -186,6 +185,8 @@ public class Mms extends Message {
     protected String respSt;
     @XmlAttribute(name = "m_size", required = true)
     protected String mSize;
+    @XmlAttribute(name = "creator")
+    protected String creator;
 
 
     /**

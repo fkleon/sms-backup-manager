@@ -1,10 +1,25 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <smses count="2">
   <sms protocol="0" address="+4915112313123" date="1336729664538" type="2" subject="null" body="Klar " toa="null" sc_toa="null" service_center="null" read="1" status="-1" locked="0" date_sent="0" readable_date="May 11, 2012 11:47:44 AM" contact_name="Test Contact" />
+  
+  <!-- RR=null -->
   <mms text_only="0" sub="null" retr_st="null" date="1412109700000" ct_cls="null" sub_cs="null" read="1" ct_l="null" tr_id="mV_TTK4tcEcsWsiYebUl50@" st="null" msg_box="1" address="+491762345678" m_cls="personal" d_tm="null" read_status="null" ct_t="application/vnd.wap.multipart.related" retr_txt_cs="null" d_rpt="129" m_id="C2ED9EE6-48E1-71E4-A2CA-3C4A92ECC460" date_sent="0" seen="1" m_type="132" v="18" exp="null" pri="129" rr="null" resp_txt="null" rpt_a="null" locked="0" retr_txt="null" resp_st="null" m_size="null" readable_date="30 Sep 2014 22:41:40" contact_name="Max Mustermann">
     <parts>
       <part seq="-1" ct="application/smil" name="01.smil" chset="null" cd="attachment" fn="null" cid="&lt;01.smil&gt;" cl="0.smil" ctt_s="null" ctt_t="null" text='&lt;smil&gt;&lt;head&gt;&lt;layout&gt;&lt;root-layout/&gt;&#13;&#10;&lt;region id="Text" top="70%" left="0%" height="30%" width="100%" fit="scroll"/&gt;&#13;&#10;&lt;region id="Image" top="0%" left="0%" height="70%" width="100%" fit="meet"/&gt;&#13;&#10;&lt;/layout&gt;&#13;&#10;&lt;/head&gt;&#13;&#10;&lt;body&gt;&lt;par dur="10s"&gt;&lt;img src="IMG_32751.jpg" region="Image"/&gt;&#13;&#10;&lt;/par&gt;&#13;&#10;&lt;/body&gt;&#13;&#10;&lt;/smil&gt;&#13;&#10;' />
       <part seq="0" ct="image/jpeg" name="IMG_32751.jpg" chset="null" cd="attachment" fn="null" cid="&lt;IMG_32751.jpg&gt;" cl="IMG_32751.jpg" ctt_s="null" ctt_t="null" text="null" data=""/>
     </parts>
+  </mms>
+
+  <!-- creator attribute -->
+  <mms text_only="1" ct_t="application/vnd.wap.multipart.related" msg_box="2" v="18" sub="null" seen="1" rr="129" ct_cls="null" retr_txt_cs="null" ct_l="null" m_size="31" exp="604800" sub_cs="null" st="null" creator="null" tr_id="T143687f754d" sub_id="-1" read="1" resp_st="128" date="1389027620000" m_id="hq3z6m881271m75@w.tmomail.net" date_sent="0" pri="129" m_type="128" address="+12121234567~+49215111111" d_rpt="129" d_tm="null" read_status="null" locked="0" retr_txt="null" resp_txt="null" rpt_a="null" retr_st="null" m_cls="personal" readable_date="7 Jan 2014 6:00:20 am" contact_name="Max Mustermann, Erika Musterfrau">
+	<parts>
+		<part seq="-1" ct="application/smil" name="null" chset="null" cd="null" fn="null" cid="&lt;smil&gt;" cl="smil.xml" ctt_s="null" ctt_t="null" text='&lt;smil&gt;&lt;head&gt;&lt;layout&gt;&lt;root-layout/&gt;&lt;region height="100%" id="Text" left="0%" top="0%" width="100%"/&gt;&lt;/layout&gt;&lt;/head&gt;&lt;body&gt;&lt;par dur="8000ms"&gt;&lt;text src="text_0.txt" region="Text"/&gt;&lt;/par&gt;&lt;/body&gt;&lt;/smil&gt;' />
+		<part seq="0" ct="text/plain" name="null" chset="106" cd="null" fn="null" cid="&lt;text_0&gt;" cl="text_0.txt" ctt_s="null" ctt_t="null" text="Where is Santa Clause?" />
+	</parts>
+	<addrs>
+		<addr address="12011234567" type="137" charset="106" />
+		<addr address="+12127654321" type="151" charset="106" />
+		<addr address="+492151111111" type="151" charset="106" />
+	</addrs>
   </mms>
 </smses>
