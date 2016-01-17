@@ -21,7 +21,7 @@ import de.leonhardt.sbm.smsbr.xml.model.Smses;
 
 /**
  * Tests the {@link MessageIOService} implementation {@link SmsBrIO}.
- * 
+ *
  * @author Frederik Leonhardt
  *
  */
@@ -30,12 +30,12 @@ public class SmsBrIOTest {
 	private MessageIOService<Sms> smsIO;
 	private static TestUtils testUtils;
 	private static String testOutputPath;
-	
+
 	private static final String RES_SMS_DUPES = "/fixtures/sms-dupes.xml";
 	private static final String RES_SMS_NON_DUPES = "/fixtures/sms-non-dupes.xml";
 	private static final String RES_SMS_NON_DUPES_2 = "/fixtures/sms-non-dupes-2.xml";
 	private static final String RES_NOT_EXISTENT = "/fixtures/whatup.xml";
-	private static final String[] RES_SMS_INVALIDS = 
+	private static final String[] RES_SMS_INVALIDS =
 			{"/fixtures/invalidSms.xml", 	// this file contains invalid entries
 			 "/fixtures/emptySms.xml", 		// this file contains no message entries
 			 "/fixtures/invalidSms2.xml", 	// this file contains a message with invalid date
@@ -49,19 +49,19 @@ public class SmsBrIOTest {
 		testUtils = new TestUtils();
 		testOutputPath = "test.xml";
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * SmsBr is not thread safe, create new objecz for each test
 	 * to allow multi-threaded test executions.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Before
 	public void setUpBeforeTests() throws Exception {
 		smsIO = new SmsBrIO(false);
 	}
-	
+
 
 	/**
 	 * @throws java.lang.ExceptionInputStream
@@ -72,10 +72,10 @@ public class SmsBrIOTest {
 		File f = new File(testOutputPath);
 		if(f.exists()) f.delete();
 	}
-	
+
 	/**
 	 * Reads a valid XML file.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -84,7 +84,7 @@ public class SmsBrIOTest {
 		//String validPath = "fixtures/sms-20121011143146.xml";
 		//int messageCount = 2444;
 		int messageCount = 8;
-		
+
 		InputStream is = TestUtils.getInputStreamForResource(RES_SMS_DUPES);
 		Smses validSmses = new Smses(smsIO.readFrom(is));
 		
@@ -96,10 +96,10 @@ public class SmsBrIOTest {
 		assertEquals(messageCount, (int)validSmses.getCount());
 		assertEquals(messageCount, validSmses.getSms().size());
 	}
-	
+
 	/**
 	 * Tries to read a non existent XML file.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test(expected=IllegalArgumentException.class)
@@ -112,15 +112,15 @@ public class SmsBrIOTest {
 			if (!(e.toString().contains("FileNotFound")))
 				throw e;
 		}
-		
+
 		// null file
 		File f = null;
 		smsIO.readFrom(f);
 	}
-	
+
 	/**
 	 * Tries to read XML files with errors.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -138,10 +138,10 @@ public class SmsBrIOTest {
 			}
 		}
 	}
-	
+
 	/**
 	 * Writes a simple output file.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -151,16 +151,16 @@ public class SmsBrIOTest {
 
 		Smses validSmses = new Smses(smsIO.readFrom(is));
 		smsIO.writeTo(validSmses.getSms(), testOutputPath);
-		
+
 		is = TestUtils.getInputStreamForResource(RES_SMS_NON_DUPES);
 		int lines1 = testUtils.readLineCount(is);
 		int lines2 = testUtils.readLineCount(testOutputPath);
 		assertTrue("Line count differs, expected " + lines1 + " but was " + lines2, lines1 == lines2);
 	}
-	
+
 	/**
 	 * Tests if an exported XML contains the same messages as the source XML.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Ignore("Fixture missing")
@@ -168,23 +168,23 @@ public class SmsBrIOTest {
 	public void testWriteValidExtended() throws Exception {
 		// test if an exported XML contains the same messages as the source XML
 		String validPath = "fixtures/sms-20121011143146.xml";
-		
+
 		// read original source file
 		Collection<Sms> validSmses = smsIO.readFrom(validPath);
-		
+
 		// write back to temp file
 		smsIO.writeTo(validSmses, testOutputPath);
-		
+
 		// read temp file
 		//String invalidPath = "schema/sms-20121203092757.xml";
 		Collection<Sms> newSmses = smsIO.readFrom(testOutputPath);
-		
+
 		// sort first to make equals work
 		testUtils.sortSmses(new Smses(validSmses));
 		testUtils.sortSmses(new Smses(newSmses));
-		
+
 		boolean equalMessages = newSmses == null ? false : newSmses.equals(validSmses);
-		
+
 		assertTrue("Messages are not equal.",equalMessages);
 	}
 }

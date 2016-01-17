@@ -119,16 +119,16 @@ public class SmsBrConverterTest {
 		Assert.assertEquals(msg.getOriginalContactName(), sms.getContactName());
 		Assert.assertEquals(msg.getServiceCenter(), sms.getServiceCenter());
 		Assert.assertEquals(msg.getSubject(), sms.getSubject());
-		Assert.assertEquals(msg.getDate(), new Date(sms.getDate()));
+		Assert.assertEquals(msg.getDate(), new Date(sms.getDate().longValue()));
 		Assert.assertEquals(msg.getProtocol(), Protocol.toProtocol(sms.getProtocol()));
-		Assert.assertEquals(msg.getRead(), sms.getRead());
+		Assert.assertEquals(msg.getRead(), Integer.valueOf(sms.getRead()));
 		Assert.assertEquals(msg.getStatus(), Status.toStatus(sms.getStatus()));
 		Assert.assertEquals(msg.getType(), Type.toType(sms.getType()));
 
 		if (Type.Sent.equals(msg.getType()) && sms.getDateSent() != null) {
 			// should have sent date
 			Assert.assertNotNull("Should have a sent date.", msg.getDateSent());
-			Assert.assertEquals(msg.getDateSent(), new Date(sms.getDateSent()));
+			Assert.assertEquals(msg.getDateSent(), new Date(sms.getDateSent().longValue()));
 		}
 		
 		Assert.assertNotNull(msg.getContact());
