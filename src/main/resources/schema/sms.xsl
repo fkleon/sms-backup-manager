@@ -3,6 +3,8 @@
                 xmlns:msxsl="urn:schemas-microsoft-com:xslt"
                 xmlns:user="http://android.riteshsahu.com">
 <xsl:template match="/">
+
+  <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html></xsl:text>
   <html>
 	  <head>
 		  <style type="text/css">
@@ -38,6 +40,12 @@
 	  <body>
 	  <h2>SMS Messages</h2>
 	  <table>
+	   <colgroup>
+            <col style="width:80px"/>
+            <col style="width:120px"/>
+            <col style="width:120px"/>
+            <col style="width:160px"/>
+        </colgroup>
 		<tr>
 		  <th>Type</th>
 		  <th>Number</th>
@@ -45,20 +53,68 @@
 		  <th>Date</th>
 		  <th>Message</th>
 		</tr>
-		<xsl:for-each select="smses/sms">
+		<xsl:for-each select="smses/*">
 		<tr>
-		  <td>
-			<xsl:if test="@type = 1">
-			Received
-			</xsl:if>
-			<xsl:if test="@type = 2">
-			Sent
-			</xsl:if>
-		  </td>
+			<xsl:choose>
+			<xsl:when test="name() = 'sms'">
+				<td>
+					<xsl:if test="@type = 1">
+					Received
+					</xsl:if>
+					<xsl:if test="@type = 2">
+					Sent
+					</xsl:if>
+					<xsl:if test="@type = 3">
+					Draft
+					</xsl:if>
+			  </td>
+			</xsl:when>
+			<xsl:otherwise>
+				<td>
+					<xsl:if test="@msg_box = 1">
+					Received
+					</xsl:if>
+					<xsl:if test="@msg_box = 2">
+					Sent
+					</xsl:if>
+					<xsl:if test="@msg_box = 3">
+					Draft
+					</xsl:if>
+			  </td>
+			</xsl:otherwise>
+		  </xsl:choose>
 		  <td><xsl:value-of select="@address"/></td>
 		  <td><xsl:value-of select="@contact_name"/></td>
-		  <td><xsl:value-of select="@date"/><br/><xsl:value-of select="@readable_date"/></td>
-		  <td><xsl:value-of select="@body"/></td>
+		  <td><xsl:value-of select="@readable_date"/></td>
+		  <td>
+			<xsl:choose>
+			<xsl:when test="name() = 'sms'">
+				<xsl:value-of select="@body"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:for-each select="parts/part">
+					<xsl:choose>
+					<xsl:when test="@ct = 'application/smil'">
+					</xsl:when>
+					<xsl:when test="@ct = 'text/plain'">
+						<xsl:value-of select="@text"/><br/>
+					</xsl:when>
+					<xsl:when test="starts-with(@ct,'image/')" >
+						<img height="300">
+						  <xsl:attribute name="src">
+							<xsl:value-of select="concat(concat('data:',@ct), concat(';base64,',@data))"/>
+						  </xsl:attribute>
+						</img><br/>
+					</xsl:when>
+					<xsl:otherwise>
+						<i>Preview of <xsl:value-of select="@ct"/> not supported.</i><br/>
+					</xsl:otherwise>
+				  </xsl:choose>
+				</xsl:for-each>
+			</xsl:otherwise>
+		  </xsl:choose>
+
+		  </td>
 		</tr>
 		</xsl:for-each>
 	  </table>
