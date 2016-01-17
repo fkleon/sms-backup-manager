@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -29,7 +31,7 @@ public class SmsBrIOTest {
 
 	private MessageIOService<Sms> smsIO;
 	private static TestUtils testUtils;
-	private static String testOutputPath;
+	private String testOutputPath;
 
 	private static final String RES_SMS_DUPES = "/fixtures/sms-dupes.xml";
 	private static final String RES_SMS_NON_DUPES = "/fixtures/sms-non-dupes.xml";
@@ -48,12 +50,10 @@ public class SmsBrIOTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		testUtils = new TestUtils();
-		testOutputPath = "test.xml";
 	}
 
 	/**
-	 *
-	 * SmsBr is not thread safe, create new objecz for each test
+	 * SmsBr is not thread safe, create new object for each test
 	 * to allow multi-threaded test executions.
 	 *
 	 * @throws Exception
@@ -61,18 +61,16 @@ public class SmsBrIOTest {
 	@Before
 	public void setUpBeforeTests() throws Exception {
 		smsIO = new SmsBrIO(false);
+		testOutputPath = "test-" + UUID.randomUUID().toString() + ".xml";
 	}
 
-
-	/**
-	 * @throws java.lang.ExceptionInputStream
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		System.out.println("Removing temporary test files..");
+	@After
+	public void afterTests() throws Exception {
+		System.out.println("Removing temporary test file " + testOutputPath);
 		File f = new File(testOutputPath);
 		if(f.exists()) f.delete();
 	}
+
 
 	/**
 	 * Reads a valid XML file.
