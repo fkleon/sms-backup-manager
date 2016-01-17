@@ -34,6 +34,7 @@ public class SmsBrIOTest {
 	private static final String RES_SMS_DUPES = "/fixtures/sms-dupes.xml";
 	private static final String RES_SMS_NON_DUPES = "/fixtures/sms-non-dupes.xml";
 	private static final String RES_SMS_NON_DUPES_2 = "/fixtures/sms-non-dupes-2.xml";
+	private static final String RES_SMS_AND_MMS = "/fixtures/sms-and-mms.xml";
 	private static final String RES_NOT_EXISTENT = "/fixtures/whatup.xml";
 	private static final String[] RES_SMS_INVALIDS =
 			{"/fixtures/invalidSms.xml", 	// this file contains invalid entries
@@ -87,7 +88,29 @@ public class SmsBrIOTest {
 
 		InputStream is = TestUtils.getInputStreamForResource(RES_SMS_DUPES);
 		Smses validSmses = new Smses(smsIO.readFrom(is));
-		
+
+		assertNotNull("The imported object is null.", validSmses);
+		assertNotNull("The sms list is null.", validSmses.getSms());
+		assertNotNull("The sms count is null.", validSmses.getCount());
+		assertEquals("Count and number of messages differ, expected " + validSmses.getCount() + " but was" + validSmses.getSms().size(),
+				(int)validSmses.getCount(), validSmses.getSms().size());
+		assertEquals(messageCount, (int)validSmses.getCount());
+		assertEquals(messageCount, validSmses.getSms().size());
+	}
+
+	/**
+	 * Reads a valid XML file with MMS.
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testReadValidWithMms() throws Exception {
+		// test, if a file can be read successfully
+		int messageCount = 1; //TODO should be 2 with MMS
+
+		InputStream is = TestUtils.getInputStreamForResource(RES_SMS_AND_MMS);
+		Smses validSmses = new Smses(smsIO.readFrom(is));
+
 		assertNotNull("The imported object is null.", validSmses);
 		assertNotNull("The sms list is null.", validSmses.getSms());
 		assertNotNull("The sms count is null.", validSmses.getCount());
