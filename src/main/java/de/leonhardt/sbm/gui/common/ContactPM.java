@@ -53,5 +53,13 @@ public class ContactPM extends AbstractPM {
 //	public void setMessageService(MessageService service) {
 //		this.messageService = service;
 //	}
-	
+
+	/**
+	 * For copy & paste
+	 */
+	@Override
+	public String toString() {
+		return String.format("%s (%s)%n", contactName.getText(), addressIntl.getText());
+	}
+
 }

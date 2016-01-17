@@ -125,5 +125,18 @@ public class MessagePM extends AbstractPM {
 		if (messageStatus != null)
 			this.statusIcon.setIcon(iconService.getMessageStatusIcon(messageStatus));
 	}
-	
+
+	/**
+	 * For copy & paste
+	 */
+	@Override
+	public String toString() {
+		return String.format(
+				"%s: %s%n" +
+				"Date: %s%n%n" +
+				"%s",
+				Type.Received.equals(messageType) ? "From" : "To", address.getText(),
+				date.getDate(), body.getText());
+	}
+
 }

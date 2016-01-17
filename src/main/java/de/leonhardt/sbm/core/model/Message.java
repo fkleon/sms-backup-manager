@@ -184,29 +184,11 @@ public class Message extends AbstractEntity {
 		if (!(obj instanceof Message))
 			return false;
 		Message other = (Message) obj;
-		if (contact == null) {
-			if (other.contact != null)
-				return false;
-		} else if (!contact.equals(other.contact))
-			return false;
-		if (date == null) {
-			if (other.date != null)
-				return false;
-		} else if (!date.equals(other.date))
-			return false;
-		if (subject == null) {
-			if (other.subject != null)
-				return false;
-		} else if (!subject.equals(other.subject))
-			return false;
-		if (body == null) {
-			if (other.body != null)
-				return false;
-		} else if (!body.equals(other.body))
-			return false;
-		if (type != other.type)
-			return false;
-		return true;
+		return Objects.equals(contact,  other.contact)
+			&& Objects.equals(date, other.date)
+			&& Objects.equals(subject, other.subject)
+			&& Objects.equals(body, other.body)
+			&& Objects.equals(type, other.type);
 	}
 
 	@Override
