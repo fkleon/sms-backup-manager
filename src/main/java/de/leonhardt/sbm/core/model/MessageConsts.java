@@ -21,6 +21,7 @@ public class MessageConsts {
 	public enum Protocol {
 		SMS(0),
 		MMS(1),
+		BROADCAST(57), // No sender, just name
 		PUSH(65);
 		
 		private final int value;    
@@ -32,6 +33,7 @@ public class MessageConsts {
 		public static Protocol toProtocol(int num) throws UnknownProtocolException {
 			if (num == 0) return SMS;
 			if (num == 1) return MMS;
+			if (num == 57) return BROADCAST;
 			if (num == 65) return PUSH; //TODO not sure
 			throw new UnknownProtocolException("Unknown protocol: " + num);
 		}
