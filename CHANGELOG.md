@@ -1,13 +1,15 @@
 ### Version History
 
 #### v1.0 (unreleased)
+- [GUI] Added support for copy & paste of messages and contacts, fixes #9
+- [GEN] Added support for SMS Backup Manager > 7.0 (schema updates and MMS messages)
 - [GEN] Convert project to maven project
 - [GEN] Fix deprecations and data loading from resources
 - [GEN] Upgraded dependencies:
-  - beanfabrics to 1.3.0
-  - libphonenumber to 6.0
-  - geocoder to 2.9
-  - commons-lang3 to 3.3.1
+  - beanfabrics to 1.4.2
+  - libphonenumber to 7.2.3
+  - geocoder to 2.33
+  - commons-lang3 to 3.4
 
 #### v0.9.1 (no public release)
 - [GUI] Added main application icon
