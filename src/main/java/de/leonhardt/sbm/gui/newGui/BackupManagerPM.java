@@ -29,6 +29,7 @@ import org.beanfabrics.support.Validation;
 import de.leonhardt.sbm.core.model.Contact;
 import de.leonhardt.sbm.core.model.Message;
 import de.leonhardt.sbm.core.model.Settings;
+import de.leonhardt.sbm.core.util.AppInfo;
 import de.leonhardt.sbm.gui.common.ContactPM;
 import de.leonhardt.sbm.gui.common.GuiUtils;
 import de.leonhardt.sbm.gui.common.MessagePM;
@@ -50,8 +51,8 @@ import de.leonhardt.sbm.smsbr.xml.model.Sms;
 @SuppressWarnings("unused")
 public class BackupManagerPM extends AbstractPM {
 
-	public static final String VERSION = "v1.0-SNAPSHOT-newGui (2014-04-06)";
-	
+	public static final String VERSION = String.format("%s (newGui)%n%s", AppInfo.VERSION, AppInfo.BUILD_TIME);
+
 	// log
 	private final Logger log = Logger.getLogger(getClass().getSimpleName());
 	
