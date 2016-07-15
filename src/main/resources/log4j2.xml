@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+	<Properties>
+		<Property name="filename">sms-backup-manager.log</Property>
+	</Properties>
+
+	<Filter type="ThresholdFilter" level="trace" />
+
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+		<File name="File" fileName="${filename}">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</File>
+	</Appenders>
+
+	<Loggers>
+		<Logger name="org.beanfabrics" level="WARN" />
+		<Logger name="de.leonhardt.sbm" level="DEBUG" additivity="false">
+			<AppenderRef ref="File"/>
+			<AppenderRef ref="Console" level="INFO"/>
+		</Logger>
+		<Root level="INFO">
+			<AppenderRef ref="File" />
+			<AppenderRef ref="Console" />
+		</Root>
+	</Loggers>
+</Configuration>

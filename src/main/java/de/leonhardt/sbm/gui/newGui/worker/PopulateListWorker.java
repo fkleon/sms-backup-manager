@@ -3,15 +3,16 @@ package de.leonhardt.sbm.gui.newGui.worker;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.swing.SwingWorker;
+
 import org.beanfabrics.model.ListPM;
 
 import de.leonhardt.sbm.core.model.Message;
 import de.leonhardt.sbm.core.util.Utils;
 import de.leonhardt.sbm.gui.common.MessagePM;
 import de.leonhardt.sbm.gui.common.resource.IconService;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Background Worker to generate MesagePMs and populate the list model afterwards.
@@ -20,16 +21,16 @@ import de.leonhardt.sbm.gui.common.resource.IconService;
  *
  * @author Frederik Leonhardt
  */
+@Log4j2
 public class PopulateListWorker extends SwingWorker<Void, MessagePM> {
 
-	private Logger log;
 	private Collection<Message> messages;
 	private ListPM<MessagePM> messagePMs;
 	private IconService is;
-	
+
 	// chunk size
 	private static final int CHUNK_SIZE = 50;
-	
+
 	/**
 	 * Creates a new populate list worker.
 	 * @param messages - the messages to use
@@ -40,19 +41,18 @@ public class PopulateListWorker extends SwingWorker<Void, MessagePM> {
 		this.messages = messages;
 		this.messagePMs = messagePMs;
 		this.is = iconService;
-		this.log = Logger.getLogger("GenerateMessageViewsWorker");
 	}
-	
+
 	@Override
 	protected Void doInBackground() throws Exception {
 		MessagePM[] chunks = new MessagePM[CHUNK_SIZE];
-		
+
 		setText("Rendering messages..");
 		int curPos = 0; // counts position in array
 		int i = 0; // counts position in messages
 		for (Message msg: messages) {
 			curPos = i % CHUNK_SIZE;
-			
+
 			MessagePM mPM = new MessagePM(msg, is);
 
 			chunks[curPos] = mPM;
@@ -62,13 +62,13 @@ public class PopulateListWorker extends SwingWorker<Void, MessagePM> {
 				publish(chunks);
 				// reset array
 				chunks = new MessagePM[CHUNK_SIZE];
-								
+
 				// announce progress
 				int progress = Utils.calcProgress(i+1, messages.size());
 				setProgress(progress);
 				setText("Rendering messages.. %d%%", progress);
 			}
-			
+
 			i++;
 		}
 
@@ -79,14 +79,14 @@ public class PopulateListWorker extends SwingWorker<Void, MessagePM> {
 			// trim array to remove null values at the end
 			publish(Arrays.copyOf(chunks, curPos+1));
 		}
-		
+
 		// finish up
 		setProgress(100);
 		// log status
 		log.info("[Render] Rendered " + messages.size() + " messages in this conversation.");
 		return null;
 	}
-	
+
 	@Override
 	protected void process(List<MessagePM> chunks) {
 		// populate model step by step
@@ -95,11 +95,11 @@ public class PopulateListWorker extends SwingWorker<Void, MessagePM> {
 
 	@Override
 	public void done() {
-		log.fine("[Render] Done.");
-			
+		log.debug("[Render] Done.");
+
 		setText("%d messages in this conversation.", messages.size());
 	}
-	
+
     /**
      * Fires a property change (text)
      * @param text
@@ -107,7 +107,7 @@ public class PopulateListWorker extends SwingWorker<Void, MessagePM> {
     private void setText(String text) {
 		firePropertyChange("text", null, text);
     }
-    
+
     /**
      * Fires a property change (text)
      * Takes a format string.

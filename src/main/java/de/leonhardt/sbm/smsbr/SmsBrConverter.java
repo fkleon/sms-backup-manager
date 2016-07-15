@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 import de.leonhardt.sbm.core.AbstractConverter;
 import de.leonhardt.sbm.core.PhoneNumberParser;
@@ -19,6 +18,7 @@ import de.leonhardt.sbm.core.model.MessageConsts.Status;
 import de.leonhardt.sbm.core.model.MessageConsts.Type;
 import de.leonhardt.sbm.core.store.MessageStore;
 import de.leonhardt.sbm.smsbr.xml.model.Sms;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This class is responsible for conversion between the internal message format
@@ -27,6 +27,7 @@ import de.leonhardt.sbm.smsbr.xml.model.Sms;
  * @author Frederik Leonhardt
  *
  */
+@Log4j2
 public class SmsBrConverter extends AbstractConverter<Sms> {
 
 	// Oct 21, 2011 9:50:00 AM
@@ -50,7 +51,7 @@ public class SmsBrConverter extends AbstractConverter<Sms> {
 			try {
 				ms.add(toInternalMessage(sms));
 			} catch (Exception e) {
-				Logger.getAnonymousLogger().warning("Could not convert SMS to Message: "+e.toString());
+				log.warn("Could not convert SMS to Message: {}", e.toString(), e);
 			}
 		}
 

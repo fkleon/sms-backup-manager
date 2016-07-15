@@ -1,12 +1,11 @@
 package de.leonhardt.sbm.smsbr.xml.debug;
 
-import java.util.logging.Logger;
-
 import javax.xml.bind.Marshaller.Listener;
 
-public class CustomMarshallListener extends Listener {
+import lombok.extern.log4j.Log4j2;
 
-	private Logger log = Logger.getLogger("MarshallListener");
+@Log4j2
+public class CustomMarshallListener extends Listener {
 
 	@Override
 	public void afterMarshal(Object arg0) {

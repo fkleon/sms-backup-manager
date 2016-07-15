@@ -3,12 +3,14 @@ package de.leonhardt.sbm.core.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Logger;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Provides information about the build of the app at runtime.
  * Reads from a properties file which is populated by the maven resources plugin.
  */
+@Log4j2
 public class AppInfo {
 
 	/** The artifact version */
@@ -23,7 +25,7 @@ public class AppInfo {
 		try (InputStream propInputStream = AppInfo.class.getResourceAsStream("/app.properties")) {
 			props.load(propInputStream);
 		} catch (IOException e) {
-			Logger.getLogger(AppInfo.class.getName()).severe("Failed to load app.properties: " + e.getMessage());
+			log.error("Failed to load app.properties: {}", e.getMessage(), e);
 		}
 
 		VERSION = props.getProperty("app.version");

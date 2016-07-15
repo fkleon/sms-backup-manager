@@ -16,23 +16,28 @@
 		<project.build.mainClass>de.leonhardt.sbm.gui.newGui.BackupManagerController</project.build.mainClass>
 		<!-- Workaround to be able to access build timestamp in resource filtering -->
 		<timestamp>${maven.build.timestamp}</timestamp>
+
+		<libphonenumber.version>7.4.5</libphonenumber.version>
+		<geocoder.version>2.47</geocoder.version>
+		<beanfabrics.version>1.4.3</beanfabrics.version>
+		<log4j.version>2.6.2</log4j.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.googlecode.libphonenumber</groupId>
 			<artifactId>libphonenumber</artifactId>
-			<version>7.2.3</version>
+			<version>${libphonenumber.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.libphonenumber</groupId>
 			<artifactId>geocoder</artifactId>
-			<version>2.33</version>
+			<version>${geocoder.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.beanfabrics</groupId>
 			<artifactId>beanfabrics-swing</artifactId>
-			<version>1.4.2</version>
+			<version>${beanfabrics.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -42,9 +47,28 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.16.6</version>
+			<version>1.16.10</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<!-- SLF4J bridge for beanfabrics -->
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-slf4j-impl</artifactId>
+		    <version>${log4j.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

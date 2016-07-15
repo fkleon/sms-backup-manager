@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 
 import de.leonhardt.sbm.core.model.Contact;
 import de.leonhardt.sbm.core.model.Message;
@@ -16,77 +15,79 @@ import de.leonhardt.sbm.core.store.SortedMessageStore;
 import de.leonhardt.sbm.core.util.ContactNameComparator;
 import de.leonhardt.sbm.core.util.Utils;
 import de.leonhardt.sbm.core.util.Utils.IdGenerator;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * The BackupManager is the main entry point for GUI and CMD.
  * There should be only one BackupManager instance per application.
- * 
+ *
  * It manages all messages, contacts and conversations.
- * 
+ *
  * @author Frederik Leonhardt
  *
  */
+@Log4j2
 public class BackupManager implements MessageService, ContactService {
 
-	private Logger log;
 	private Map<Contact,MessageStore> conversations;
 	private IdGenerator idGen;
-	
+
 	/**
 	 * Creates a new BackupManager
 	 */
 	public BackupManager() {
 		init();
 	}
-	
+
 	/**
 	 * Initializes MessageStore and Logger
 	 */
 	private void init() {
 		this.conversations = Collections.synchronizedMap(new HashMap<Contact, MessageStore>());
 		this.idGen = Utils.getDefaultIdGenerator();
-		this.log = Logger.getLogger("BackupManager");
 	}
-	
+
 	/**
 	 * Imports all messages in the given collection,
 	 * also assigns IDs to them.
-	 * 
+	 *
 	 * @param messages
 	 */
+	@Override
 	public void importMessages(Collection<Message> messages) {
 		if (messages == null) {
-			log.warning("Can not import null collection.");
+			log.warn("Can not import null collection.");
 			return;
 		}
-		
+
 		for (Message message: messages) {
 			importMessage(message);
 		}
-		
+
 		log.info(String.format("%d messages in store (+ %d duplicates).",getMessages().size(),getMessages().countDuplicates()));
 	}
-	
+
 	/**
 	 * Imports a given message,
 	 * also assigns ID to it.
-	 * 
+	 *
 	 * @param message
 	 */
+	@Override
 	public Message importMessage(Message message) {
 		if (message == null) {
-			log.warning("Can not import null message.");
+			log.warn("Can not import null message.");
 			return null;
 		}
-		
+
 		putMessage(message.getContact(), idGen.assignNextId(message));
-		
+
 		return message;
 	}
-	
+
 	/**
 	 * Adds a message to the appropriate message store for a given contact.
-	 * 
+	 *
 	 * @param contact
 	 * @param message
 	 */
@@ -100,25 +101,26 @@ public class BackupManager implements MessageService, ContactService {
 			conversations.put(contact, ms);
 		}
 	}
-	
+
 	/**
 	 * Returns the underlying conversation map.
 	 * Should only be used for testing.
-	 * 
+	 *
 	 * @return
 	 */
 	protected Map<Contact, MessageStore> getCS() {
 		return this.conversations;
 	}
-	
+
 	/**
 	 * Returns sorted collection of all contacts.
 	 * Sorted by name, then number, descending.
-	 * 
+	 *
 	 * @return
 	 */
+	@Override
 	public Collection<Contact> getContacts() {
-		Collection<Contact> col = new TreeSet<Contact>(new ContactNameComparator());
+		Collection<Contact> col = new TreeSet<>(new ContactNameComparator());
 		col.addAll(this.conversations.keySet());
 		return col;
 	}
@@ -126,30 +128,31 @@ public class BackupManager implements MessageService, ContactService {
 	@Override
 	public Contact findContact(String contactName, String intlAddress) {
 		Contact toFind = new Contact(contactName, intlAddress);
-		
+
 		for (Contact c: conversations.keySet()) {
 			if (c.equals(toFind)) {
 				return c;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Returns sorted collection of all messages with a given contact.
 	 * Sorted by date, descending.
-	 * 
+	 *
 	 * @param c
 	 * @return
 	 */
+	@Override
 	public MessageStore getMessages(Contact c) {
 		SortedMessageStore sms = new SortedMessageStore();
-		
+
 		if (this.conversations.containsKey(c)) {
 			sms.addAll(conversations.get(c));
 		}
-		
+
 		return sms;
 	}
 
@@ -161,14 +164,14 @@ public class BackupManager implements MessageService, ContactService {
 	@Override
 	public MessageStore getMessages() {
 		SortedMessageStore allMessages = new SortedMessageStore();
-		
+
 		for (MessageStore ms: getCS().values()) {
 			allMessages.addAll(ms);
 		}
 
 		return allMessages;
 	}
-	
+
 	/**
 	 * Clears the underlying conversation store.
 	 * Removes all contacts and messages.
@@ -180,14 +183,14 @@ public class BackupManager implements MessageService, ContactService {
 	@Override
 	public int getMessageCount() {
 		int messageCount = 0;
-		
+
 		for (MessageStore ms: conversations.values()) {
 			messageCount += ms.size();
 		}
-		
+
 		return messageCount;
 	}
-	
+
 	@Override
 	public int getContactCount() {
 		int contactCount = conversations.keySet().size();

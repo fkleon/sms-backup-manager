@@ -5,7 +5,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Logger;
 
 import javax.swing.SwingWorker;
 
@@ -14,6 +13,7 @@ import de.leonhardt.sbm.core.service.MessageConverterService;
 import de.leonhardt.sbm.core.service.MessageService;
 import de.leonhardt.sbm.gui.newGui.MessageView;
 import de.leonhardt.sbm.gui.newGui.ViewController;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Background Worker to import previously read messages into the MessageStore and populate the list afterwards.
@@ -21,14 +21,14 @@ import de.leonhardt.sbm.gui.newGui.ViewController;
  * @author Frederik Leonhardt
  *
  */
+@Log4j2
 public class ImportMessagesWorker<T> extends SwingWorker<Void, MessageView> implements PropertyChangeListener {
 
-	private Logger log;
 	private MessageService bm;
 	private MessageConverterService<T> msgConverter;
 	private Collection<T> messagesToImport;
 	private ViewController vc;
-	
+
 	/**
 	 * Creates an import messages worker.
 	 * @param bm - the messaging service to use
@@ -38,11 +38,10 @@ public class ImportMessagesWorker<T> extends SwingWorker<Void, MessageView> impl
 	public ImportMessagesWorker(MessageService bm, MessageConverterService<T> msgConv, ViewController vc) {
 		this.bm = bm;
 		this.msgConverter = msgConv;
-		this.messagesToImport = new ArrayList<T>();
+		this.messagesToImport = new ArrayList<>();
 		this.vc = vc;
-		this.log = Logger.getLogger("ImportMessagesWorker");
 	}
-	
+
 	@Override
 	protected Void doInBackground() throws Exception {
 		setText("Importing messages..");
@@ -51,12 +50,12 @@ public class ImportMessagesWorker<T> extends SwingWorker<Void, MessageView> impl
 			// import messages
 			Message message = msgConverter.toInternalMessage(msg);
 			bm.importMessage(message);
-			
+
 			// update progress
 			Float progress = ((i+1.f)/messagesToImport.size()*100.f);
 			setProgress(progress.intValue());
 			setText("Importing messages.. %d%%", progress.intValue());
-			
+
 			i++;
 		}
 		// log status
@@ -81,17 +80,17 @@ public class ImportMessagesWorker<T> extends SwingWorker<Void, MessageView> impl
 			this.execute();
 		 }
 	}
-	
+
 	@Override
 	public void done() {
-		log.fine("[Import] Done.");
-			
+		log.debug("[Import] Done.");
+
 		setText("Done! Imported %d messages (incl. duplicates)", messagesToImport.size());
-		
+
 		// populate list
 		vc.setDirty(); //TODO should we just add to the listmodel instead?
 	}
-	
+
     /**
      * Fires a property change (text)
      * @param text
@@ -99,7 +98,7 @@ public class ImportMessagesWorker<T> extends SwingWorker<Void, MessageView> impl
     private void setText(String text) {
 		firePropertyChange("text", null, text);
     }
-    
+
     /**
      * Fires a property change (text)
      * Takes a format string.

@@ -2,7 +2,6 @@ package de.leonhardt.sbm.gui.newGui.worker;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.logging.Logger;
 
 import javax.swing.JDesktopPane;
 import javax.swing.SwingUtilities;
@@ -13,19 +12,20 @@ import de.leonhardt.sbm.core.model.Contact;
 import de.leonhardt.sbm.core.model.Message;
 import de.leonhardt.sbm.gui.common.GuiUtils;
 import de.leonhardt.sbm.gui.newGui.BackupManagerService;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Background Worker to export previously read messages to a given file.
- * 
+ *
  * 1. Converts the messages to external format.
  * 2. Writes them to a file.
- * 
+ *
  * @author Frederik Leonhardt
  *
  */
+@Log4j2
 public class ExportMessagesWorker<T> extends SwingWorker<Void, Void> {
 
-	private Logger log;
 	private BackupManagerService<T> bms;
 	private boolean keepOriginals;
 	private boolean exportDupes;
@@ -33,10 +33,10 @@ public class ExportMessagesWorker<T> extends SwingWorker<Void, Void> {
 	private File destinationFile;
 	private int msgCount;
 	private boolean success;
-	
+
 	/**
 	 * Creates an export message worker which exports all messages.
-	 * 
+	 *
 	 * @param f - the file to write to
 	 * @param bms - the BMS to use
 	 * @param keepOriginals - if originals should be kept
@@ -45,10 +45,10 @@ public class ExportMessagesWorker<T> extends SwingWorker<Void, Void> {
 	public ExportMessagesWorker(File f, BackupManagerService<T> bms, boolean keepOriginals, boolean exportDupes) {
 		this(f, bms, keepOriginals, exportDupes, null);
 	}
-	
+
 	/**
 	 * Creates an export message worker.
-	 * 
+	 *
 	 * @param f - the file to write to
 	 * @param bms - the BMS to use
 	 * @param keepOriginals - if originals should be kept
@@ -61,47 +61,46 @@ public class ExportMessagesWorker<T> extends SwingWorker<Void, Void> {
 		this.keepOriginals = keepOriginals;
 		this.exportDupes = exportDupes;
 		this.selectedContact = selectedContact;
-		this.log = Logger.getLogger("ExportMessagesWorker");
 	}
-	
+
 	@Override
 	protected Void doInBackground() throws Exception {
 		setText("Exporting messages..");
-		
+
 		Collection<Message> toExport;
 		if (selectedContact == null) {
 			// export all messages
 			toExport = bms.getMessageService().getMessages();
-			
+
 		} else {
 			toExport = bms.getMessageService().getMessages(selectedContact);
 		}
-		
+
 		msgCount = toExport.size();
-		
+
 		try {
 			Collection<T> allSms = bms.getConverterService().toExternalCol(toExport, keepOriginals, exportDupes);
 			bms.getMessageIO().writeTo(allSms, destinationFile);
 		} catch (MessageIOException e) {
-			log.warning("Failed to export messages. " + e.toString());
+			log.warn("Failed to export messages: {}", e.toString(), e);
 			raiseLater("Could not export messages", "There was a problem while exporting the messages: " + e.toString());
 		}
-		
+
 		success = true;
 		return null;
 	}
-	
+
 	@Override
 	public void done() {
-		log.fine("[Export] Done.");
-		
+		log.debug("[Export] Done.");
+
 		if (success) {
 			setText("Done! Exported %d messages to '%s'.", msgCount, destinationFile.getPath());
 		} else {
 			setText("Error! Could not export messages to '%s'.", destinationFile.getPath());
 		}
 	}
-	
+
 	/**
 	 * Raises an error later.
 	 * @param title
@@ -115,7 +114,7 @@ public class ExportMessagesWorker<T> extends SwingWorker<Void, Void> {
 		    }
 		});
 	}
-	
+
     /**
      * Fires a property change (text)
      * @param text
@@ -123,7 +122,7 @@ public class ExportMessagesWorker<T> extends SwingWorker<Void, Void> {
     private void setText(String text) {
 		firePropertyChange("text", null, text);
     }
-    
+
     /**
      * Fires a property change (text)
      * Takes a format string.
