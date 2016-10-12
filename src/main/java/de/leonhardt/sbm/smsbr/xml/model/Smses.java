@@ -21,6 +21,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import lombok.Getter;
+import lombok.Setter;
+
 
 /**
  * <p>Message collection from SMS backup & Restore</p>
@@ -42,6 +45,16 @@ public class Smses {
     @XmlAttribute(required = true)
     @XmlSchemaType(name = "unsignedShort")
     protected Integer count;
+
+    /** UUID */
+    @XmlAttribute(name = "backup_set", required = false)
+    @Getter @Setter
+    protected String backupSet;
+
+    /** Timestamp */
+    @XmlAttribute(name = "backup_date", required = false)
+    @Getter @Setter
+    protected Long backupDate;
 
     public Smses(Collection<Sms> sms) {
     	this.smsOrMms = new ArrayList<Message>(sms);

@@ -87,7 +87,7 @@
               <xs:attribute name="retr_txt_cs" type="xs:string" use="required" />
               <xs:attribute name="d_rpt" type="xs:unsignedByte" use="required" />
               <xs:attribute name="m_id" type="xs:string" use="required" />
-              <xs:attribute name="date_sent" type="xs:unsignedByte" use="required" />
+              <xs:attribute name="date_sent" type="xs:unsignedLong" use="required" />
               <xs:attribute name="seen" type="xs:unsignedByte" use="required" />
               <xs:attribute name="m_type" type="xs:unsignedByte" use="required" />
               <xs:attribute name="v" type="xs:unsignedByte" use="required" />
@@ -115,6 +115,8 @@
         </xs:choice>
       </xs:sequence>
       <xs:attribute name="count" type="xs:unsignedShort" use="required" />
+      <xs:attribute name="backup_set" type="xs:string" />
+      <xs:attribute name="backup_date" type="xs:unsignedLong" />
     </xs:complexType>
   </xs:element>
 </xs:schema>
