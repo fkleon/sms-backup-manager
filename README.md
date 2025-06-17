@@ -33,7 +33,7 @@ Dependencies can be found in the [pom.xml](pom.xml). They include:
 SMS Backup Manager is distributed under the GNU Lesser General Public License (LGPL). See [LICENSE](LICENSE) file for more details.  
 Also, see [3rdparty-licenses.txt](3rdparty-licenses.txt) for any third party licenses.
 
-[sms-backup-restore]: http://android.riteshsahu.com/apps/sms-backup-restore
+[sms-backup-restore]: https://www.synctech.com.au/sms-backup-restore/
 [wiki-howto]: https://github.com/fkleon/sms-backup-manager/wiki/HowTo
 [libphonenumber]: http://code.google.com/p/libphonenumber
 [commons-lang]: http://commons.apache.org/lang
